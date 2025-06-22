@@ -114,7 +114,9 @@
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") #'kasten-open-file)
     (define-key map (kbd "/") #'kasten-search)
-    (define-key map (kbd "g") #'kasten-refresh)
+    (define-key map (kbd "g") (lambda ()
+				(interactive)
+				(kasten-refresh nil nil)))
     map)
   "Keymap for Kasten mode.")
 
@@ -124,12 +126,15 @@
   (hl-line-mode 1)
   (when kasten-auto-refresh
     (kasten--enable-auto-refresh))
-  (kasten-refresh t))
+  (kasten-refresh t t))
 
-(defun kasten-refresh (&optional is-init)
-  "Refresh note list; if IS-INIT is non-nil, reset point."
+(defun kasten-refresh (&optional is-init is-auto)
+  "Refresh note list.
+Reset point if IS-INIT is non-nil; display message with time lapsed and
+according to IS-AUTO."
   (interactive)
-  (let ((buffer (get-buffer-create "*Kasten*")))
+  (let ((buffer (get-buffer-create "*Kasten*"))
+	(start-time (float-time)))
     (with-current-buffer buffer
       (let ((inhibit-read-only t)
 	    (saved-point (point)))
@@ -149,8 +154,12 @@
 	    (progn
 	      (goto-char (point-min))
 	      (forward-line 2))
-	  (goto-char saved-point)
-	  (message "Kasten: automatically updated index"))))))
+	  (goto-char saved-point))
+	(if (eq is-auto t)
+	    (message "Kasten: automatically updated index in %.6f seconds"
+		     (- (float-time) start-time))
+	  (message "Kasten: index updated in %.6f seconds"
+		   (- (float-time) start-time)))))))
 
 (defvar kasten--watch-handle nil
   "Handle returned by `file-notify-add-watch`.")
@@ -165,11 +174,10 @@
 (defun kasten--maybe-auto-refresh (_event)
   "Triggers `kasten-refresh` if `kasten-auto-refresh` is non-nil."
   (when kasten-auto-refresh
-    (kasten-refresh)))
+    (kasten-refresh nil t)))
 
 (defun kasten--enable-auto-refresh ()
   "Enable auto refresh when files change in `kasten-directory`."
-  ;;(interactive)
   (when kasten--watch-handle
     (file-notify-rm-watch kasten--watch-handle))
   (setq kasten--watch-handle
@@ -180,7 +188,6 @@
 
 (defun kasten--disable-auto-refresh ()
   "Disable automatic Kasten refresh on files change."
-  ;;(interactive)
   (when kasten--watch-handle
     (file-notify-rm-watch kasten--watch-handle)
     (setq kasten--watch-handle nil)))
