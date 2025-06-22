@@ -268,7 +268,7 @@ according to IS-AUTO."
   (interactive)
   (let* ((files (kasten--get-note-files))
          (ids (mapcar #'file-name-base files))
-         (id (completing-read "Insert Kasten ID: " ids nil nil)))
+         (id (completing-read "[Kasten] Insert ID: §" ids nil nil)))
     (when (and id (not (string-empty-p id)))
       (insert (concat kasten-id-symbol id)))))
 
@@ -305,7 +305,7 @@ according to IS-AUTO."
   "Prompt to insert an existing or new tag at point."
   (interactive)
   (let* ((tags (kasten--collect-tags))
-         (tag (completing-read "Insert tag: " tags nil nil)))
+         (tag (completing-read "[Kasten] Insert tag: " tags nil nil)))
     (insert tag)))
 
 (defun kasten-show-backlinks-current-note ()
@@ -322,7 +322,7 @@ according to IS-AUTO."
   "Prompt for an ID and show backlinks to it across the notes."
   (interactive
    (let* ((ids (mapcar #'file-name-base (kasten--get-note-files)))
-          (choice (completing-read "Backlinks to ID: " ids nil nil)))
+          (choice (completing-read "[Kasten] Show backlinks to ID: §" ids nil nil)))
      (list choice)))
   (funcall kasten-search-function
 	   kasten-directory (concat kasten-id-symbol (regexp-quote id))))
