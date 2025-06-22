@@ -123,7 +123,7 @@
   (setq buffer-read-only t)
   (hl-line-mode 1)
   (when kasten-auto-refresh
-    (kasten-enable-auto-refresh))
+    (kasten--enable-auto-refresh))
   (kasten-refresh t))
 
 (defun kasten-refresh (&optional is-init)
@@ -159,17 +159,17 @@
   "Handle change to `kasten-auto-refresh`, set SYMBOL to VALUE."
   (set-default symbol value)
   (if (eq value t)
-      (kasten-enable-auto-refresh)
-    (kasten-disable-auto-refresh)))
+      (kasten--enable-auto-refresh)
+    (kasten--disable-auto-refresh)))
 
 (defun kasten--maybe-auto-refresh (_event)
   "Triggers `kasten-refresh` if `kasten-auto-refresh` is non-nil."
   (when kasten-auto-refresh
     (kasten-refresh)))
 
-(defun kasten-enable-auto-refresh ()
+(defun kasten--enable-auto-refresh ()
   "Enable auto refresh when files change in `kasten-directory`."
-  (interactive)
+  ;;(interactive)
   (when kasten--watch-handle
     (file-notify-rm-watch kasten--watch-handle))
   (setq kasten--watch-handle
@@ -178,9 +178,9 @@
          '(change attribute-change)
          #'kasten--maybe-auto-refresh)))
 
-(defun kasten-disable-auto-refresh ()
+(defun kasten--disable-auto-refresh ()
   "Disable automatic Kasten refresh on files change."
-  (interactive)
+  ;;(interactive)
   (when kasten--watch-handle
     (file-notify-rm-watch kasten--watch-handle)
     (setq kasten--watch-handle nil)))
@@ -233,7 +233,7 @@
         (find-file file)
       (message "Kasten: could not follow ID `%s': file not found" id))))
 
-(defun kasten-make-id-clickable ()
+(defun kasten--fontify-clickable-id ()
   "Make Kasten ID clickable in buffers."
   (font-lock-add-keywords
    nil
@@ -254,7 +254,7 @@
          nil))))
   (font-lock-flush))
 
-(add-hook 'org-mode-hook #'kasten-make-id-clickable)
+(add-hook 'org-mode-hook #'kasten--fontify-clickable-id)
 
 (defun kasten-insert-id ()
   "Prompt to insert an ID referencing a note."
@@ -283,7 +283,7 @@
 		       "\\b")))))
 
 (defun kasten--collect-tags ()
-  "Return a list of unique #tags found in all Kasten notes."
+  "Return a list of unique tags found in all notes."
   (let ((files (kasten--get-note-files))
         (tags '()))
     (dolist (file files)
