@@ -70,7 +70,7 @@
   :type 'regexp
   :group 'kasten)
 
-(defcustom kasten-tag-max-pos 1048576
+(defcustom kasten-tag-max-pos 65536
   "Max position of the title of a note, i.e. depth for Kasten to match `kasten-tag-regexp'."
   :type 'integer
   :group 'kasten)
@@ -281,7 +281,7 @@ according to IS-AUTO."
   "Prompt and search for a tag."
   (interactive)
   (let* ((tags (kasten--collect-tags))
-         (tag (completing-read "Search tag: " tags nil nil)))
+         (tag (completing-read "[Kasten] Search tag: " tags nil nil)))
     (when tag
       (funcall kasten-search-function
 	       kasten-directory

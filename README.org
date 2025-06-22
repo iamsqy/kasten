@@ -162,7 +162,7 @@ Alternatively, one can customise Kasten in the Emacs configuration file (such as
 
   ;; Max position of the title of a note
   ;; Reduce if slow
-  (setq kasten-tag-max-pos 1048576)
+  (setq kasten-tag-max-pos 65536)
 
   ;; Regexp for the tag char (for consult-ripgrep to understand)
   ;; `\\x23' is `\#' in PCRE
