@@ -56,7 +56,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 - *[[https://www.gnu.org/software/emacs/download.html][GNU Emacs]]*, version 27.1 or newer
 - *Emacs Lisp package [[https://melpa.org/#/consult][consult]]*, version 0.33 or newer (if possible, use a newer
   version for better performance)
-- *Ripgrep ( =rg= )* installed on the operating system
+- *[[https://github.com/BurntSushi/ripgrep][Ripgrep]] (rg)* installed on the operating system
   - On Linux, install with Advanced Package Tool or other package managers
     #+begin_src bash
       sudo apt install ripgrep # Debian user
@@ -103,7 +103,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
    #+begin_src bash
      gzip -d /path/to/kasten.tar.gz
    #+end_src
-4. In Emacs, run+ \\
+4. In Emacs, run \\
    =M-x= =package-install-file= =<RET>= =/path/to/kasten.tar= =<RET>=
 
 ** Manual Installation
