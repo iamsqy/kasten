@@ -1,0 +1,191 @@
+#+title: Kasten --- Zettelkasten note browser
+#+author: Qiyang Sun
+
+* Overview
+
+=Kasten= is an [[https://www.gnu.org/software/emacs/][Emacs]] package designed to provide a focused and efficient
+browsing experience for Zettelkasten-style notes. With Kasten, one can quickly
+find, tag, and navigate notes stored locally.
+
+** Zettelkasten
+The [[https://zettelkasten.de/][Zettelkasten method]] developed by Niklas Luhmann, is a personal knowledge
+management system based on writing and linking atomic notes.
+
+** ``Kasten''
+In German, ``Kasten'' means ``box'' or ``container''. The name ``Kasten'' for
+this package reflects the Zettelkasten concept---a major mode to browse, search,
+and organise notes efficiently inside Emacs.
+
+* Features
+
+This package is inspired by [[https://melpa.org/#/deft][deft]] and [[https://melpa.org/#/zetteldeft][zetteldeft]].
+
+This package has the following main features:
+- Browse notes with their titles and filenames displayed clearly.
+  - The index can be configured to update automatically.
+- Note searching is significantly faster than deft.
+  - Heavy content search =consult-ripgrep= (needs package [[https://melpa.org/#/consult][consult]],
+    customisable).
+  - Limited use of =string-match= (=C-h= =f= =string-match= =<RET>=).
+- Followable note IDs for easy navigation.
+- Insert tags and note IDs with completion support.
+- Backlink searching to find references between notes.
+
+* License
+
+Kasten is licensed under the [[https://www.gnu.org/licenses/gpl-3.0.en.html][GNU General Public License Version 3]].
+
+See the file =COPYING= for details.
+
+*Copyright (C) 2025 Qiyang Sun*
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
+
+* Requirements
+
+- *[[https://www.gnu.org/software/emacs/download.html][GNU Emacs]]*, version 27.1 or newer
+- *Emacs Lisp package [[https://melpa.org/#/consult][consult]]*, version 0.33 or newer (if possible, use a newer
+  version for better performance)
+- *Ripgrep ( =rg= )* installed on the operating system
+  - On Linux, install with Advanced Package Tool or other package managers
+    #+begin_src bash
+      sudo apt install ripgrep # Debian user
+      sudo yum install ripgrep # RHEL user
+    #+end_src
+  - On macOS, install with Homebrew or MacPorts
+    #+begin_src zsh
+      brew install ripgrep # Homebrew user
+      sudo port install ripgrep # MacPorts user
+    #+end_src
+  - On Windows, follow the [[https://github.com/BurntSushi/ripgrep][official instructions]].
+
+* Installation
+
+** +MELPA (not yet published)+
+
++If MELPA is in the package archives, simply:+
+
++=M-x= =package-install= =<RET>= =kasten= =<RET>=+
+
+*** +use-package+
+
+#+begin_src elisp
+  (use-package kasten
+    :ensure t
+    :defer t
+    :commands (kasten))
+#+end_src
+
+** Tarball
+
+1. Download the latest release tarball and signature (=*.sig=)from the [[https://github.com/iamsqy/kasten/releases][GitHub
+   Releases page]].
+2. Verify PGP signature.
+   #+begin_src bash
+     # 2.1 Receive the maintainer's PGP key
+     gpg --keyserver keyserver.ubuntu.com --recv-keys F8AD5243C3CFB24E
+     # 2.2 Verify
+     gpg --verify /path/to/kasten.tar.gz
+     # if the output is not "gpg: Good signature from...", then STOP!
+   #+end_src
+3. GitHub does not allow uploading =.tar= files in Release. If the
+   file has extension =.tar.gz=, extract it.
+   #+begin_src bash
+     gzip -d /path/to/kasten.tar.gz
+   #+end_src
+4. In Emacs, run+ \\
+   =M-x= =package-install-file= =<RET>= =/path/to/kasten.tar= =<RET>=
+
+** Manual Installation
+
+Clone or download =kasten.el= and place it in the =load-path=. Then add the
+following to the Emacs configuration file (such as =init.el=):
+
+#+begin_src elisp
+  (require 'kasten)
+#+end_src
+
+* Usage
+
+Launch Kasten with \\
+=M-x= =kasten= =<RET>=
+
+Inside the =*Kasten*= buffer:
+- Hit =<RET>= to open the selected note.
+- Hit =/= to search notes.
+- Hit =g= to refresh the notes list.
+
+One may want to add more key bindings to =kasten-mode-map=.
+
+* Configuration
+
+Kasten is customisable using =customize=, via =M-x= =customize-group= =<RET>=
+=kasten= =<RET>= or GUI.
+
+Alternatively, one can customise Kasten in the Emacs configuration file (such as
+=init.el=, or under =use-package=). Below are /default/ configurations. 
+
+#+begin_src elisp
+  ;; Directory containing your notes
+  ;; Kasten recursively finds all notes under kasten-directory
+  (setq kasten-directory (expand-file-name "~/jrn/"))
+
+  ;; File extensions to include in search
+  ;; E.g., Org mode files, text files, and (La)TeX files
+  (setq kasten-file-extensions '("org" "txt" "tex"))
+
+  ;; Function used for searching within the Kasten directory
+  ;; If consult-ripgrep is not ideal, one may change here
+  (setq kasten-search-function #'consult-ripgrep)
+
+  ;; Regexp to match the title of a note
+  ;; Matches `\#+title:' , `\#+TITLE:' , `\#+Title:', ...
+  (setq kasten-title-regexp "^#\\+[tT][iI][tT][lL][eE]: *\\(.*\\)$")
+
+  ;; Max position of the title of a note
+  ;; Reduce if slow
+  (setq kasten-title-max-pos 4096)
+
+  ;; Regexp to match a tag of a note
+  ;; Matches `\#foobar'
+  (setq kasten-tag-regexp "#\\([[:alnum:]_-]+\\)")
+
+  ;; Max position of the title of a note
+  ;; Reduce if slow
+  (setq kasten-tag-max-pos 1048576)
+
+  ;; Regexp for the tag char (for consult-ripgrep to understand)
+  ;; `\\x23' is `\#' in PCRE
+  (setq kasten-tag-first-char-regexp "\\x23")
+
+  ;; Leading symbol for ID
+  ;; May be longer than 1 char
+  (setq kasten-id-symbol "§")
+
+  ;; Regexp to match the ID
+  ;; Matches `\§20250229-2333'
+  (setq kasten-id-regexp "§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)")
+
+  ;; Buffer title
+  ;; If you don't like `Kasten' as the name
+  (setq kasten-buffer-title "Kasten\n")
+
+  ;; Auto refresh
+  ;; If non-nil, automatically refresh Kasten buffer when files change
+  (setq kasten-auto-refresh t)
+#+end_src
+
+* Contributing
+
+Contributions and bug reports are welcome! Please open issues or pull requests
+on the GitHub repository.
