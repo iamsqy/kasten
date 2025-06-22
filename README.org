@@ -185,7 +185,43 @@ Alternatively, one can customise Kasten in the Emacs configuration file (such as
   (setq kasten-auto-refresh t)
 #+end_src
 
+* Benchmark
+
+1000 files (~5.9G) are generated using the following script to benchmark Kasten.
+
+#+begin_src bash
+  #!/bin/bash
+  for i in {1..1000}; do
+      dd if=/dev/urandom bs=1k count=4096 of="random_${i}.bin" status=none
+      base64 -i "random_${i}.bin" -o "random_${i}.txt"
+      rm "random_${i}.bin"
+  done
+#+end_src
+
+The following benchmark is obtained by =M-x= =benchmark=. Variables
+=gc-cons-threshold= and =gc-cons-percentage= are set to =16000000= and =0.1=,
+accordingly.
+
+| Package | Form       | Elapsed Time | Garbage Collections |
+|---------+------------+--------------+---------------------|
+| Deft    | =(deft)=   | 148.025919s  |                  86 |
+| Kasten  | =(kasten)= | 0.682055s    |                   1 |
+
+
 * Contributing
 
 Contributions and bug reports are welcome! Please open issues or pull requests
 on the GitHub repository.
+
+Users are encouraged to report any significant slowness of Kasten! If possible,
+please include the following information, but please *do not include any
+sensitive information*:
+- Emacs version ( =M-x= =emacs-version= =<RET>= )
+- Kasten version
+- Operating system ( =uname -a= )
+- Number of indexed files ( =ls -1 /path/to/notes | wc -l= )
+- Total size of indexed files ( =du -sh /path/to/notes= )
+- Profiler report ( =M-x= =profiler-start= =<RET>= =<RET>=, perform action,
+  =M-x= =profiler-stop= =<RET>=, and then =M-x= =profiler-report= =<RET>=)
+- Benchmark of the slow function ( =M-x= =benchmark= =<RET>= followed by the
+  function and =<RET>= )
