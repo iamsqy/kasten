@@ -137,11 +137,12 @@ according to IS-AUTO."
 	(start-time (float-time)))
     (with-current-buffer buffer
       (let ((inhibit-read-only t)
-	    (saved-point (point)))
+	    (saved-point (point))
+	    (files (kasten--get-note-files)))
 	(erase-buffer)
 	(insert (propertize kasten-buffer-title 'face 'kasten-buffer-title-face))
 	(insert "\n")
-	(dolist (file (kasten--get-note-files))
+	(dolist (file files)
 	  (let* ((title (kasten-parse-org-title file))
 		 (filename (file-name-base file)))
 	    (insert (propertize title 'face 'kasten-file-title-face))
@@ -155,11 +156,14 @@ according to IS-AUTO."
 	      (goto-char (point-min))
 	      (forward-line 2))
 	  (goto-char saved-point))
-	(if (eq is-auto t)
-	    (message "Kasten: automatically updated index in %.6f seconds"
-		     (- (float-time) start-time))
-	  (message "Kasten: index updated in %.6f seconds"
-		   (- (float-time) start-time)))))))
+	(let ((elapsed (- (float-time) start-time))
+	      (file-count (length files)))
+          (if (eq is-auto t)
+	      (message "Kasten: automatically updated index of %d files in %.6f seconds"
+		       file-count elapsed)
+	    (message "Kasten: index of %d files updated in %.6f seconds"
+		     file-count elapsed)))))))
+
 
 (defvar kasten--watch-handle nil
   "Handle returned by `file-notify-add-watch`.")
@@ -230,7 +234,7 @@ according to IS-AUTO."
 (defun kasten--id-to-file (id)
   "Find full path of note file matching ID."
   (seq-find (lambda (f)
-              (string= (file-name-base f) id))
+	      (string= (file-name-base f) id))
             (kasten--get-note-files)))
 
 (defun kasten--follow-id-link (id)
@@ -253,8 +257,8 @@ according to IS-AUTO."
              (define-key map (kbd "RET")
 			 `(lambda () (interactive) (kasten--follow-id-link ,id)))
              (add-text-properties
-              (match-beginning 0) (match-end 0)
-              `(mouse-face highlight
+	      (match-beginning 0) (match-end 0)
+	      `(mouse-face highlight
                            help-echo "Mouse-1 or RET: Follow Kasten ID"
                            face org-link
                            keymap ,map))))
@@ -314,7 +318,7 @@ according to IS-AUTO."
   (let* ((file (buffer-file-name))
          (id (and file (file-name-base file))))
     (if (not id)
-        (message "Kasten: not visiting a note file.")
+        (message "Kasten: not visiting a note file")
       (funcall kasten-search-function
 	       kasten-directory (concat kasten-id-symbol (regexp-quote id))))))
 
