@@ -50,6 +50,12 @@
   :type '(repeat string)
   :group 'kasten)
 
+(defcustom kasten-index-hidden-files nil
+  "If non-nil, include dot files when indexing.
+May cause problem if backup files present in the directory."
+  :type 'boolean
+  :group 'kasten)
+
 (defcustom kasten-search-function #'consult-ripgrep
   "Function used for searching within the Kasten directory."
   :type 'function
@@ -213,7 +219,9 @@ according to IS-AUTO."
 
 (defun kasten--extension-regexp ()
   "Return a regexp matching extensions in `kasten-file-extensions`."
-  (concat "\\." (regexp-opt kasten-file-extensions t) "$"))
+  (concat
+   (if kasten-index-hidden-files "\\." "^[^.].*\\.")
+   (regexp-opt kasten-file-extensions t) "$"))
 
 (defun kasten--get-note-files ()
   "Return a list of note file paths in `kasten-directory`."
