@@ -50,6 +50,16 @@
   :type '(repeat string)
   :group 'kasten)
 
+(defcustom kasten-default-extension "org"
+  "Default extension for new notes."
+  :type 'string
+  :group 'kasten)
+
+(defcustom kasten-note-template "#+title: "
+  "Template for new notes."
+  :type 'string
+  :group 'kasten)
+
 (defcustom kasten-index-hidden-files nil
   "If non-nil, include dot files when indexing.
 May cause problem if backup files present in the directory."
@@ -262,6 +272,41 @@ according to IS-AUTO."
   :type 'boolean
   :group 'kasten
   :set #'kasten--set-auto-refresh)
+
+(defun kasten--generate-id-and-path ()
+  "Generate ID and path, increment time if clash."
+  (let ((n 0)
+        id path)
+    (cl-loop
+     with now = (current-time)
+     for offset-time = (time-add now (seconds-to-time (* kasten-id-clash-time-inc n)))
+     for base = (format-time-string kasten-id-timeformat offset-time)
+     for dir = (format-time-string kasten-folder-timeformat offset-time)
+     for rel-path = (format "%s/%s" dir base)
+     do (setq
+         id base
+         path (expand-file-name rel-path kasten-directory))
+     until (not (cl-some
+                 (lambda (ext)
+                   (file-exists-p (format "%s.%s" path ext)))
+                 kasten-file-extensions))
+     do (setq n (1+ n)))
+    (list :id id :path path)))
+
+(defun kasten-create-new-note (&optional title)
+  "Create and open a new Kasten note.  Optionally for TITLE."
+  (interactive)
+  (pcase-let* ((`(:id ,id :path ,path) (kasten--generate-id-and-path))
+               (full-path (concat path "." kasten-default-extension))
+               (dir (file-name-directory full-path)))
+    (unless (file-directory-p dir)
+      (progn
+	(make-directory dir t)
+	(message "Kasten: created directory `%s'" dir)))
+    (find-file full-path)
+    (insert kasten-note-template)
+    (save-buffer)
+    (message "Kasten: created new note `%s' at `%s'" id full-path)))
 
 (defun kasten-parse-org-title (file)
   "Return the Org title from FILE or fallback to base filename."
