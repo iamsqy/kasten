@@ -389,7 +389,7 @@ according to IS-AUTO."
   "Prompt for an ID and show backlinks to it across the notes."
   (interactive
    (let* ((ids (mapcar #'file-name-base (kasten--get-note-files)))
-          (choice (completing-read "[Kasten] Show backlinks to ID: §" ids nil nil)))
+          (choice (completing-read ("[Kasten] Show backlinks to ID: " kasten-id-symbol) ids nil nil)))
      (list choice)))
   (funcall kasten-search-function
 	   kasten-directory (concat kasten-id-symbol (regexp-quote id))))
