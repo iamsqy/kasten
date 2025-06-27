@@ -99,6 +99,11 @@ May cause problem if backup files present in the directory."
   :type 'string
   :group 'kasten)
 
+(defcustom kasten-minor-mode-lighter " Kt"
+  "Kasten minor mode lighter."
+  :type 'string
+  :group 'kasten)
+
 (defface kasten-buffer-title-face
   '((t :inherit variable-pitch :weight bold :height 2.33
        :foreground "cyan" :background "navy" :slant italic
@@ -126,6 +131,12 @@ May cause problem if backup files present in the directory."
     map)
   "Keymap for Kasten mode.")
 
+(defvar kasten-minor-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "H-k") #'kasten) ;;TODO
+    map)
+  "Keymap for Kasten minor mode.")
+
 (define-derived-mode kasten-mode special-mode "Kasten"
   "Major mode for browsing notes."
   (setq buffer-read-only t)
@@ -133,6 +144,29 @@ May cause problem if backup files present in the directory."
   (when kasten-auto-refresh
     (kasten--enable-auto-refresh))
   (kasten-refresh t t))
+
+(define-minor-mode kasten-minor-mode
+  "Minor mode for extra features in Kasten buffers."
+  :init-value nil
+  :lighter kasten-minor-mode-lighter
+  :keymap kasten-minor-mode-map
+  :group 'kasten
+  
+  (if kasten-minor-mode
+      (progn
+        (unless (derived-mode-p 'kasten-mode 'text-mode)
+	  (display-warning
+	   'kasten-minor-mode
+	   (format "Kasten minor mode is not intended for `%s'. \
+It is designed for text-mode buffers. The major mode of the current buffer is \
+not derived from text-mode. Answer `y' if you want to treat `%s' as note."
+		   major-mode (buffer-name))
+	   :warning)
+          (unless (y-or-n-p
+		   (format "[Kasten] Really enable Kasten minor mode in `%s'? "
+			   major-mode))
+            (setq kasten-minor-mode nil)
+            (message "[Kasten] Kasten minor mode not enabled."))))))
 
 (defun kasten-refresh (&optional is-init is-auto)
   "Refresh note list.
@@ -169,7 +203,6 @@ according to IS-AUTO."
 		       file-count elapsed)
 	    (message "Kasten: index of %d files updated in %.6f seconds"
 		     file-count elapsed)))))))
-
 
 (defvar kasten--watch-handle nil
   "Handle returned by `file-notify-add-watch`.")
