@@ -81,13 +81,35 @@ May cause problem if backup files present in the directory."
   :type 'integer
   :group 'kasten)
 
+(defcustom kasten-tag-symbol "#"
+  "Leading symbol for tag."
+  :type 'regexp
+  :group 'kasten)
+
 (defcustom kasten-tag-first-char-regexp "\\x23"
   "Regexp for the tag char to make `kasten-search-function' understand, e.g. `\\x23' for `\#'."
   :type 'regexp
   :group 'kasten)
 
 (defcustom kasten-id-symbol "§"
-  "Leading symbol for ID, e.g. `\§' in ID `\§20250229-2333'.")
+  "Leading symbol for ID, e.g. `\§' in ID `\§20250229-2333'."
+  :type 'string
+  :group 'kasten)
+
+(defcustom kasten-id-timeformat "%y%m%d-%H%M"
+  "Time format for generating ID, e.g. `%y%m%d-%H%M' for `250229-2333'.  See strftime."
+  :type 'string
+  :group 'kasten)
+
+(defcustom kasten-folder-timeformat "%Y%m"
+  "Time format for folder, e.g. `%Y%m' for folder `202502/'.  See strftime."
+  :type 'string
+  :group 'kasten)
+
+(defcustom kasten-id-clash-time-inc 60
+  "How much time should be increment if the time-based ID clashes.  60 for 1 minute."
+  :type 'integer
+  :group 'kasten)
 
 (defcustom kasten-id-regexp "§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)"
   "Regexp for an ID in a note."
@@ -313,7 +335,7 @@ according to IS-AUTO."
   (interactive)
   (let* ((files (kasten--get-note-files))
          (ids (mapcar #'file-name-base files))
-         (id (completing-read "[Kasten] Insert ID: §" ids nil nil)))
+         (id (completing-read (concat "[Kasten] Insert ID: " kasten-id-symbol) ids nil nil)))
     (when (and id (not (string-empty-p id)))
       (insert (concat kasten-id-symbol id)))))
 
@@ -326,7 +348,7 @@ according to IS-AUTO."
   "Prompt and search for a tag."
   (interactive)
   (let* ((tags (kasten--collect-tags))
-         (tag (completing-read "[Kasten] Search tag: " tags nil nil)))
+         (tag (completing-read "[Kasten] Search tag: " tags nil nil kasten-tag-symbol)))
     (when tag
       (funcall kasten-search-function
 	       kasten-directory
@@ -350,7 +372,7 @@ according to IS-AUTO."
   "Prompt to insert an existing or new tag at point."
   (interactive)
   (let* ((tags (kasten--collect-tags))
-         (tag (completing-read "[Kasten] Insert tag: " tags nil nil)))
+         (tag (completing-read "[Kasten] Insert tag: " tags nil nil kasten-tag-symbol)))
     (insert tag)))
 
 (defun kasten-show-backlinks-current-note ()
