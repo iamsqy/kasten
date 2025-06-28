@@ -279,7 +279,8 @@ according to IS-AUTO."
         id path)
     (cl-loop
      with now = (current-time)
-     for offset-time = (time-add now (seconds-to-time (* kasten-id-clash-time-inc n)))
+     for offset-time = (time-add
+			now (seconds-to-time (* kasten-id-clash-time-inc n)))
      for base = (format-time-string kasten-id-timeformat offset-time)
      for dir = (format-time-string kasten-folder-timeformat offset-time)
      for rel-path = (format "%s/%s" dir base)
@@ -380,7 +381,8 @@ according to IS-AUTO."
   (interactive)
   (let* ((files (kasten--get-note-files))
          (ids (mapcar #'file-name-base files))
-         (id (completing-read (concat "[Kasten] Insert ID: " kasten-id-symbol) ids nil nil)))
+         (id (completing-read
+	      (concat "[Kasten] Insert ID: " kasten-id-symbol) ids nil nil)))
     (when (and id (not (string-empty-p id)))
       (insert (concat kasten-id-symbol id)))))
 
@@ -393,7 +395,8 @@ according to IS-AUTO."
   "Prompt and search for a tag."
   (interactive)
   (let* ((tags (kasten--collect-tags))
-         (tag (completing-read "[Kasten] Search tag: " tags nil nil kasten-tag-symbol)))
+         (tag (completing-read
+	       "[Kasten] Search tag: " tags nil nil kasten-tag-symbol)))
     (when tag
       (funcall kasten-search-function
 	       kasten-directory
@@ -417,7 +420,8 @@ according to IS-AUTO."
   "Prompt to insert an existing or new tag at point."
   (interactive)
   (let* ((tags (kasten--collect-tags))
-         (tag (completing-read "[Kasten] Insert tag: " tags nil nil kasten-tag-symbol)))
+         (tag (completing-read
+	       "[Kasten] Insert tag: " tags nil nil kasten-tag-symbol)))
     (insert tag)))
 
 (defun kasten-show-backlinks-current-note ()
@@ -434,7 +438,9 @@ according to IS-AUTO."
   "Prompt for an ID and show backlinks to it across the notes."
   (interactive
    (let* ((ids (mapcar #'file-name-base (kasten--get-note-files)))
-          (choice (completing-read ("[Kasten] Show backlinks to ID: " kasten-id-symbol) ids nil nil)))
+          (choice (completing-read
+		   ("[Kasten] Show backlinks to ID: " kasten-id-symbol)
+		   ids nil nil)))
      (list choice)))
   (funcall kasten-search-function
 	   kasten-directory (concat kasten-id-symbol (regexp-quote id))))
