@@ -102,7 +102,7 @@ May cause problem if backup files present in the directory."
   :group 'kasten)
 
 (defcustom kasten-id-symbol "§"
-  "Leading symbol for ID, e.g. `\§' in ID `\§20250229-2333'."
+  "Leading symbol for ID, e.g. `\§' in ID `\§250229-2333'."
   :type 'string
   :group 'kasten)
 
@@ -121,9 +121,14 @@ May cause problem if backup files present in the directory."
   :type 'integer
   :group 'kasten)
 
-(defcustom kasten-id-regexp "§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)"
+(defcustom kasten-id-regexp "§\\([0-9]\\{6\\}-[0-9]\\{4\\}\\)"
   "Regexp for an ID in a note."
   :type 'regexp
+  :group 'kasten)
+
+(defcustom kasten-backlink-comment "#+backlink: "
+  "How to note backlink ID in new note when creating new note at point."
+  :type 'string
   :group 'kasten)
 
 (defcustom kasten-buffer-title "Kasten\n"
