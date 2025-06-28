@@ -299,8 +299,8 @@ according to IS-AUTO."
      do (setq n (1+ n)))
     (list :id id :path path)))
 
-(defun kasten-create-new-note (&optional title)
-  "Create and open a new Kasten note.  Optionally for TITLE."
+(defun kasten-create-new-note ()
+  "Create and open a new Kasten note."
   (interactive)
   (pcase-let* ((`(:id ,id :path ,path) (kasten--generate-id-and-path))
                (full-path (concat path "." kasten-default-extension))
@@ -313,6 +313,35 @@ according to IS-AUTO."
     (insert kasten-note-template)
     (save-buffer)
     (message "Kasten: created new note `%s' at `%s'" id full-path)))
+
+(defun kasten-create-new-note-at-point ()
+  "Create a new note linked from the current one.  Insert §ID at point.
+Also add a backlink from the new note to the current one."
+  (interactive)
+  (unless (and buffer-file-name
+               (string-prefix-p (file-truename kasten-directory)
+                                (file-truename buffer-file-name)))
+    (user-error "Kasten: current buffer `%s' is not a note" buffer-file-name))
+
+  (pcase-let* ((origin-path buffer-file-name)
+               (origin-id (file-name-base origin-path))
+               (`(:id ,new-id :path ,new-path) (kasten--generate-id-and-path))
+               (new-file (concat new-path "." kasten-default-extension))
+               (new-dir (file-name-directory new-file)))
+    (insert (concat kasten-id-symbol new-id))
+    (unless (file-directory-p new-dir)
+      (progn
+	(make-directory new-dir t)
+	(message "Kasten: created directory `%s'" new-dir)))
+    (find-file new-file)
+    (insert kasten-note-template)
+    (save-excursion
+      (insert "\n")
+      (insert
+       (concat kasten-backlink-comment kasten-id-symbol origin-id "\n")))
+    (save-buffer)
+    (message "Kasten: created new note `%s' backlinking to `%s' at `%s'"
+	     new-id new-file origin-id)))
 
 (defun kasten-parse-org-title (file)
   "Return the Org title from FILE or fallback to base filename."
