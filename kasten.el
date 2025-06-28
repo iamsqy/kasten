@@ -382,10 +382,28 @@ Also add a backlink from the new note to the current one."
 
 (defun kasten--follow-id-link (id)
   "Open the file corresponding to ID."
+  (interactive)
   (let ((file (kasten--id-to-file id)))
     (if file
         (find-file file)
       (message "Kasten: could not follow ID `%s': file not found" id))))
+
+(defun kasten-follow-id-link-at-point ()
+  "Follow the kasten ID link at point by calling `kasten--follow-id-link'."
+  (interactive)
+  (let ((id (thing-at-point 'symbol t)))
+    (if id
+        (kasten--follow-id-link id)
+      (debug))))
+
+(defcustom kasten-follow-id-keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map [mouse-1] #'kasten-follow-id-link-at-point)
+    (define-key map (kbd "s-RET") #'kasten-follow-id-link-at-point)
+    map)
+  "Keymap used on Kasten ID links."
+  :type 'keymap
+  :group 'kasten)
 
 (defun kasten--fontify-clickable-id ()
   "Make Kasten ID clickable in buffers."
@@ -393,18 +411,12 @@ Also add a backlink from the new note to the current one."
    nil
    `((,kasten-id-regexp
       (0 (progn
-           (let* ((id (match-string-no-properties 1))
-                  (map (make-sparse-keymap)))
-             (define-key map [mouse-1]
-			 `(lambda () (interactive) (kasten--follow-id-link ,id)))
-             (define-key map (kbd "RET")
-			 `(lambda () (interactive) (kasten--follow-id-link ,id)))
-             (add-text-properties
-	      (match-beginning 0) (match-end 0)
-	      `(mouse-face highlight
-                           help-echo "Mouse-1 or RET: Follow Kasten ID"
-                           face org-link
-                           keymap ,map))))
+           (add-text-properties
+	    (match-beginning 0) (match-end 0)
+	    `(mouse-face highlight
+                         help-echo "\\{kasten-follow-id-keymap}"
+                         face org-link
+                         keymap ,kasten-follow-id-keymap)))
          nil))))
   (font-lock-flush))
 
