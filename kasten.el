@@ -183,6 +183,16 @@ See strftime."
   "Face for file titles in Kasten."
   :group 'kasten)
 
+(defface kasten-title-category-split-face
+  '((t :foreground "gray"))
+  "Face for title category split in Kasten."
+  :group 'kasten)
+
+(defface kasten-file-category-face
+  '((t :foreground "purple"))
+  "Face for categories in Kasten."
+  :group 'kasten)
+
 (defface kasten-file-name-face
   '((t :foreground "green"))
   "Face for filenames in Kasten."
@@ -538,6 +548,15 @@ Also add a backlink from the new note to the current one."
       (if (string-match kasten-title-regexp contents)
           (string-trim (match-string 1 contents))
         (file-name-base file)))))
+
+(defun kasten--parse-category (file)
+  "Return the category of FILE."
+  (with-temp-buffer
+    (insert-file-contents file nil 0 kasten-category-max-pos)
+    (let ((contents (buffer-string)))
+      (if (string-match kasten-category-regexp contents)
+          (string-trim (match-string 1 contents))
+        kasten-empty-category-placeholder))))
 
 (defun kasten--extension-regexp ()
   "Return a regexp matching extensions in `kasten-file-extensions`."
