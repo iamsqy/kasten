@@ -161,7 +161,7 @@ See strftime."
   :type 'string
   :group 'kasten)
 
-(defcustom kasten-buffer-title "Kasten\n"
+(defcustom kasten-buffer-title "Kasten"
   "Kasten mode buffer title."
   :type 'string
   :group 'kasten)
@@ -202,9 +202,8 @@ See strftime."
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") #'kasten-open-file)
     (define-key map (kbd "/") #'kasten-search)
-    (define-key map (kbd "g") (lambda ()
-				(interactive)
-				(kasten-refresh nil nil)))
+    (define-key map (kbd "g") #'kasten-refresh)
+    (define-key map (kbd "?") #'kasten-filters-edit)
     map)
   "Keymap for Kasten mode.")
 
@@ -414,16 +413,38 @@ according to IS-AUTO."
 	    (files (kasten--get-note-files)))
 	(erase-buffer)
 	(insert (propertize kasten-buffer-title 'face 'kasten-buffer-title-face))
+	(when (kasten-filters-active-p)
+	  (progn
+	    (insert (propertize " " 'face 'kasten-buffer-title-face))
+	    (insert (propertize "(f)" 'face 'kasten-buffer-title-face
+				'help-echo "f: filters activated"))))
+	(insert (propertize "\n" 'face 'kasten-buffer-title-face))
 	(insert "\n")
 	(dolist (file files)
-	  (let* ((title (kasten-parse-org-title file))
+	  (let* ((title (kasten--parse-org-title file))
+		 (category (kasten--parse-category file))
 		 (filename (file-name-base file)))
-	    (insert (propertize title 'face 'kasten-file-title-face))
-	    (insert (make-string
-		     (max 2 (- (window-width) (length title) (length filename)))
-		     ?\s))
-	    (insert (propertize filename 'face 'kasten-file-name-face))
-	    (insert "\n")))
+	    (when (kasten--matches-filter-p title category)
+	      (insert (propertize title 'face 'kasten-file-title-face))
+	      (unless (string= category "")
+		(insert (propertize kasten-title-category-split
+				    'face 'kasten-title-category-split-face))
+		(insert (propertize category 'face 'kasten-file-category-face))
+		)
+	      (insert (make-string ; align the line so that ID is flushed right
+		       (max 2 (-
+			       (window-width)
+			       (length title)
+			       (length filename)
+			       (if (string= category "") ; handle category
+				   0
+				 (+ (length category)
+				    (length kasten-title-category-split)))
+			       (if (display-graphic-p) ; one char less for TTY
+				   0 1)))
+		       ?\s))
+	      (insert (propertize filename 'face 'kasten-file-name-face))
+	      (insert "\n"))))
 	(if (eq is-init t)
 	    (progn
 	      (goto-char (point-min))
@@ -540,7 +561,7 @@ Also add a backlink from the new note to the current one."
     (message "Kasten: created new note `%s' backlinking to `%s' at `%s'"
 	     new-id new-file origin-id)))
 
-(defun kasten-parse-org-title (file)
+(defun kasten--parse-org-title (file)
   "Return the Org title from FILE or fallback to base filename."
   (with-temp-buffer
     (insert-file-contents file nil 0 kasten-title-max-pos)
