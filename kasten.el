@@ -55,7 +55,7 @@
   :type 'string
   :group 'kasten)
 
-(defcustom kasten-note-template "#+title: "
+(defcustom kasten-note-title-template "#+title: "
   "Template for new notes."
   :type 'string
   :group 'kasten)
@@ -134,9 +134,9 @@ empty to omit empty category for uncategorised notes."
   :type 'string
   :group 'kasten)
 
-(defcustom kasten-id-timeformat "%y%m%d-%H%M"
+(defcustom kasten-id-format "%y%m%d-%H%M-%E"
   "Time format for generating ID, e.g. `%y%m%d-%H%M' for `250229-2333'.  \
-See strftime."
+See strftime.  Use `%E' for shortened title."
   :type 'string
   :group 'kasten)
 
@@ -496,15 +496,23 @@ according to IS-AUTO."
   :group 'kasten
   :set #'kasten--set-auto-refresh)
 
-(defun kasten--generate-id-and-path ()
-  "Generate ID and path, increment time if clash."
+(defun kasten--safetitle (title)
+  "Convert TITLE to a safe short string can be used for ID or filename."
+    (let* ((clean (replace-regexp-in-string "[^a-zA-Z0-9-_+]" "" title)))
+    (substring clean 0 (min 8 (length clean)))))
+
+(defun kasten--generate-id-and-path (&optional title)
+  "Generate ID and path, optionally using TITLE, increment time if clash."
   (let ((n 0)
         id path)
     (cl-loop
      with now = (current-time)
      for offset-time = (time-add
 			now (seconds-to-time (* kasten-id-clash-time-inc n)))
-     for base = (format-time-string kasten-id-timeformat offset-time)
+     for id-timeformat = (replace-regexp-in-string "%E"
+						   (kasten--safetitle title)
+						   kasten-id-format)
+     for base = (format-time-string id-timeformat offset-time)
      for dir = (format-time-string kasten-folder-timeformat offset-time)
      for rel-path = (format "%s/%s" dir base)
      do (setq
@@ -520,7 +528,8 @@ according to IS-AUTO."
 (defun kasten-create-new-note ()
   "Create and open a new Kasten note."
   (interactive)
-  (pcase-let* ((`(:id ,id :path ,path) (kasten--generate-id-and-path))
+  (pcase-let* ((title (read-from-minibuffer "[Kasten] Title for new note: "))
+	       (`(:id ,id :path ,path) (kasten--generate-id-and-path title))
                (full-path (concat path "." kasten-default-extension))
                (dir (file-name-directory full-path)))
     (unless (file-directory-p dir)
@@ -528,7 +537,8 @@ according to IS-AUTO."
 	(make-directory dir t)
 	(message "Kasten: created directory `%s'" dir)))
     (find-file full-path)
-    (insert kasten-note-template)
+    (insert kasten-note-title-template)
+    (insert title)
     (save-buffer)
     (message "Kasten: created new note `%s' at `%s'" id full-path)))
 
@@ -543,7 +553,8 @@ Also add a backlink from the new note to the current one."
 
   (pcase-let* ((origin-path buffer-file-name)
                (origin-id (file-name-base origin-path))
-               (`(:id ,new-id :path ,new-path) (kasten--generate-id-and-path))
+               (title (read-from-minibuffer "[Kasten] Title for new note: "))
+	       (`(:id ,id :path ,path) (kasten--generate-id-and-path title))
                (new-file (concat new-path "." kasten-default-extension))
                (new-dir (file-name-directory new-file)))
     (insert (concat kasten-id-symbol new-id))
@@ -552,7 +563,7 @@ Also add a backlink from the new note to the current one."
 	(make-directory new-dir t)
 	(message "Kasten: created directory `%s'" new-dir)))
     (find-file new-file)
-    (insert kasten-note-template)
+    (insert kasten-note-title-template)
     (save-excursion
       (insert "\n")
       (insert
