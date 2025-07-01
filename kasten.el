@@ -567,7 +567,10 @@ Also add a backlink from the new note to the current one."
     (insert-file-contents file nil 0 kasten-title-max-pos)
     (let ((contents (buffer-string)))
       (if (string-match kasten-title-regexp contents)
-          (string-trim (match-string 1 contents))
+          (let ((title (string-trim (match-string 1 contents))))
+	    (if (string= title "")
+		(concat "<untitled> " (file-relative-name file))
+	      title))
         (file-name-base file)))))
 
 (defun kasten--parse-category (file)
