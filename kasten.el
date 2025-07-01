@@ -77,8 +77,34 @@ May cause problem if backup files present in the directory."
   :group 'kasten)
 
 (defcustom kasten-title-max-pos 4096
-  "Max position of the title of a note, i.e. depth for Kasten to match `kasten-title-regexp'."
+  "Max position of the title of a note, i.e. depth for Kasten to match \
+`kasten-title-regexp'."
   :type 'integer
+  :group 'kasten)
+
+(defcustom kasten-category-regexp
+  "^#\\+[cC][aA][tT][eE][gG][oO][rR][yY]: *\\(.*\\)$"
+  "Regexp to match the category of a note."
+  :type 'regexp
+  :group 'kasten)
+
+
+(defcustom kasten-empty-category-placeholder ""
+  "If non-empty, display in category field for uncategorised notes.  Leave \
+empty to omit empty category for uncategorised notes."
+  :type 'string
+  :group 'kasten)
+
+
+(defcustom kasten-category-max-pos 4096
+  "Max position of the category of a note, i.e. depth for Kasten to match \
+`kasten-category-regexp'."
+  :type 'integer
+  :group 'kasten)
+
+(defcustom kasten-title-category-split " --- "
+  "Split title and category in Kasten view."
+  :type 'string
   :group 'kasten)
 
 (defcustom kasten-tag-regexp "#\\([[:alnum:]_-]+\\)"
@@ -87,7 +113,8 @@ May cause problem if backup files present in the directory."
   :group 'kasten)
 
 (defcustom kasten-tag-max-pos 65536
-  "Max position of the title of a note, i.e. depth for Kasten to match `kasten-tag-regexp'."
+  "Max position of the title of a note, i.e. depth for Kasten to match \
+`kasten-tag-regexp'."
   :type 'integer
   :group 'kasten)
 
@@ -97,7 +124,8 @@ May cause problem if backup files present in the directory."
   :group 'kasten)
 
 (defcustom kasten-tag-first-char-regexp "\\x23"
-  "Regexp for the tag char to make `kasten-search-function' understand, e.g. `\\x23' for `\#'."
+  "Regexp for the tag char to make `kasten-search-function' understand, e.g. \
+`\\x23' for `\#'."
   :type 'regexp
   :group 'kasten)
 
@@ -107,7 +135,8 @@ May cause problem if backup files present in the directory."
   :group 'kasten)
 
 (defcustom kasten-id-timeformat "%y%m%d-%H%M"
-  "Time format for generating ID, e.g. `%y%m%d-%H%M' for `250229-2333'.  See strftime."
+  "Time format for generating ID, e.g. `%y%m%d-%H%M' for `250229-2333'.  \
+See strftime."
   :type 'string
   :group 'kasten)
 
@@ -117,7 +146,8 @@ May cause problem if backup files present in the directory."
   :group 'kasten)
 
 (defcustom kasten-id-clash-time-inc 60
-  "How much time should be increment if the time-based ID clashes.  60 for 1 minute."
+  "How much time should be increment if the time-based ID clashes.  \
+60 for 1 minute."
   :type 'integer
   :group 'kasten)
 
@@ -205,9 +235,165 @@ not derived from text-mode. Answer `y' if you want to treat `%s' as note."
             (setq kasten-minor-mode nil)
             (message "[Kasten] Kasten minor mode not enabled."))))))
 
+(defvar kasten-filters
+  '(:title ()
+    :category ()
+    :mode and)
+  "Filters for kasten-refresh filtering of notes.
+:title is a list of substrings to match in the title.
+:category is a list of categories for exact matching.
+:mode is either 'or or 'and to combine the title and category filters.")
+
+(defun kasten-filters-active-p ()
+  "Return non-nil if `kasten-filters` has active filters."
+  (let ((titles (plist-get kasten-filters :title))
+        (categories (plist-get kasten-filters :category)))
+    (or titles categories)))
+
+(defun kasten--matches-filter-p (title category)
+  "Return t if TITLE and CATEGORY pass the filters in `kasten-filters`."
+  (let* ((title-filters (plist-get kasten-filters :title))
+         (category-filters (plist-get kasten-filters :category))
+         (mode (plist-get kasten-filters :mode))
+         (title-match (or (null title-filters)
+                          (seq-some (lambda (substr)
+                                      (string-match-p (downcase substr)
+						      (downcase title)))
+                                    title-filters)))
+         (category-match (or (null category-filters)
+                             (member category category-filters))))
+    (pcase mode
+      ('or (or title-match category-match))
+      ('and (and title-match category-match))
+      (_ (user-error "Kasten: invalid mode (not `and' or `or')")))))
+
+(defvar kasten-filters-buffer-name "*Kasten Filters*")
+
+(defvar kasten-filters-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-c") #'kasten-filters-save-and-kill)
+    (define-key map (kbd "C-c C-k") #'kill-buffer-and-window)
+    (define-key map (kbd "C-c C-t") #'kasten-filters--toggle-the-mode)
+    map)
+  "Keymap for `kasten-filters-mode'.")
+
+(defvar kasten-filters-font-lock-keywords
+  '(("^%.*$" . font-lock-comment-face)
+    ("^#.*$" . font-lock-keyword-face))
+  "Font lock keywords for `kasten-filters-mode'.")
+
+(define-derived-mode kasten-filters-mode text-mode "Kasten-Filters"
+  "Major mode for editing `kasten-filters`."
+  (setq buffer-read-only nil)
+  (setq font-lock-defaults '(kasten-filters-font-lock-keywords))
+  (let ((inhibit-read-only t))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "^[%#].*$" nil t)
+        (add-text-properties (match-beginning 0) (match-end 0)
+                             '(read-only t front-sticky t rear-nonsticky t)))))
+  (setq-local header-line-format (substitute-command-keys "[Kasten] edit \
+filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
+ to discard.")))
+
+(add-hook 'kasten-filters-mode-hook
+          (lambda ()
+            (display-line-numbers-mode -1)
+            (setq truncate-lines t)))
+
+(defun kasten-filters--insert-current ()
+  "Insert the current `kasten-filters` contents in the editing buffer."
+  (let ((title-list (plist-get kasten-filters :title))
+        (category-list (plist-get kasten-filters :category))
+        (mode (plist-get kasten-filters :mode)))
+    (insert "\
+% To customise Kasten filters, edit this buffer.  When done, `C-c C-c' to save\n")
+    (insert "\
+% or `C-c C-k' to discard.  Lines starting with `\%' are comments.\n")
+    (insert "\
+% Title filters: one per line, case insensitive, Emacs regexp supported.\n")
+    (insert "# title\n")
+    (let ((tail title-list))
+      (while tail
+        (let ((elem (car tail)))
+          (insert elem "\n")
+          (setq tail (cdr tail)))))
+    (when (null title-list) (insert "\n"))
+    (insert "\
+% Category filters: one per line, case sensitive.\n")
+    (insert "# category\n")
+    (let ((tail category-list))
+      (while tail
+        (let ((elem (car tail)))
+          (insert elem "\n")
+          (setq tail (cdr tail)))))
+    (when (null category-list) (insert "\n"))
+    (insert "\
+% And/or: `and' for single filter; set point and `C-c C-t' to toggle.\n")
+    (insert "# mode\n")
+    (insert (symbol-name mode) "\n")
+    (insert "% Kasten filter customisation ends here.\n")))
+
+(defun kasten-filters-edit ()
+  "Open a buffer for editing the `kasten-filters` variable."
+  (interactive)
+  (let ((buf (get-buffer-create kasten-filters-buffer-name)))
+    (with-current-buffer buf
+      (read-only-mode -1)
+      (erase-buffer)
+      (kasten-filters--insert-current)
+      (kasten-filters-mode))
+    (pop-to-buffer buf)))
+
+(defun kasten-filters--toggle-the-mode ()
+  "Toggle the mode on the current line between `or' and `and' if applicable."
+  (interactive)
+  (let* ((line (thing-at-point 'line t))
+         (trimmed (and line (string-trim line))))
+    (when (and trimmed (member trimmed '("or" "and")))
+      (let ((new-mode (if (string= trimmed "or") "and" "or")))
+        (delete-region (line-beginning-position) (line-end-position))
+        (insert new-mode)))))
+
+(defun kasten-filters-save-and-kill ()
+  "Parse buffer contents and save back to `kasten-filters`, then kill buffer."
+  (interactive)
+  (let ((title-list '())
+        (category-list '())
+        mode
+        (state :title)
+	(mode-set nil)) ; :title, :category, :mode
+    (save-excursion
+      (goto-char (point-min))
+      (while (not (eobp))
+        (let ((line (string-trim (thing-at-point 'line t))))
+          (cond ((string-prefix-p "#" line)
+            (cond
+             ((string-match-p "# title" line) (setq state :title))
+             ((string-match-p "# category" line) (setq state :category))
+             ((string-match-p "# mode" line) (setq state :mode))))
+           ((= (length line) 0)) ; skip empty line
+	   ((string-prefix-p "%" line)) ; skip comments
+           (t
+            (pcase state
+              (:title (push line title-list))
+              (:category (push line category-list))
+              (:mode (unless mode-set
+                       (setq mode (intern line))
+                       (setq mode-set t))))))
+          (forward-line 1))))
+    (setq title-list (nreverse title-list))
+    (setq category-list (nreverse category-list))
+    (unless (member mode '(or and))
+      (user-error "Kasten: Mode must be 'or or 'and, got %s" mode))
+    (setq kasten-filters
+	  `(:title ,title-list :category ,category-list :mode ,mode))
+    (kasten-refresh nil nil)
+    (kill-buffer-and-window)))
+
 (defun kasten-refresh (&optional is-init is-auto)
   "Refresh note list.
-Reset point if IS-INIT is non-nil; display message with time lapsed and
+Reset point if IS-INIT is non-nil; display message with time lapsed and \
 according to IS-AUTO."
   (interactive)
   (let ((buffer (get-buffer-create "*Kasten*"))
@@ -236,7 +422,8 @@ according to IS-AUTO."
 	(let ((elapsed (- (float-time) start-time))
 	      (file-count (length files)))
           (if (eq is-auto t)
-	      (message "Kasten: automatically updated index of %d files in %.6f seconds"
+	      (message "Kasten: automatically updated index of %d files in \
+%.6f seconds"
 		       file-count elapsed)
 	    (message "Kasten: index of %d files updated in %.6f seconds"
 		     file-count elapsed)))))))
@@ -372,7 +559,8 @@ Also add a backlink from the new note to the current one."
 	(progn
           (find-file file)
 	  (message "Kasten: found file `%s'" file))
-      (message "Kasten: could not open file with ID `%s': not found" filename))))
+      (message "Kasten: could not open file with ID `%s': not found"
+	       filename))))
 
 (defun kasten--id-to-file (id)
   "Find full path of note file matching ID."
