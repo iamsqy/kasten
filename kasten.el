@@ -592,6 +592,8 @@ Also add a backlink from the new note to the current one."
 (defun kasten-open-file ()
   "Open the note file on the current line by matching filename."
   (interactive)
+  (unless (> (line-number-at-pos) 2)
+    (user-error "Kasten: not on a note, cannot open"))
   (let* ((line (thing-at-point 'line t))
          (id (and line (string-trim (car (last (split-string line))))))
          (file (kasten--id-to-file id)))
