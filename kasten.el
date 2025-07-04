@@ -198,12 +198,18 @@ See strftime.  Use `%E' for shortened title."
   "Face for filenames in Kasten."
   :group 'kasten)
 
+(defface kasten-live-search-edit-face
+  '((t :foreground "white" :background "dim gray" :box (:line-width 1)))
+  "Face for categories in Kasten."
+  :group 'kasten)
+
 (defvar kasten-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") #'kasten-open-file)
     (define-key map (kbd "/") #'kasten-search)
     (define-key map (kbd "g") #'kasten-refresh)
     (define-key map (kbd "?") #'kasten-filters-edit)
+    (define-key map (kbd "DEL") #'delete-backward-char)
     map)
   "Keymap for Kasten mode.")
 
@@ -217,6 +223,8 @@ See strftime.  Use `%E' for shortened title."
   "Major mode for browsing notes."
   (setq buffer-read-only t)
   (hl-line-mode 1)
+  (when kasten--is-live-search
+    (kasten-live-search))
   (when kasten-auto-refresh
     (kasten--enable-auto-refresh))
   (kasten-refresh t t))
@@ -377,19 +385,19 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
       (while (not (eobp))
         (let ((line (string-trim (thing-at-point 'line t))))
           (cond ((string-prefix-p "#" line)
-            (cond
-             ((string-match-p "# title" line) (setq state :title))
-             ((string-match-p "# category" line) (setq state :category))
-             ((string-match-p "# mode" line) (setq state :mode))))
-           ((= (length line) 0)) ; skip empty line
-	   ((string-prefix-p "%" line)) ; skip comments
-           (t
-            (pcase state
-              (:title (push line title-list))
-              (:category (push line category-list))
-              (:mode (unless mode-set
-                       (setq mode (intern line))
-                       (setq mode-set t))))))
+		 (cond
+		  ((string-match-p "# title" line) (setq state :title))
+		  ((string-match-p "# category" line) (setq state :category))
+		  ((string-match-p "# mode" line) (setq state :mode))))
+		((= (length line) 0)) ; skip empty line
+		((string-prefix-p "%" line)) ; skip comments
+		(t
+		 (pcase state
+		   (:title (push line title-list))
+		   (:category (push line category-list))
+		   (:mode (unless mode-set
+			    (setq mode (intern line))
+			    (setq mode-set t))))))
           (forward-line 1))))
     (setq title-list (nreverse title-list))
     (setq category-list (nreverse category-list))
@@ -399,6 +407,70 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
 	  `(:title ,title-list :category ,category-list :mode ,mode))
     (kasten-refresh nil nil)
     (kill-buffer-and-window)))
+
+(defvar kasten-search-term ""
+  "Quick search term.")
+
+(defvar kasten--is-live-search nil
+  "Non-nil if currently doing a live search.")
+
+(defun kasten-live-search ()
+  "Live search in *Kasten* buffer by title, category or ID."
+  (interactive)
+  (setq kasten--is-live-search t)
+  (kasten-refresh nil nil)
+  (forward-line 1)
+  (let ((inhibit-read-only t)
+	(original-map (current-local-map)))
+    (let ((start (point)))
+      (let ((map (make-keymap))
+	    (i 0))
+        (set-keymap-parent map (current-local-map))
+	(set-char-table-range (nth 1 map) (cons #x100 (max-char))
+                              'kasten--live-search-inc)
+	(setq i ?\s)
+	(while (< i 256)
+	  (define-key map (vector i) 'kasten--live-search-inc)
+	  (setq i (1+ i)))
+	(define-key map (kbd "C-g")
+		    (lambda ()
+		      (interactive)
+		      (message "Kasten: quit live search")
+		      (use-local-map original-map)
+		      (setq kasten--is-live-search nil)
+		      (setq kasten-search-term "")
+		      (kasten-refresh nil nil)
+		      ))
+        (use-local-map map)
+        (setq buffer-read-only nil)
+        (message "\
+Type anywhere to search titles, categories and IDs. C-g to quit.")))))
+
+(defun kasten--matches-search-term-p (title category filename)
+  "Return t if TITLE or CATEGORY or FILENAME pass search term."
+  (if (string= kasten-search-term "")
+      t
+    (progn
+     (let ((term (downcase kasten-search-term)))
+       (or (string-match-p (regexp-quote term) (downcase title))
+           (and
+	    category (string-match-p (regexp-quote term) (downcase category)))
+           (string-match-p (regexp-quote term) (downcase filename)))))))
+
+(defun kasten--live-search-inc ()
+  "Filter visible notes as user types."
+  (interactive)
+  (let ((char last-command-event))
+    (cond
+     ((or (eq char ?\d) (= char 127))
+      (when (> (length kasten-search-term) 0)
+        (setq kasten-search-term (substring kasten-search-term 0 -1))))
+     ((= char ?\S-\ )
+      (setq char ?\s))
+     (t
+      (setq kasten-search-term (concat kasten-search-term (char-to-string char)))))
+    (kasten-refresh nil nil)
+    ))
 
 (defun kasten-refresh (&optional is-init is-auto)
   "Refresh note list.
@@ -412,39 +484,85 @@ according to IS-AUTO."
 	    (saved-point (point))
 	    (files (kasten--get-note-files)))
 	(erase-buffer)
-	(insert (propertize kasten-buffer-title 'face 'kasten-buffer-title-face))
-	(when (kasten-filters-active-p)
+	(insert (propertize kasten-buffer-title
+			    'face 'kasten-buffer-title-face
+			    'read-only t))
+	(when (or
+	       (kasten-filters-active-p)
+	       kasten--is-live-search)
 	  (progn
-	    (insert (propertize " " 'face 'kasten-buffer-title-face))
-	    (insert (propertize "(f)" 'face 'kasten-buffer-title-face
-				'help-echo "f: filters activated"))))
-	(insert (propertize "\n" 'face 'kasten-buffer-title-face))
-	(insert "\n")
+	    (insert (propertize " ("
+				'face 'kasten-buffer-title-face
+				'read-only t))
+	    (when (kasten-filters-active-p)
+	      (insert (propertize "f"
+				  'face 'kasten-buffer-title-face
+				  'read-only t
+				  'help-echo "f: filters activated")))
+	    (when kasten--is-live-search
+	      (insert (propertize "s"
+				  'face 'kasten-buffer-title-face
+				  'read-only t
+				  'help-echo "s: performing a live search")))
+	    (insert (propertize ")"
+				'face 'kasten-buffer-title-face
+				'read-only t))))
+	(insert (propertize "\n"
+			    'face 'kasten-buffer-title-face
+			    'read-only t))
+	(if kasten--is-live-search
+	    (progn
+	      (delete-region (line-beginning-position) (line-end-position))
+	      (insert (propertize "Live search: "
+				  'face 'shadow
+				  'read-only t))
+	      (insert (propertize (if (> (length kasten-search-term)
+					 (- (window-width) 14))
+				      kasten-search-term
+				    (format (format "%%-%ds"
+						    (- (window-width) 14))
+					    kasten-search-term))
+				  'face 'kasten-live-search-edit-face
+				  'read-only t))
+	      (insert "\n"))
+	  (progn
+	    (delete-region (line-beginning-position) (line-end-position))
+	    (insert "\n")))
 	(dolist (file files)
 	  (let* ((title (kasten--parse-org-title file))
 		 (category (kasten--parse-category file))
 		 (filename (file-name-base file)))
-	    (when (kasten--matches-filter-p title category)
-	      (insert (propertize title 'face 'kasten-file-title-face))
+	    (when (and
+		   (kasten--matches-filter-p title category)
+		   (kasten--matches-search-term-p title category filename))
+	      (insert (propertize title
+				  'face 'kasten-file-title-face
+				  'read-only t))
 	      (unless (string= category "")
 		(insert (propertize kasten-title-category-split
-				    'face 'kasten-title-category-split-face))
-		(insert (propertize category 'face 'kasten-file-category-face))
-		)
-	      (insert (make-string ; align the line so that ID is flushed right
-		       (max 2 (-
-			       (window-width)
-			       (length title)
-			       (length filename)
-			       (if (string= category "") ; handle category
-				   0
-				 (+ (length category)
-				    (length kasten-title-category-split)))
-			       (if (display-graphic-p) ; one char less for TTY
-				   0 1)))
-		       ?\s))
-	      (insert (propertize filename 'face 'kasten-file-name-face))
-	      (insert "\n"))))
+				    'face 'kasten-title-category-split-face
+				    'read-only t))
+		(insert (propertize category
+				    'face 'kasten-file-category-face
+				    'read-only t)))
+	      (insert (propertize
+		       (make-string ; align the line so that ID is flushed right
+			(max 2 (-
+				(window-width)
+				(length title)
+				(length filename)
+				(if (string= category "") ; handle category
+				    0
+				  (+ (length category)
+				     (length kasten-title-category-split)))
+				(if (display-graphic-p) ; one char less for TTY
+				    0 1)))
+			?\s)
+		       'read-only t))
+	      (insert (propertize filename
+				  'face 'kasten-file-name-face
+				  'read-only t))
+	      (insert (propertize "\n" 'read-only t)))))
 	(if (eq is-init t)
 	    (progn
 	      (goto-char (point-min))
