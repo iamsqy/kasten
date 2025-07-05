@@ -622,6 +622,22 @@ according to IS-AUTO."
 	    (message "Kasten: index of %d files updated in %.6f seconds"
 		     file-count elapsed)))))))
 
+(defvar kasten--resize-timer nil
+  "Timer to debounce refresh after window resize.")
+
+(defun kasten--debounced-refresh (_frame)
+  "Debounce refresh by delaying it after window resize events."
+  (when kasten--resize-timer
+    (cancel-timer kasten--resize-timer))
+  (setq kasten--resize-timer
+        (run-with-idle-timer
+         1 nil ;; delay 1 second
+         (lambda ()
+           (when (derived-mode-p 'kasten-mode)
+             (kasten-refresh))))))
+             
+(add-hook 'window-size-change-functions #'kasten--debounced-refresh)
+
 (defvar kasten--watch-handle nil
   "Handle returned by `file-notify-add-watch`.")
 
