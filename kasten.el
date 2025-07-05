@@ -214,7 +214,7 @@ See strftime.  Use `%E' for shortened title."
 (defvar kasten-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") #'kasten-open-file)
-    (define-key map (kbd "/") #'kasten-search)
+    (define-key map (kbd "/") #'kasten-live-search)
     (define-key map (kbd "g") #'kasten-refresh)
     (define-key map (kbd "?") #'kasten-filters-edit)
     (define-key map (kbd "DEL") #'delete-backward-char)
