@@ -545,11 +545,13 @@ according to IS-AUTO."
 	      (insert "\n"))
 	  (progn
 	    (delete-region (line-beginning-position) (line-end-position))
-	    (insert-button "Live Search"
+	    (insert-button
+	     (substitute-command-keys "Live Search (\\[kasten-live-search])")
 			   'face 'kasten-button-face
 			   'action (lambda (_button) (kasten-live-search)))
 	    (insert " ")
-	    (insert-button "Filters..."
+	    (insert-button
+	     (substitute-command-keys "Filters... (\\[kasten-filters-edit])")
 			   'face 'kasten-button-face
 			   'action (lambda (_button) (kasten-filters-edit)))
 	    (insert " ")
@@ -565,11 +567,13 @@ according to IS-AUTO."
 			   'face 'kasten-button-face
 			   'action (lambda (_button) (kasten-create-new-note)))
 	    (insert " ")
-	    (insert-button "Refresh"
+	    (insert-button
+	     (substitute-command-keys "Refresh (\\[kasten-refresh])")
 			   'face 'kasten-button-face
 			   'action (lambda (_button) (kasten-refresh nil nil)))
 	    (insert " ")
-	    (insert-button "Quit Kasten"
+	    (insert-button
+	     (substitute-command-keys "Quit Kasten (\\[quit-window])")
 			   'face 'kasten-button-face
 			   'action (lambda (_button) (quit-window)))
 	    (insert "\n")))
