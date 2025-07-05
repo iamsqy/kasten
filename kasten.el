@@ -417,6 +417,8 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
 (defun kasten-live-search ()
   "Live search in *Kasten* buffer by title, category or ID."
   (interactive)
+  (when kasten--is-live-search
+    (user-error "Kasten: already performing a live search"))
   (setq kasten--is-live-search t)
   (kasten-refresh nil nil)
   (forward-line 1)
@@ -439,8 +441,15 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
 		      (use-local-map original-map)
 		      (setq kasten--is-live-search nil)
 		      (setq kasten-search-term "")
-		      (kasten-refresh nil nil)
-		      ))
+		      (kasten-refresh nil nil)))
+	(define-key map (kbd "ESC ESC ESC")
+		    (lambda ()
+		      (interactive)
+		      (message "Kasten: quit live search")
+		      (use-local-map original-map)
+		      (setq kasten--is-live-search nil)
+		      (setq kasten-search-term "")
+		      (kasten-refresh nil nil)))
         (use-local-map map)
         (setq buffer-read-only nil)
         (message "\
