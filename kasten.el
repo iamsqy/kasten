@@ -477,7 +477,8 @@ Type anywhere to search titles, categories and IDs. C-g to quit.")))))
      ((= char ?\S-\ )
       (setq char ?\s))
      (t
-      (setq kasten-search-term (concat kasten-search-term (char-to-string char)))))
+      (setq kasten-search-term
+	    (concat kasten-search-term (char-to-string char)))))
     (kasten-refresh nil nil)
     ))
 
@@ -767,31 +768,39 @@ Also add a backlink from the new note to the current one."
         (kasten--follow-id-link id)
       (debug))))
 
-(defcustom kasten-follow-id-keymap
-  (let ((map (make-sparse-keymap)))
-    (define-key map [mouse-1] #'kasten-follow-id-link-at-point)
-    (define-key map (kbd "s-RET") #'kasten-follow-id-link-at-point)
-    map)
-  "Keymap used on Kasten ID links."
-  :type 'keymap
-  :group 'kasten)
 
-(defun kasten--fontify-clickable-id ()
-  "Make Kasten ID clickable in buffers."
-  (font-lock-add-keywords
-   nil
-   `((,kasten-id-regexp
-      (0 (progn
-           (add-text-properties
-	    (match-beginning 0) (match-end 0)
-	    `(mouse-face highlight
-                         help-echo "\\{kasten-follow-id-keymap}"
-                         face org-link
-                         keymap ,kasten-follow-id-keymap)))
-         nil))))
-  (font-lock-flush))
+(defun kasten--button-action (button)
+  "Action to perform when BUTTON is clicked."
+  (let ((id (button-get button 'kasten-id)))
+    (kasten--follow-id-link id)))
 
-(add-hook 'org-mode-hook #'kasten--fontify-clickable-id)
+(defun kasten--add-id-buttons ()
+  "Add Kasten ID buttons in the current buffer."
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward kasten-id-regexp nil t)
+      (let* ((start (match-beginning 0))
+             (end (match-end 0))
+             (id (string-remove-prefix kasten-id-symbol (match-string 0))))
+        (unless (get-text-property start 'button)
+          (make-button
+           start end
+           'action #'kasten--button-action
+           'kasten-id id
+           'face 'org-link
+           'follow-link t))))))
+
+(defun kasten--setup-id-buttons ()
+  "Setup Kasten ID buttons when opening Org-mode."
+  (add-hook 'after-change-functions #'kasten--after-change-update-buttons nil t)
+  (kasten--add-id-buttons))
+
+(defun kasten--after-change-update-buttons (_beg _end _len)
+  "Refresh Kasten ID buttons on text change."
+  (remove-overlays)
+  (kasten--add-id-buttons))
+
+(add-hook 'org-mode-hook #'kasten--setup-id-buttons)
 
 (defun kasten-insert-id ()
   "Prompt to insert an ID referencing a note."
