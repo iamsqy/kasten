@@ -35,6 +35,7 @@
 
 (require 'consult)
 (require 'filenotify)
+(require 'button)
 
 (defgroup kasten nil
   "Tools for Zettelkasten note taking."
@@ -200,6 +201,13 @@ See strftime.  Use `%E' for shortened title."
 
 (defface kasten-live-search-edit-face
   '((t :foreground "white" :background "dim gray" :box (:line-width 1)))
+  "Face for categories in Kasten."
+  :group 'kasten)
+
+(defface kasten-button-face
+  '((t :foreground "black" :background "gray"
+       :box (:line-width 3 :style released-button)
+       :family "variable-pitch" :height 0.67))
   "Face for categories in Kasten."
   :group 'kasten)
 
@@ -537,6 +545,33 @@ according to IS-AUTO."
 	      (insert "\n"))
 	  (progn
 	    (delete-region (line-beginning-position) (line-end-position))
+	    (insert-button "Live Search"
+			   'face 'kasten-button-face
+			   'action (lambda (_button) (kasten-live-search)))
+	    (insert " ")
+	    (insert-button "Filters..."
+			   'face 'kasten-button-face
+			   'action (lambda (_button) (kasten-filters-edit)))
+	    (insert " ")
+	    (insert-button "Full Search..."
+			   'face 'kasten-button-face
+			   'action (lambda (_button) (kasten-search)))
+	    (insert " ")
+	    (insert-button "Search Tag..."
+			   'face 'kasten-button-face
+			   'action (lambda (_button) (kasten-search-tag)))
+	    (insert " ")
+	    (insert-button "New Note..."
+			   'face 'kasten-button-face
+			   'action (lambda (_button) (kasten-create-new-note)))
+	    (insert " ")
+	    (insert-button "Refresh"
+			   'face 'kasten-button-face
+			   'action (lambda (_button) (kasten-refresh nil nil)))
+	    (insert " ")
+	    (insert-button "Quit Kasten"
+			   'face 'kasten-button-face
+			   'action (lambda (_button) (quit-window)))
 	    (insert "\n")))
 	(dolist (file files)
 	  (let* ((title (kasten--parse-org-title file))
