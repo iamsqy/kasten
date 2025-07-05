@@ -10,9 +10,7 @@
 ;; Package-Requires: ((emacs "27.1") (consult "0.33"))
 ;; Keywords: notes, Zettelkasten
 
-
 ;; This file is not part of GNU Emacs.
-
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -33,6 +31,7 @@
 
 ;;; Code:
 
+
 (require 'consult)
 (require 'filenotify)
 (require 'button)
@@ -317,7 +316,7 @@ not derived from text-mode. Answer `y' if you want to treat `%s' as note."
       (while (re-search-forward "^[%#].*$" nil t)
         (add-text-properties (match-beginning 0) (match-end 0)
                              '(read-only t front-sticky t rear-nonsticky t)))))
-  (setq-local header-line-format (substitute-command-keys "[Kasten] edit \
+  (setq-local header-line-format (substitute-command-keys "[Kasten] Edit \
 filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
  to discard.")))
 
@@ -332,9 +331,9 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
         (category-list (plist-get kasten-filters :category))
         (mode (plist-get kasten-filters :mode)))
     (insert "\
-% To customise Kasten filters, edit this buffer.  When done, `C-c C-c' to save\n")
+% To customise Kasten filters, edit this buffer.  When done, `C-c C-c' to\n")
     (insert "\
-% or `C-c C-k' to discard.  Lines starting with `\%' are comments.\n")
+% apply, or `C-c C-k' to discard.  Lines starting with `\%' are comments.\n")
     (insert "\
 % Title filters: one per line, case insensitive, Emacs regexp supported.\n")
     (insert "# title\n")
@@ -410,7 +409,7 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
     (setq title-list (nreverse title-list))
     (setq category-list (nreverse category-list))
     (unless (member mode '(or and))
-      (user-error "Kasten: Mode must be 'or or 'and, got %s" mode))
+      (user-error "Kasten: `Mode' must be `'or' or `'and', got `%s'" mode))
     (setq kasten-filters
 	  `(:title ,title-list :category ,category-list :mode ,mode))
     (kasten-refresh nil nil)
@@ -423,7 +422,7 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
   "Non-nil if currently doing a live search.")
 
 (defun kasten-live-search ()
-  "Live search in *Kasten* buffer by title, category or ID."
+  "Live search notes by title, category or ID."
   (interactive)
   (when kasten--is-live-search
     (user-error "Kasten: already performing a live search"))
@@ -461,7 +460,7 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
         (use-local-map map)
         (setq buffer-read-only nil)
         (message "\
-Type anywhere to search titles, categories and IDs. C-g to quit.")))))
+Type anywhere to search titles, categories and IDs.  C-g to quit.")))))
 
 (defun kasten--matches-search-term-p (title category filename)
   "Return t if TITLE or CATEGORY or FILENAME pass search term."
@@ -487,8 +486,7 @@ Type anywhere to search titles, categories and IDs. C-g to quit.")))))
      (t
       (setq kasten-search-term
 	    (concat kasten-search-term (char-to-string char)))))
-    (kasten-refresh nil nil)
-    ))
+    (kasten-refresh nil nil)))
 
 (defun kasten-refresh (&optional is-init is-auto)
   "Refresh note list.
@@ -635,7 +633,7 @@ according to IS-AUTO."
     (cancel-timer kasten--resize-timer))
   (setq kasten--resize-timer
         (run-with-idle-timer
-         1 nil ;; delay 1 second
+         1 nil ; delay 1 second
          (lambda ()
            (when (derived-mode-p 'kasten-mode)
              (kasten-refresh))))))
