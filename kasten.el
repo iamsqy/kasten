@@ -799,6 +799,7 @@ Also add a backlink from the new note to the current one."
     (if file
 	(progn
           (find-file file)
+	  (kasten-minor-mode 1)
 	  (message "Kasten: found file `%s'" file))
       (message "Kasten: could not open file with ID `%s': not found"
 	       filename))))
