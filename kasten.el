@@ -134,7 +134,7 @@ empty to omit empty category for uncategorised notes."
   :type 'string
   :group 'kasten)
 
-(defcustom kasten-id-format "%y%m%d-%H%M-%E"
+(defcustom kasten-id-format "%y%m%d-%H%M"
   "Time format for generating ID, e.g. `%y%m%d-%H%M' for `250229-2333'.  \
 See strftime.  Use `%E' for shortened title."
   :type 'string
