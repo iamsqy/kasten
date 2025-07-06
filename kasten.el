@@ -869,6 +869,63 @@ Also add a backlink from the new note to the current one."
     (when (and id (not (string-empty-p id)))
       (insert (concat kasten-id-symbol id)))))
 
+(defun kasten-change-id (old-id)
+  "Change occurrences of OLD-ID to a new ID in all note files.
+For each file that contains OLD-ID, ask user whether to replace it."
+  (interactive
+   (let* ((files (kasten--get-note-files))
+          (ids (mapcar #'file-name-base files)))
+     (list (completing-read
+	    (concat "[Kasten] Change which ID: " kasten-id-symbol)
+	    ids nil nil))))
+  (let* ((files (kasten--get-note-files))
+        (ids (mapcar #'file-name-base files))
+	(new-id (read-string
+		 (format (concat "[Kasten] Change `" kasten-id-symbol
+				 "%s' to: " kasten-id-symbol)
+			 old-id)))
+	(start-time (float-time))
+	(modified-file-cnt 0)
+	(modification-cnt 0))
+    (when (member new-id ids)
+      (user-error "Kasten: new ID already exists"))
+    (with-temp-message
+	(format "Kasten: checking for references to `%s', may take some time..."
+		old-id)
+      (dolist (file (kasten--get-note-files))
+	(with-temp-buffer
+          (insert-file-contents file)
+          (when (search-forward old-id nil t)
+            (goto-char (point-min))
+            (when (y-or-n-p (format "Kasten: change `%s' in `%s' to `%s'?"
+                                    old-id (file-name-nondirectory file) new-id))
+	      (progn
+		(setq modified-file-cnt (+ modified-file-cnt 1))
+		(while (search-forward old-id nil t)
+		  (progn
+		    (replace-match new-id)
+		    (setq modification-cnt (+ modification-cnt 1)))
+		  (write-region (point-min) (point-max) file))))))))
+    (let* ((old-file (kasten--id-to-file old-id))
+	   (old-file-relative-name (file-relative-name old-file))
+	   (old-file-path (file-name-directory old-file))
+	   (new-file-name (concat new-id
+				  "."
+				  (file-name-extension
+				   (kasten--id-to-file old-id))))
+	   (elapsed (- (float-time) start-time)))
+      (rename-file old-file (concat old-file-path new-file-name))
+      (message
+       (format "Kasten: `%s%s' changed to `%s%s', with %d substitutions \
+across %d files; moved file `%s' to `%s'; took %.6f seconds \
+(including waiting time)"
+	       kasten-id-symbol old-id
+	       kasten-id-symbol new-id
+	       modification-cnt modified-file-cnt
+	       old-file-relative-name
+	       (file-relative-name (kasten--id-to-file new-id))
+	       elapsed)))))
+
 (defun kasten-search ()
   "Search using `kasten-search-function`."
   (interactive)
