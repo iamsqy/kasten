@@ -7,7 +7,7 @@
 @c %**end of header
 
 @copying
-This manual is for Kasten (version 0.2, last updated 4 March 2014), which is
+This manual is for Kasten (version 0.2, last updated 6 June 2025), which is
 an Emacs package for managing Zettelkasten-style notes.
 
 Copyright @copyright{} 2025 Qiyang Sun
@@ -31,7 +31,7 @@ the section entitled ``GNU Free Documentation License''.
 @finalout
 @titlepage
 @title Kasten Manual
-@subtitle for version 0.2, last updated 4 March 2014
+@subtitle for version 0.2, last updated 6 June 2025
 @author Qiyang Sun
 @page
 @vskip 0pt plus 1filll
@@ -227,6 +227,8 @@ following to the Emacs configuration file (such as @samp{init.el}):
 @node Usage
 @chapter Usage
 
+@strong{TODO: outdated}
+
 Launch Kasten with @code{M-x} @code{kasten} @code{<RET>}
 
 Inside the @samp{*Kasten*} buffer:
@@ -243,6 +245,8 @@ One may want to add more key bindings to @samp{kasten-mode-map}.
 
 @node Customisation
 @chapter Customisation
+
+@strong{TODO: outdated}
 
 Kasten is customisable using @samp{customize}, via @code{M-x} @code{customize-group} @code{<RET>}
 @code{kasten} @code{<RET>} or GUI@.

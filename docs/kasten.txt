@@ -139,7 +139,9 @@ the following to the Emacs configuration file (such as ‘init.el’):
 6 Usage
 *******
 
-Launch Kasten with ‘M-x’ ‘kasten’ ‘<RET>’
+*TODO: outdated*
+
+   Launch Kasten with ‘M-x’ ‘kasten’ ‘<RET>’
 
    Inside the ‘*Kasten*’ buffer:
    • Hit ‘<RET>’ to open the selected note.
@@ -151,7 +153,9 @@ Launch Kasten with ‘M-x’ ‘kasten’ ‘<RET>’
 7 Customisation
 ***************
 
-Kasten is customisable using ‘customize’, via ‘M-x’ ‘customize-group’
+*TODO: outdated*
+
+   Kasten is customisable using ‘customize’, via ‘M-x’ ‘customize-group’
 ‘<RET>’ ‘kasten’ ‘<RET>’ or GUI.
 
    Alternatively, one can customise Kasten in the Emacs configuration

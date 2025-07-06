@@ -11,7 +11,7 @@
 <!-- c %**end of header -->
 
 <copying endspaces=" ">
-<para>This manual is for Kasten (version 0.2, last updated 4 March 2014), which is
+<para>This manual is for Kasten (version 0.2, last updated 6 June 2025), which is
 an Emacs package for managing Zettelkasten-style notes.
 </para>
 <para>Copyright &copyright; 2025 Qiyang Sun
@@ -35,7 +35,7 @@ the section entitled &textldquo;GNU Free Documentation License&textrdquo;.
 <finalout></finalout>
 <titlepage endspaces=" ">
 <title spaces=" ">Kasten Manual</title>
-<subtitle spaces=" ">for version 0.2, last updated 4 March 2014</subtitle>
+<subtitle spaces=" ">for version 0.2, last updated 6 June 2025</subtitle>
 <author spaces=" ">Qiyang Sun</author>
 <page></page>
 <vskip> 0pt plus 1filll</vskip>
@@ -240,6 +240,8 @@ following to the Emacs configuration file (such as <samp>init.el</samp>):
 <node name="Usage" spaces=" "><nodename>Usage</nodename><nodenext automatic="on">Customisation</nodenext><nodeprev automatic="on">Installation</nodeprev><nodeup automatic="on">Top</nodeup></node>
 <chapter spaces=" "><sectiontitle>Usage</sectiontitle>
 
+<para><strong>TODO: outdated</strong>
+</para>
 <para>Launch Kasten with <code>M-x</code> <code>kasten</code> <code>&lt;RET&gt;</code>
 </para>
 <para>Inside the <samp>*Kasten*</samp> buffer:
@@ -258,6 +260,8 @@ following to the Emacs configuration file (such as <samp>init.el</samp>):
 <node name="Customisation" spaces=" "><nodename>Customisation</nodename><nodenext automatic="on">Benchmark</nodenext><nodeprev automatic="on">Usage</nodeprev><nodeup automatic="on">Top</nodeup></node>
 <chapter spaces=" "><sectiontitle>Customisation</sectiontitle>
 
+<para><strong>TODO: outdated</strong>
+</para>
 <para>Kasten is customisable using <samp>customize</samp>, via <code>M-x</code> <code>customize-group</code> <code>&lt;RET&gt;</code>
 <code>kasten</code> <code>&lt;RET&gt;</code> or GUI&eosperiod;
 </para>

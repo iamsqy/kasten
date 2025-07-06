@@ -5,15 +5,15 @@
 ]>
 <book id="kasten.dbk" lang="en">
 <title>Kasten Manual</title>
-<subtitle>for version 0.2, last updated 4 March 2014</subtitle>
+<subtitle>for version 0.2, last updated 6 June 2025</subtitle>
 <titleabbrev>Kasten Manual</titleabbrev>
 <bookinfo><title>Kasten Manual</title>
-<subtitle>for version 0.2, last updated 4 March 2014</subtitle>
+<subtitle>for version 0.2, last updated 6 June 2025</subtitle>
 <titleabbrev>Kasten Manual</titleabbrev>
 <authorgroup>
 <collab><collabname>Qiyang Sun</collabname></collab>
 </authorgroup>
-<legalnotice><para>This manual is for Kasten (version 0.2, last updated 4 March 2014), which is
+<legalnotice><para>This manual is for Kasten (version 0.2, last updated 6 June 2025), which is
 an Emacs package for managing Zettelkasten-style notes.
 </para>
 <para>Copyright &#169; 2025 Qiyang Sun
@@ -152,6 +152,8 @@ following to the Emacs configuration file (such as &#8216;<literal>init.el</lite
 <chapter label="6" id="Usage">
 <title>Usage</title>
 
+<para><emphasis role="bold">TODO: outdated</emphasis>
+</para>
 <para>Launch Kasten with <literal>M-x</literal> <literal>kasten</literal> <literal>&lt;RET&gt;</literal>
 </para>
 <para>Inside the &#8216;<literal>*Kasten*</literal>&#8217; buffer:
@@ -165,6 +167,8 @@ following to the Emacs configuration file (such as &#8216;<literal>init.el</lite
 <chapter label="7" id="Customisation">
 <title>Customisation</title>
 
+<para><emphasis role="bold">TODO: outdated</emphasis>
+</para>
 <para>Kasten is customisable using &#8216;<literal>customize</literal>&#8217;, via <literal>M-x</literal> <literal>customize-group</literal> <literal>&lt;RET&gt;</literal>
 <literal>kasten</literal> <literal>&lt;RET&gt;</literal> or GUI.
 </para>

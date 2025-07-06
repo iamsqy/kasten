@@ -6,7 +6,7 @@
 #+LANGUAGE: en
 
 #+MACRO: version 0.2
-#+MACRO: updated last updated 4 March 2014
+#+MACRO: updated last updated 6 June 2025
 
 #+TEXINFO_FILENAME: kasten.info
 
@@ -139,6 +139,8 @@ following to the Emacs configuration file (such as =init.el=):
 
 * Usage
 
+*TODO: outdated*
+
 Launch Kasten with ~M-x~ ~kasten~ ~<RET>~
 
 Inside the =*Kasten*= buffer:
@@ -149,6 +151,8 @@ Inside the =*Kasten*= buffer:
 One may want to add more key bindings to =kasten-mode-map=.
 
 * Customisation
+
+*TODO: outdated*
 
 Kasten is customisable using =customize=, via ~M-x~ ~customize-group~ ~<RET>~
 ~kasten~ ~<RET>~ or GUI.

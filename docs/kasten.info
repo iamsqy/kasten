@@ -1,7 +1,7 @@
 This is kasten.info, produced by texi2any version 7.2 from kasten.texi.
 
-This manual is for Kasten (version 0.2, last updated 4 March 2014),
-which is an Emacs package for managing Zettelkasten-style notes.
+This manual is for Kasten (version 0.2, last updated 6 June 2025), which
+is an Emacs package for managing Zettelkasten-style notes.
 
    Copyright © 2025 Qiyang Sun
 
@@ -214,7 +214,9 @@ File: kasten.info,  Node: Usage,  Next: Customisation,  Prev: Installation,  Up:
 6 Usage
 *******
 
-Launch Kasten with ‘M-x’ ‘kasten’ ‘<RET>’
+*TODO: outdated*
+
+   Launch Kasten with ‘M-x’ ‘kasten’ ‘<RET>’
 
    Inside the ‘*Kasten*’ buffer:
    • Hit ‘<RET>’ to open the selected note.
@@ -229,7 +231,9 @@ File: kasten.info,  Node: Customisation,  Next: Benchmark,  Prev: Usage,  Up: To
 7 Customisation
 ***************
 
-Kasten is customisable using ‘customize’, via ‘M-x’ ‘customize-group’
+*TODO: outdated*
+
+   Kasten is customisable using ‘customize’, via ‘M-x’ ‘customize-group’
 ‘<RET>’ ‘kasten’ ‘<RET>’ or GUI.
 
    Alternatively, one can customise Kasten in the Emacs configuration
@@ -1473,23 +1477,23 @@ Appendix B GNU General Public License
 
 
 Tag Table:
-Node: Top752
-Node: Synopsis1258
-Node: Copying1657
-Node: Copying Kasten (Software)1841
-Node: Copying Kasten Manual (Documentation)2839
-Node: Concepts3635
-Node: Features3755
-Node: Installation4511
-Node: MELPA (not yet published) and use-package4717
-Node: Tarball5236
-Node: Manual Installation6123
-Node: Usage6433
-Node: Customisation6831
-Node: Benchmark8882
-Node: Contributing9700
-Node: GNU Free Documentation License10716
-Node: GNU General Public License35748
+Node: Top751
+Node: Synopsis1257
+Node: Copying1656
+Node: Copying Kasten (Software)1840
+Node: Copying Kasten Manual (Documentation)2838
+Node: Concepts3634
+Node: Features3754
+Node: Installation4510
+Node: MELPA (not yet published) and use-package4716
+Node: Tarball5235
+Node: Manual Installation6122
+Node: Usage6432
+Node: Customisation6851
+Node: Benchmark8923
+Node: Contributing9741
+Node: GNU Free Documentation License10757
+Node: GNU General Public License35789
 
 End Tag Table
 
