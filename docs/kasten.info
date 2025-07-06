@@ -106,7 +106,8 @@ File: kasten.info,  Node: Copying Kasten Manual (Documentation),  Prev: Copying 
 2.2 Copying Kasten Manual (Documentation)
 =========================================
 
-Kasten is licensed under the GNU Free Documentation License Version 1.3.
+Kasten Manual is licensed under the GNU Free Documentation License
+Version 1.3.
 
    See the file ‘doc/COPYING’ or the appendix *note GNU Free
 Documentation License:: for details.
@@ -1492,18 +1493,18 @@ Node: Synopsis1257
 Node: Copying1656
 Node: Copying Kasten (Software)1840
 Node: Copying Kasten Manual (Documentation)2838
-Node: Concepts3634
-Node: Features3754
-Node: Installation4973
-Node: MELPA (not yet published) and use-package5179
-Node: Tarball5698
-Node: Manual Installation6585
-Node: Usage6895
-Node: Customisation7314
-Node: Benchmark9386
-Node: Contributing10204
-Node: GNU Free Documentation License11220
-Node: GNU General Public License36252
+Node: Concepts3641
+Node: Features3761
+Node: Installation4980
+Node: MELPA (not yet published) and use-package5186
+Node: Tarball5705
+Node: Manual Installation6592
+Node: Usage6902
+Node: Customisation7321
+Node: Benchmark9393
+Node: Contributing10211
+Node: GNU Free Documentation License11227
+Node: GNU General Public License36259
 
 End Tag Table
 
