@@ -52,19 +52,27 @@ Next: <a href="Installation.html" accesskey="n" rel="next">Installation</a>, Pre
 
 <p>This package has the following main features:
 </p><ul class="itemize mark-bullet">
-<li>Browse notes with their titles and filenames displayed clearly.
+<li>Browse notes with titles, categories and IDs displayed.
 <ul class="itemize mark-bullet">
-<li>The index can be configured to update automatically.
+<li>Titles are indexed by looking for a &lsquo;<samp class="samp">#+title:</samp>&rsquo; pattern (customisable).
+</li><li>Categories are indexed by looking for a &lsquo;<samp class="samp">#+category:</samp>&rsquo; pattern
+(customisable).
+</li><li>The index can be configured to update automatically.
 </li></ul>
-</li><li>Note searching is significantly faster than deft.
+</li><li>Deft-like live search available.
+</li><li>Title and category filters for advanced search.
+</li><li>Note searching significantly faster than deft.
 <ul class="itemize mark-bullet">
 <li>Heavy content search &lsquo;<samp class="samp">consult-ripgrep</samp>&rsquo; (needs package <a class="uref" href="https://melpa.org/#/consult">consult</a>,
 customisable).
-</li><li>Limited use of &lsquo;<samp class="samp">string-match</samp>&rsquo; (&lsquo;<samp class="samp">C-h</samp>&rsquo; &lsquo;<samp class="samp">f</samp>&rsquo; &lsquo;<samp class="samp">string-match</samp>&rsquo; &lsquo;<samp class="samp">&lt;RET&gt;</samp>&rsquo;).
+</li><li>Limited use of &lsquo;<samp class="samp">string-match</samp>&rsquo; (<code class="code">C-h</code> <code class="code">f</code> <code class="code">string-match</code> <code class="code">&lt;RET&gt;</code>).
 </li></ul>
+</li><li>ID format fully customisable (with the ability to include sanitised title).
 </li><li>Followable note IDs for easy navigation.
-</li><li>Insert tags and note IDs with completion support.
+</li><li>ID changable with auto-update references.
+</li><li>Insert tags and note IDs with auto-completion support.
 </li><li>Backlink searching to find references between notes.
+</li><li>Customisable user interface.
 </li></ul>
 
 </div>

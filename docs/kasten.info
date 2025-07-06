@@ -135,16 +135,26 @@ File: kasten.info,  Node: Features,  Next: Installation,  Prev: Concepts,  Up: T
 **********
 
 This package has the following main features:
-   • Browse notes with their titles and filenames displayed clearly.
+   • Browse notes with titles, categories and IDs displayed.
+        • Titles are indexed by looking for a ‘#+title:’ pattern
+          (customisable).
+        • Categories are indexed by looking for a ‘#+category:’ pattern
+          (customisable).
         • The index can be configured to update automatically.
-   • Note searching is significantly faster than deft.
+   • Deft-like live search available.
+   • Title and category filters for advanced search.
+   • Note searching significantly faster than deft.
         • Heavy content search ‘consult-ripgrep’ (needs package consult
           (https://melpa.org/#/consult), customisable).
         • Limited use of ‘string-match’ (‘C-h’ ‘f’ ‘string-match’
           ‘<RET>’).
+   • ID format fully customisable (with the ability to include sanitised
+     title).
    • Followable note IDs for easy navigation.
-   • Insert tags and note IDs with completion support.
+   • ID changable with auto-update references.
+   • Insert tags and note IDs with auto-completion support.
    • Backlink searching to find references between notes.
+   • Customisable user interface.
 
 
 File: kasten.info,  Node: Installation,  Next: Usage,  Prev: Features,  Up: Top
@@ -1484,16 +1494,16 @@ Node: Copying Kasten (Software)1840
 Node: Copying Kasten Manual (Documentation)2838
 Node: Concepts3634
 Node: Features3754
-Node: Installation4510
-Node: MELPA (not yet published) and use-package4716
-Node: Tarball5235
-Node: Manual Installation6122
-Node: Usage6432
-Node: Customisation6851
-Node: Benchmark8923
-Node: Contributing9741
-Node: GNU Free Documentation License10757
-Node: GNU General Public License35789
+Node: Installation4973
+Node: MELPA (not yet published) and use-package5179
+Node: Tarball5698
+Node: Manual Installation6585
+Node: Usage6895
+Node: Customisation7314
+Node: Benchmark9386
+Node: Contributing10204
+Node: GNU Free Documentation License11220
+Node: GNU General Public License36252
 
 End Tag Table
 

@@ -164,19 +164,27 @@ To be written.
 
 This package has the following main features:
 \begin{itemize}
-\item Browse notes with their titles and filenames displayed clearly.
+\item Browse notes with titles, categories and IDs displayed.
 \begin{itemize}
+\item Titles are indexed by looking for a `\texttt{\#+title:}' pattern (customisable).
+\item Categories are indexed by looking for a `\texttt{\#+category:}' pattern
+(customisable).
 \item The index can be configured to update automatically.
 \end{itemize}
-\item Note searching is significantly faster than deft.
+\item Deft-like live search available.
+\item Title and category filters for advanced search.
+\item Note searching significantly faster than deft.
 \begin{itemize}
 \item Heavy content search `\texttt{consult-ripgrep}' (needs package \href{https://melpa.org/\#/consult}{consult (\nolinkurl{https://melpa.org/\#/consult})},
 customisable).
-\item Limited use of `\texttt{string-match}' (`\texttt{C-h}' `\texttt{f}' `\texttt{string-match}' `\texttt{<RET>}').
+\item Limited use of `\texttt{string-match}' (\texttt{C-h} \texttt{f} \texttt{string-match} \texttt{<RET>}).
 \end{itemize}
+\item ID format fully customisable (with the ability to include sanitised title).
 \item Followable note IDs for easy navigation.
-\item Insert tags and note IDs with completion support.
+\item ID changable with auto-update references.
+\item Insert tags and note IDs with auto-completion support.
 \item Backlink searching to find references between notes.
+\item Customisable user interface.
 \end{itemize}
 
 \chapter{{Installation}}
@@ -250,9 +258,9 @@ Launch Kasten with \texttt{M-x} \texttt{kasten} \texttt{<RET>}
 
 Inside the `\texttt{*Kasten*}' buffer:
 \begin{itemize}
-\item Hit \texttt{<RET>} to open the selected note.
-\item Hit \texttt{/} to search notes.
-\item Hit \texttt{g} to refresh the notes list.
+\item Hit `\texttt{<RET>}' to open the selected note.
+\item Hit `\texttt{/}' to search notes.
+\item Hit `\texttt{g}' to refresh the notes list.
 \end{itemize}
 
 One may want to add more key bindings to `\texttt{kasten-mode-map}'.

@@ -80,15 +80,23 @@ To be written.
 * Features
 
 This package has the following main features:
-- Browse notes with their titles and filenames displayed clearly.
+- Browse notes with titles, categories and IDs displayed.
+  - Titles are indexed by looking for a =#+title:= pattern (customisable).
+  - Categories are indexed by looking for a =#+category:= pattern
+    (customisable).
   - The index can be configured to update automatically.
-- Note searching is significantly faster than deft.
+- Deft-like live search available.
+- Title and category filters for advanced search.
+- Note searching significantly faster than deft.
   - Heavy content search =consult-ripgrep= (needs package [[https://melpa.org/#/consult][consult]],
     customisable).
-  - Limited use of =string-match= (=C-h= =f= =string-match= =<RET>=).
+  - Limited use of =string-match= (~C-h~ ~f~ ~string-match~ ~<RET>~).
+- ID format fully customisable (with the ability to include sanitised title).
 - Followable note IDs for easy navigation.
-- Insert tags and note IDs with completion support.
+- ID changable with auto-update references.
+- Insert tags and note IDs with auto-completion support.
 - Backlink searching to find references between notes.
+- Customisable user interface.
 
 * Installation
 
@@ -144,9 +152,9 @@ following to the Emacs configuration file (such as =init.el=):
 Launch Kasten with ~M-x~ ~kasten~ ~<RET>~
 
 Inside the =*Kasten*= buffer:
-- Hit ~<RET>~ to open the selected note.
-- Hit ~/~ to search notes.
-- Hit ~g~ to refresh the notes list.
+- Hit =<RET>= to open the selected note.
+- Hit =/= to search notes.
+- Hit =g= to refresh the notes list.
 
 One may want to add more key bindings to =kasten-mode-map=.
 

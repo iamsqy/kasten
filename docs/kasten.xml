@@ -147,26 +147,41 @@ included in the section entitled &textldquo;GNU Free Documentation License&textr
 <para>This package has the following main features:
 </para><itemize commandarg="bullet" automaticcommandarg="on" endspaces=" "><itemprepend><formattingcommand command="bullet" automatic="on"/></itemprepend>
 <listitem><prepend>&bullet;</prepend>
-<para>Browse notes with their titles and filenames displayed clearly.
+<para>Browse notes with titles, categories and IDs displayed.
 </para><itemize commandarg="bullet" automaticcommandarg="on" endspaces=" "><itemprepend><formattingcommand command="bullet" automatic="on"/></itemprepend>
 <listitem><prepend>&bullet;</prepend>
+<para>Titles are indexed by looking for a <samp>#+title:</samp> pattern (customisable).
+</para></listitem><listitem><prepend>&bullet;</prepend>
+<para>Categories are indexed by looking for a <samp>#+category:</samp> pattern
+(customisable).
+</para></listitem><listitem><prepend>&bullet;</prepend>
 <para>The index can be configured to update automatically.
 </para></listitem></itemize>
 </listitem><listitem><prepend>&bullet;</prepend>
-<para>Note searching is significantly faster than deft.
+<para>Deft-like live search available.
+</para></listitem><listitem><prepend>&bullet;</prepend>
+<para>Title and category filters for advanced search.
+</para></listitem><listitem><prepend>&bullet;</prepend>
+<para>Note searching significantly faster than deft.
 </para><itemize commandarg="bullet" automaticcommandarg="on" endspaces=" "><itemprepend><formattingcommand command="bullet" automatic="on"/></itemprepend>
 <listitem><prepend>&bullet;</prepend>
 <para>Heavy content search <samp>consult-ripgrep</samp> (needs package <uref><urefurl>https://melpa.org/#/consult</urefurl><urefdesc spaces=" ">consult</urefdesc></uref>,
 customisable).
 </para></listitem><listitem><prepend>&bullet;</prepend>
-<para>Limited use of <samp>string-match</samp> (<samp>C-h</samp> <samp>f</samp> <samp>string-match</samp> <samp>&lt;RET&gt;</samp>).
+<para>Limited use of <samp>string-match</samp> (<code>C-h</code> <code>f</code> <code>string-match</code> <code>&lt;RET&gt;</code>).
 </para></listitem></itemize>
 </listitem><listitem><prepend>&bullet;</prepend>
+<para>ID format fully customisable (with the ability to include sanitised title).
+</para></listitem><listitem><prepend>&bullet;</prepend>
 <para>Followable note IDs for easy navigation.
 </para></listitem><listitem><prepend>&bullet;</prepend>
-<para>Insert tags and note IDs with completion support.
+<para>ID changable with auto-update references.
+</para></listitem><listitem><prepend>&bullet;</prepend>
+<para>Insert tags and note IDs with auto-completion support.
 </para></listitem><listitem><prepend>&bullet;</prepend>
 <para>Backlink searching to find references between notes.
+</para></listitem><listitem><prepend>&bullet;</prepend>
+<para>Customisable user interface.
 </para></listitem></itemize>
 
 </chapter>
@@ -247,11 +262,11 @@ following to the Emacs configuration file (such as <samp>init.el</samp>):
 <para>Inside the <samp>*Kasten*</samp> buffer:
 </para><itemize commandarg="bullet" automaticcommandarg="on" endspaces=" "><itemprepend><formattingcommand command="bullet" automatic="on"/></itemprepend>
 <listitem><prepend>&bullet;</prepend>
-<para>Hit <code>&lt;RET&gt;</code> to open the selected note.
+<para>Hit <samp>&lt;RET&gt;</samp> to open the selected note.
 </para></listitem><listitem><prepend>&bullet;</prepend>
-<para>Hit <code>/</code> to search notes.
+<para>Hit <samp>/</samp> to search notes.
 </para></listitem><listitem><prepend>&bullet;</prepend>
-<para>Hit <code>g</code> to refresh the notes list.
+<para>Hit <samp>g</samp> to refresh the notes list.
 </para></listitem></itemize>
 
 <para>One may want to add more key bindings to <samp>kasten-mode-map</samp>.

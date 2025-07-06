@@ -89,15 +89,23 @@ included in the section entitled &#8220;GNU Free Documentation License&#8221;.
 <title>Features</title>
 
 <para>This package has the following main features:
-</para><itemizedlist><listitem><para>Browse notes with their titles and filenames displayed clearly.
-</para><itemizedlist><listitem><para>The index can be configured to update automatically.
-</para></listitem></itemizedlist></listitem><listitem><para>Note searching is significantly faster than deft.
+</para><itemizedlist><listitem><para>Browse notes with titles, categories and IDs displayed.
+</para><itemizedlist><listitem><para>Titles are indexed by looking for a &#8216;<literal>#+title:</literal>&#8217; pattern (customisable).
+</para></listitem><listitem><para>Categories are indexed by looking for a &#8216;<literal>#+category:</literal>&#8217; pattern
+(customisable).
+</para></listitem><listitem><para>The index can be configured to update automatically.
+</para></listitem></itemizedlist></listitem><listitem><para>Deft-like live search available.
+</para></listitem><listitem><para>Title and category filters for advanced search.
+</para></listitem><listitem><para>Note searching significantly faster than deft.
 </para><itemizedlist><listitem><para>Heavy content search &#8216;<literal>consult-ripgrep</literal>&#8217; (needs package <ulink url="https://melpa.org/#/consult">consult</ulink>,
 customisable).
-</para></listitem><listitem><para>Limited use of &#8216;<literal>string-match</literal>&#8217; (&#8216;<literal>C-h</literal>&#8217; &#8216;<literal>f</literal>&#8217; &#8216;<literal>string-match</literal>&#8217; &#8216;<literal>&lt;RET&gt;</literal>&#8217;).
-</para></listitem></itemizedlist></listitem><listitem><para>Followable note IDs for easy navigation.
-</para></listitem><listitem><para>Insert tags and note IDs with completion support.
+</para></listitem><listitem><para>Limited use of &#8216;<literal>string-match</literal>&#8217; (<literal>C-h</literal> <literal>f</literal> <literal>string-match</literal> <literal>&lt;RET&gt;</literal>).
+</para></listitem></itemizedlist></listitem><listitem><para>ID format fully customisable (with the ability to include sanitised title).
+</para></listitem><listitem><para>Followable note IDs for easy navigation.
+</para></listitem><listitem><para>ID changable with auto-update references.
+</para></listitem><listitem><para>Insert tags and note IDs with auto-completion support.
 </para></listitem><listitem><para>Backlink searching to find references between notes.
+</para></listitem><listitem><para>Customisable user interface.
 </para></listitem></itemizedlist>
 </chapter>
 <chapter label="5" id="Installation">
@@ -157,9 +165,9 @@ following to the Emacs configuration file (such as &#8216;<literal>init.el</lite
 <para>Launch Kasten with <literal>M-x</literal> <literal>kasten</literal> <literal>&lt;RET&gt;</literal>
 </para>
 <para>Inside the &#8216;<literal>*Kasten*</literal>&#8217; buffer:
-</para><itemizedlist><listitem><para>Hit <literal>&lt;RET&gt;</literal> to open the selected note.
-</para></listitem><listitem><para>Hit <literal>/</literal> to search notes.
-</para></listitem><listitem><para>Hit <literal>g</literal> to refresh the notes list.
+</para><itemizedlist><listitem><para>Hit &#8216;<literal>&lt;RET&gt;</literal>&#8217; to open the selected note.
+</para></listitem><listitem><para>Hit &#8216;<literal>/</literal>&#8217; to search notes.
+</para></listitem><listitem><para>Hit &#8216;<literal>g</literal>&#8217; to refresh the notes list.
 </para></listitem></itemizedlist>
 <para>One may want to add more key bindings to &#8216;<literal>kasten-mode-map</literal>&#8217;.
 </para>

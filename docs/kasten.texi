@@ -139,26 +139,41 @@ To be written.
 This package has the following main features:
 @itemize
 @item
-Browse notes with their titles and filenames displayed clearly.
+Browse notes with titles, categories and IDs displayed.
 @itemize
+@item
+Titles are indexed by looking for a @samp{#+title:} pattern (customisable).
+@item
+Categories are indexed by looking for a @samp{#+category:} pattern
+(customisable).
 @item
 The index can be configured to update automatically.
 @end itemize
 @item
-Note searching is significantly faster than deft.
+Deft-like live search available.
+@item
+Title and category filters for advanced search.
+@item
+Note searching significantly faster than deft.
 @itemize
 @item
 Heavy content search @samp{consult-ripgrep} (needs package @uref{https://melpa.org/#/consult, consult},
 customisable).
 @item
-Limited use of @samp{string-match} (@samp{C-h} @samp{f} @samp{string-match} @samp{<RET>}).
+Limited use of @samp{string-match} (@code{C-h} @code{f} @code{string-match} @code{<RET>}).
 @end itemize
+@item
+ID format fully customisable (with the ability to include sanitised title).
 @item
 Followable note IDs for easy navigation.
 @item
-Insert tags and note IDs with completion support.
+ID changable with auto-update references.
+@item
+Insert tags and note IDs with auto-completion support.
 @item
 Backlink searching to find references between notes.
+@item
+Customisable user interface.
 @end itemize
 
 @node Installation
@@ -234,11 +249,11 @@ Launch Kasten with @code{M-x} @code{kasten} @code{<RET>}
 Inside the @samp{*Kasten*} buffer:
 @itemize
 @item
-Hit @code{<RET>} to open the selected note.
+Hit @samp{<RET>} to open the selected note.
 @item
-Hit @code{/} to search notes.
+Hit @samp{/} to search notes.
 @item
-Hit @code{g} to refresh the notes list.
+Hit @samp{g} to refresh the notes list.
 @end itemize
 
 One may want to add more key bindings to @samp{kasten-mode-map}.
