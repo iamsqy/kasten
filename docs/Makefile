@@ -4,9 +4,9 @@ TEXI=kasten.texi
 BASE=kasten
 CSS=https://www.gnu.org/style.css
 
-.PHONY: all clean html html-ns xml docbook pdf text
+.PHONY: all clean html html-ns xml docbook pdf text info latex
 
-all: html html-ns xml docbook pdf text
+all: html html-ns xml docbook pdf text info latex
 
 html:
 	texi2any --html --css-ref=$(CSS) $(TEXI)
@@ -26,7 +26,13 @@ pdf:
 text:
 	texi2any --plaintext -o $(BASE).txt $(TEXI)
 
+info:
+	texi2any --info -o $(BASE).info $(TEXI)
+
+latex:
+	texi2any --latex -o $(BASE).tex $(TEXI)
+
 clean:
-	rm -f *.html *.xml *.dbk *.pdf *.txt *.aux *.log *.out *.toc *.cp *.fn *.ky *.pg *.tp *.vr *.cps *.fns *.kys *.pgs *.tps *.vrs
+	rm -f *.html *.xml *.dbk *.pdf *.txt *.aux *.log *.out *.toc *.cp *.fn *.ky *.pg *.tp *.vr *.cps *.fns *.kys *.pgs *.tps *.vrs *.info *.tex
 	rm -rf $(BASE) *.tmp *.toc *.dvi
 	rm -rf kasten_html/
