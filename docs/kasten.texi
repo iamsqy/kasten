@@ -7,7 +7,7 @@
 @c %**end of header
 
 @copying
-This manual is for Kasten (version 0.2, last updated 6 June 2025), which is
+This manual is for Kasten (version 0.2, last updated 6 July 2025), which is
 an Emacs package for managing Zettelkasten-style notes.
 
 Copyright @copyright{} 2025 Qiyang Sun
@@ -31,7 +31,7 @@ the section entitled ``GNU Free Documentation License''.
 @finalout
 @titlepage
 @title Kasten Manual
-@subtitle for version 0.2, last updated 6 June 2025
+@subtitle for version 0.2, last updated 6 July 2025
 @author Qiyang Sun
 @page
 @vskip 0pt plus 1filll

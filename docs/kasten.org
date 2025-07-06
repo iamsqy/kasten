@@ -6,7 +6,7 @@
 #+LANGUAGE: en
 
 #+MACRO: version 0.2
-#+MACRO: updated last updated 6 June 2025
+#+MACRO: updated last updated 6 July 2025
 
 #+TEXINFO_FILENAME: kasten.info
 

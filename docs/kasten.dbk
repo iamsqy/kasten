@@ -5,15 +5,15 @@
 ]>
 <book id="kasten.dbk" lang="en">
 <title>Kasten Manual</title>
-<subtitle>for version 0.2, last updated 6 June 2025</subtitle>
+<subtitle>for version 0.2, last updated 6 July 2025</subtitle>
 <titleabbrev>Kasten Manual</titleabbrev>
 <bookinfo><title>Kasten Manual</title>
-<subtitle>for version 0.2, last updated 6 June 2025</subtitle>
+<subtitle>for version 0.2, last updated 6 July 2025</subtitle>
 <titleabbrev>Kasten Manual</titleabbrev>
 <authorgroup>
 <collab><collabname>Qiyang Sun</collabname></collab>
 </authorgroup>
-<legalnotice><para>This manual is for Kasten (version 0.2, last updated 6 June 2025), which is
+<legalnotice><para>This manual is for Kasten (version 0.2, last updated 6 July 2025), which is
 an Emacs package for managing Zettelkasten-style notes.
 </para>
 <para>Copyright &#169; 2025 Qiyang Sun

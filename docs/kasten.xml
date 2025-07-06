@@ -11,7 +11,7 @@
 <!-- c %**end of header -->
 
 <copying endspaces=" ">
-<para>This manual is for Kasten (version 0.2, last updated 6 June 2025), which is
+<para>This manual is for Kasten (version 0.2, last updated 6 July 2025), which is
 an Emacs package for managing Zettelkasten-style notes.
 </para>
 <para>Copyright &copyright; 2025 Qiyang Sun
@@ -35,7 +35,7 @@ the section entitled &textldquo;GNU Free Documentation License&textrdquo;.
 <finalout></finalout>
 <titlepage endspaces=" ">
 <title spaces=" ">Kasten Manual</title>
-<subtitle spaces=" ">for version 0.2, last updated 6 June 2025</subtitle>
+<subtitle spaces=" ">for version 0.2, last updated 6 July 2025</subtitle>
 <author spaces=" ">Qiyang Sun</author>
 <page></page>
 <vskip> 0pt plus 1filll</vskip>
