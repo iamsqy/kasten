@@ -471,11 +471,11 @@ Type anywhere to search titles, categories and IDs.  C-g to quit.")))))
   (if (string= kasten-search-term "")
       t
     (progn
-     (let ((term (downcase kasten-search-term)))
-       (or (string-match-p (regexp-quote term) (downcase title))
-           (and
-	    category (string-match-p (regexp-quote term) (downcase category)))
-           (string-match-p (regexp-quote term) (downcase filename)))))))
+      (let ((term (downcase kasten-search-term)))
+	(or (string-match-p (regexp-quote term) (downcase title))
+            (and
+	     category (string-match-p (regexp-quote term) (downcase category)))
+            (string-match-p (regexp-quote term) (downcase filename)))))))
 
 (defun kasten--live-search-inc ()
   "Filter visible notes as user types."
@@ -549,13 +549,13 @@ according to IS-AUTO."
 	    (delete-region (line-beginning-position) (line-end-position))
 	    (insert-button
 	     (substitute-command-keys "Live Search (\\[kasten-live-search])")
-			   'face 'kasten-button-face
-			   'action (lambda (_button) (kasten-live-search)))
+	     'face 'kasten-button-face
+	     'action (lambda (_button) (kasten-live-search)))
 	    (insert " ")
 	    (insert-button
 	     (substitute-command-keys "Filters... (\\[kasten-filters-edit])")
-			   'face 'kasten-button-face
-			   'action (lambda (_button) (kasten-filters-edit)))
+	     'face 'kasten-button-face
+	     'action (lambda (_button) (kasten-filters-edit)))
 	    (insert " ")
 	    (insert-button "Full Search..."
 			   'face 'kasten-button-face
@@ -571,13 +571,13 @@ according to IS-AUTO."
 	    (insert " ")
 	    (insert-button
 	     (substitute-command-keys "Refresh (\\[kasten-refresh])")
-			   'face 'kasten-button-face
-			   'action (lambda (_button) (kasten-refresh nil nil)))
+	     'face 'kasten-button-face
+	     'action (lambda (_button) (kasten-refresh nil nil)))
 	    (insert " ")
 	    (insert-button
 	     (substitute-command-keys "Quit Kasten (\\[quit-window])")
-			   'face 'kasten-button-face
-			   'action (lambda (_button) (quit-window)))
+	     'face 'kasten-button-face
+	     'action (lambda (_button) (quit-window)))
 	    (insert "\n")))
 	(dolist (file files)
 	  (let* ((title (kasten--parse-org-title file))
@@ -641,7 +641,7 @@ according to IS-AUTO."
          (lambda ()
            (when (derived-mode-p 'kasten-mode)
              (kasten-refresh))))))
-             
+
 (add-hook 'window-size-change-functions #'kasten--debounced-refresh)
 
 (defvar kasten--watch-handle nil
@@ -683,7 +683,7 @@ according to IS-AUTO."
 
 (defun kasten--safetitle (title)
   "Convert TITLE to a safe short string can be used for ID or filename."
-    (let* ((clean (replace-regexp-in-string "[^a-zA-Z0-9-_+]" "" title)))
+  (let* ((clean (replace-regexp-in-string "[^a-zA-Z0-9-_+]" "" title)))
     (substring clean 0 (min 8 (length clean)))))
 
 (defun kasten--generate-id-and-path (&optional title)
