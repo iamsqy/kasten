@@ -122,7 +122,7 @@ this program. If not, see <uref><urefurl>https://www.gnu.org/licenses/</urefurl>
 
 <para>Kasten Manual is licensed under the GNU Free Documentation License Version 1.3.
 </para>
-<para>See the file <samp>doc/COPYING</samp> or the appendix <ref label="GNU-Free-Documentation-License"><xrefnodename>GNU Free Documentation License</xrefnodename></ref> for
+<para>See the file <samp>docs/COPYING</samp> or the appendix <ref label="GNU-Free-Documentation-License"><xrefnodename>GNU Free Documentation License</xrefnodename></ref> for
 details.
 </para>
 <para><strong>Copyright (C) 2025 Qiyang Sun</strong>
@@ -180,6 +180,9 @@ customisable).
 <para>Insert tags and note IDs with auto-completion support.
 </para></listitem><listitem><prepend>&bullet;</prepend>
 <para>Backlink searching to find references between notes.
+</para></listitem><listitem><prepend>&bullet;</prepend>
+<para>Functions to get note path and attachment directory path for integration with
+other packages.
 </para></listitem><listitem><prepend>&bullet;</prepend>
 <para>Customisable user interface.
 </para></listitem></itemize>

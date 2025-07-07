@@ -109,7 +109,7 @@ File: kasten.info,  Node: Copying Kasten Manual (Documentation),  Prev: Copying 
 Kasten Manual is licensed under the GNU Free Documentation License
 Version 1.3.
 
-   See the file ‘doc/COPYING’ or the appendix *note GNU Free
+   See the file ‘docs/COPYING’ or the appendix *note GNU Free
 Documentation License:: for details.
 
    *Copyright (C) 2025 Qiyang Sun*
@@ -155,6 +155,8 @@ This package has the following main features:
    • ID changable with auto-update references.
    • Insert tags and note IDs with auto-completion support.
    • Backlink searching to find references between notes.
+   • Functions to get note path and attachment directory path for
+     integration with other packages.
    • Customisable user interface.
 
 
@@ -1493,18 +1495,18 @@ Node: Synopsis1257
 Node: Copying1656
 Node: Copying Kasten (Software)1840
 Node: Copying Kasten Manual (Documentation)2838
-Node: Concepts3641
-Node: Features3761
-Node: Installation4980
-Node: MELPA (not yet published) and use-package5186
-Node: Tarball5705
-Node: Manual Installation6592
-Node: Usage6902
-Node: Customisation7321
-Node: Benchmark9393
-Node: Contributing10211
-Node: GNU Free Documentation License11227
-Node: GNU General Public License36259
+Node: Concepts3642
+Node: Features3762
+Node: Installation5087
+Node: MELPA (not yet published) and use-package5293
+Node: Tarball5812
+Node: Manual Installation6699
+Node: Usage7009
+Node: Customisation7428
+Node: Benchmark9500
+Node: Contributing10318
+Node: GNU Free Documentation License11334
+Node: GNU General Public License36366
 
 End Tag Table
 
