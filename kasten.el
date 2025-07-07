@@ -986,6 +986,56 @@ across %d files; moved file `%s' to `%s'; took %.6f seconds \
   (funcall kasten-search-function
 	   kasten-directory (concat kasten-id-symbol (regexp-quote id))))
 
+(defun kasten-get-note-path (id)
+  "Return the path of the note corresponding to ID.
+If called interactively and ID is not provided, use buffer filename."
+  (interactive
+   (list
+    (let* ((file (buffer-file-name))
+           (id (when file
+                 (file-name-base file))))
+      (unless id
+        (user-error "Kasten: buffer is not visiting a file, cannot derive ID"))
+      id)))
+  (let ((note-file (kasten--id-to-file id)))
+    (if note-file
+        (let ((full-path (expand-file-name note-file)))
+          (when (called-interactively-p 'interactive)
+            (message "Kasten: note path is `%s'" full-path))
+          full-path)
+      (user-error "Kasten: given ID does not correspond to a note"))))
+
+(defun kasten-get-attachment-path (id &optional create-if-nonexist subdir)
+  "Return the attachment path of the note corresponding to ID.  If \
+CREATE-IF-NONEXIST is non-nil and the attachment path does not exist, make the \
+directory.  If SUBDIR is non-nil, append SUBDIR to the attachment path.
+If called interactively and ID is not provided, use buffer filename."
+  (interactive
+   (list
+    (let* ((file (buffer-file-name))
+           (id (when file
+                 (file-name-base file))))
+      (unless id
+        (user-error "Kasten: buffer is not visiting a file, cannot derive ID"))
+      id)))
+  (let ((note-file (kasten--id-to-file id)))
+    (if note-file
+        (let* ((note-dir (file-name-directory note-file))
+	      (name-no-ext (file-name-base note-file))
+	      (attachment-path (concat note-dir name-no-ext "/"
+				       (when subdir
+					 (concat subdir "/")))))
+	  (when (and create-if-nonexist
+		     (not (file-directory-p attachment-path)))
+	    (progn
+	      (make-directory attachment-path t)
+	      (message "Kasten: created attachment directory `%s'"
+		       attachment-path)))
+          (when (called-interactively-p 'interactive)
+            (message "Kasten: note attachment path is `%s'" attachment-path))
+          attachment-path)
+      (user-error "Kasten: given ID does not correspond to a note"))))
+
 ;;;###autoload
 (defun kasten ()
   "Launch Kasten major mode."
