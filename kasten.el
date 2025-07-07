@@ -8,7 +8,7 @@
 ;; URL: https://github.com/iamsqy/kasten
 ;; Package-Version: 0.2
 ;; Package-Requires: ((emacs "27.1") (consult "0.33"))
-;; Keywords: notes, Zettelkasten
+;; Keywords: tools, files, matching
 
 ;; This file is not part of GNU Emacs.
 
