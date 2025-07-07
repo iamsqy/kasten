@@ -214,15 +214,24 @@ See strftime.  Use `%E' for shortened title."
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") #'kasten-open-file)
     (define-key map (kbd "/") #'kasten-live-search)
-    (define-key map (kbd "g") #'kasten-refresh)
     (define-key map (kbd "?") #'kasten-filters-edit)
+    (define-key map (kbd "g") #'kasten-refresh)
+    (define-key map (kbd "s") #'kasten-search)
+    (define-key map (kbd "t") #'kasten-search-tag)
+    (define-key map (kbd "n") #'kasten-create-new-note)
     (define-key map (kbd "DEL") #'delete-backward-char)
     map)
   "Keymap for Kasten mode.")
 
 (defvar kasten-minor-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "H-k") #'kasten) ;;TODO
+    (define-key map (kbd "C-c C-k k") #'kasten)
+    (define-key map (kbd "C-c C-k b") #'kasten-show-backlinks-current-note)
+    (define-key map (kbd "C-c C-k i") #'kasten-insert-id)
+    (define-key map (kbd "C-c C-k I") #'kasten-change-id)
+    (define-key map (kbd "C-c C-k n") #'kasten-create-new-note-at-point)
+    (define-key map (kbd "C-c C-k t") #'kasten-insert-tag)
+    (define-key map (kbd "C-c C-k T") #'kasten-search-tag)
     map)
   "Keymap for Kasten minor mode.")
 
@@ -237,7 +246,7 @@ See strftime.  Use `%E' for shortened title."
   (kasten-refresh t t))
 
 (define-minor-mode kasten-minor-mode
-  "Minor mode for extra features in Kasten buffers."
+  "Minor mode for extra Kasten features in note buffers."
   :init-value nil
   :lighter kasten-minor-mode-lighter
   :keymap kasten-minor-mode-map
@@ -557,17 +566,20 @@ according to IS-AUTO."
 	     'face 'kasten-button-face
 	     'action (lambda (_button) (kasten-filters-edit)))
 	    (insert " ")
-	    (insert-button "Full Search..."
-			   'face 'kasten-button-face
-			   'action (lambda (_button) (kasten-search)))
+	    (insert-button
+	     (substitute-command-keys "Full Search... (\\[kasten-search])")
+	     'face 'kasten-button-face
+	     'action (lambda (_button) (kasten-search)))
 	    (insert " ")
-	    (insert-button "Search Tag..."
-			   'face 'kasten-button-face
-			   'action (lambda (_button) (kasten-search-tag)))
+	    (insert-button
+	     (substitute-command-keys "Search Tag... (\\[kasten-search-tag])")
+	     'face 'kasten-button-face
+	     'action (lambda (_button) (kasten-search-tag)))
 	    (insert " ")
-	    (insert-button "New Note..."
-			   'face 'kasten-button-face
-			   'action (lambda (_button) (kasten-create-new-note)))
+	    (insert-button
+	     (substitute-command-keys "New Note... (\\[kasten-create-new-note])")
+	     'face 'kasten-button-face
+	     'action (lambda (_button) (kasten-create-new-note)))
 	    (insert " ")
 	    (insert-button
 	     (substitute-command-keys "Refresh (\\[kasten-refresh])")
