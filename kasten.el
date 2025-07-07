@@ -37,7 +37,7 @@
 (require 'button)
 
 (defgroup kasten nil
-  "Tools for Zettelkasten note taking."
+  "Zettelkasten note browsing tool."
   :group 'tools)
 
 (defcustom kasten-directory (expand-file-name "~/jrn/")
@@ -77,8 +77,8 @@ May cause problem if backup files present in the directory."
   :group 'kasten)
 
 (defcustom kasten-title-max-pos 4096
-  "Max position of the title of a note, i.e. depth for Kasten to match \
-`kasten-title-regexp'."
+  "Max position of the title of a note.
+Depth for Kasten to match `kasten-title-regexp'."
   :type 'integer
   :group 'kasten)
 
@@ -88,17 +88,15 @@ May cause problem if backup files present in the directory."
   :type 'regexp
   :group 'kasten)
 
-
 (defcustom kasten-empty-category-placeholder ""
-  "If non-empty, display in category field for uncategorised notes.  Leave \
-empty to omit empty category for uncategorised notes."
+  "If non-empty, display in category field for uncategorised notes.
+Leave empty to omit empty category for uncategorised notes."
   :type 'string
   :group 'kasten)
 
-
 (defcustom kasten-category-max-pos 4096
-  "Max position of the category of a note, i.e. depth for Kasten to match \
-`kasten-category-regexp'."
+  "Max position of the category of a note.
+Depth for Kasten to match `kasten-category-regexp'."
   :type 'integer
   :group 'kasten)
 
@@ -113,8 +111,8 @@ empty to omit empty category for uncategorised notes."
   :group 'kasten)
 
 (defcustom kasten-tag-max-pos 65536
-  "Max position of the title of a note, i.e. depth for Kasten to match \
-`kasten-tag-regexp'."
+  "Max position of the title of a note.
+Depth for Kasten to match `kasten-tag-regexp'."
   :type 'integer
   :group 'kasten)
 
@@ -124,30 +122,32 @@ empty to omit empty category for uncategorised notes."
   :group 'kasten)
 
 (defcustom kasten-tag-first-char-regexp "\\x23"
-  "Regexp for the tag char to make `kasten-search-function' understand, e.g. \
-`\\x23' for `\#'."
+  "Regexp for the tag char to make `kasten-search-function' understand.
+
+If using `consult-ripgrep', use `\\x23' instead of `\#'."
   :type 'regexp
   :group 'kasten)
 
 (defcustom kasten-id-symbol "§"
-  "Leading symbol for ID, e.g. `\§' in ID `\§250229-2333'."
+  "Leading symbol for ID."
   :type 'string
   :group 'kasten)
 
 (defcustom kasten-id-format "%y%m%d-%H%M"
-  "Time format for generating ID, e.g. `%y%m%d-%H%M' for `250229-2333'.  \
-See strftime.  Use `%E' for shortened title."
+  "Time format for generating ID.  Use `%E' for shortened title.
+See man page `strftime(3)' for wildcards."
   :type 'string
   :group 'kasten)
 
 (defcustom kasten-folder-timeformat "%Y%m"
-  "Time format for folder, e.g. `%Y%m' for folder `202502/'.  See strftime."
+  "Time format for folder.
+See man page `strftime(3)' for wildcards."
   :type 'string
   :group 'kasten)
 
 (defcustom kasten-id-clash-time-inc 60
-  "How much time should be increment if the time-based ID clashes.  \
-60 for 1 minute."
+  "Time interval to increment if the time-based ID clashes, in seconds.
+Set to 60 for 1 minute."
   :type 'integer
   :group 'kasten)
 
@@ -157,7 +157,7 @@ See strftime.  Use `%E' for shortened title."
   :group 'kasten)
 
 (defcustom kasten-backlink-comment "#+backlink: "
-  "How to note backlink ID in new note when creating new note at point."
+  "Insert before backlink ID when creating new note at point."
   :type 'string
   :group 'kasten)
 
@@ -172,7 +172,7 @@ See strftime.  Use `%E' for shortened title."
   :group 'kasten)
 
 (defface kasten-buffer-title-face
-  '((t :inherit variable-pitch :weight bold :height 2.33
+  '((t :family "variable-pitch" :weight bold :height 2.33
        :foreground "cyan" :background "navy" :slant italic
        :underline (:color "blue" :style line) :extend t))
   "Face for the Kasten buffer title."
@@ -251,7 +251,6 @@ See strftime.  Use `%E' for shortened title."
   :lighter kasten-minor-mode-lighter
   :keymap kasten-minor-mode-map
   :group 'kasten
-  
   (if kasten-minor-mode
       (progn
         (unless (derived-mode-p 'kasten-mode 'text-mode)
@@ -273,18 +272,19 @@ not derived from text-mode. Answer `y' if you want to treat `%s' as note."
     :category ()
     :mode and)
   "Filters for kasten-refresh filtering of notes.
+
 :title is a list of substrings to match in the title.
 :category is a list of categories for exact matching.
 :mode is either 'or or 'and to combine the title and category filters.")
 
 (defun kasten-filters-active-p ()
-  "Return non-nil if `kasten-filters` has active filters."
+  "Return non-nil if `kasten-filters' has active filters."
   (let ((titles (plist-get kasten-filters :title))
         (categories (plist-get kasten-filters :category)))
     (or titles categories)))
 
 (defun kasten--matches-filter-p (title category)
-  "Return t if TITLE and CATEGORY pass the filters in `kasten-filters`."
+  "Return t if TITLE and CATEGORY pass the filters in `kasten-filters'."
   (let* ((title-filters (plist-get kasten-filters :title))
          (category-filters (plist-get kasten-filters :category))
          (mode (plist-get kasten-filters :mode))
@@ -308,15 +308,15 @@ not derived from text-mode. Answer `y' if you want to treat `%s' as note."
     (define-key map (kbd "C-c C-k") #'kill-buffer-and-window)
     (define-key map (kbd "C-c C-t") #'kasten-filters--toggle-the-mode)
     map)
-  "Keymap for `kasten-filters-mode'.")
+  "Keymap for Kasten filters mode'.")
 
 (defvar kasten-filters-font-lock-keywords
   '(("^%.*$" . font-lock-comment-face)
     ("^#.*$" . font-lock-keyword-face))
-  "Font lock keywords for `kasten-filters-mode'.")
+  "Font lock keywords for Kasten filters mode.")
 
 (define-derived-mode kasten-filters-mode text-mode "Kasten-Filters"
-  "Major mode for editing `kasten-filters`."
+  "Major mode for editing Kasten filters."
   (setq buffer-read-only nil)
   (setq font-lock-defaults '(kasten-filters-font-lock-keywords))
   (let ((inhibit-read-only t))
@@ -326,8 +326,8 @@ not derived from text-mode. Answer `y' if you want to treat `%s' as note."
         (add-text-properties (match-beginning 0) (match-end 0)
                              '(read-only t front-sticky t rear-nonsticky t)))))
   (setq-local header-line-format (substitute-command-keys "[Kasten] Edit \
-filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
- to discard.")))
+filters.  \\[kasten-filters-save-and-kill] to apply.  \
+\\[kill-buffer-and-window] to discard.")))
 
 (add-hook 'kasten-filters-mode-hook
           (lambda ()
@@ -335,7 +335,7 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
             (setq truncate-lines t)))
 
 (defun kasten-filters--insert-current ()
-  "Insert the current `kasten-filters` contents in the editing buffer."
+  "Insert the current Kasten filter in the editing buffer."
   (let ((title-list (plist-get kasten-filters :title))
         (category-list (plist-get kasten-filters :category))
         (mode (plist-get kasten-filters :mode)))
@@ -368,7 +368,7 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
     (insert "% Kasten filter customisation ends here.\n")))
 
 (defun kasten-filters-edit ()
-  "Open a buffer for editing the `kasten-filters` variable."
+  "Open a buffer for editing the Kasten filters."
   (interactive)
   (let ((buf (get-buffer-create kasten-filters-buffer-name)))
     (with-current-buffer buf
@@ -379,7 +379,7 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
     (pop-to-buffer buf)))
 
 (defun kasten-filters--toggle-the-mode ()
-  "Toggle the mode on the current line between `or' and `and' if applicable."
+  "Toggle the mode on the current line between `or' and `and'."
   (interactive)
   (let* ((line (thing-at-point 'line t))
          (trimmed (and line (string-trim line))))
@@ -389,7 +389,7 @@ filters.  \\[kasten-filters-save-and-kill] to save.  \\[kill-buffer-and-window]\
         (insert new-mode)))))
 
 (defun kasten-filters-save-and-kill ()
-  "Parse buffer contents and save back to `kasten-filters`, then kill buffer."
+  "Parse and save buffer contents for kasten filters, then kill buffer."
   (interactive)
   (let ((title-list '())
         (category-list '())
@@ -503,7 +503,7 @@ Type anywhere to search titles, categories and IDs.  C-g to quit.")))))
 
 (defun kasten-refresh (&optional is-init is-auto)
   "Refresh note list.
-Reset point if IS-INIT is non-nil; display message with time lapsed and \
+Reset point if IS-INIT is non-nil; display message with time lapsed and
 according to IS-AUTO."
   (interactive)
   (let ((buffer (get-buffer-create "*Kasten*"))
@@ -657,22 +657,22 @@ according to IS-AUTO."
 (add-hook 'window-size-change-functions #'kasten--debounced-refresh)
 
 (defvar kasten--watch-handle nil
-  "Handle returned by `file-notify-add-watch`.")
+  "Handle returned by `file-notify-add-watch'.")
 
 (defun kasten--set-auto-refresh (symbol value)
-  "Handle change to `kasten-auto-refresh`, set SYMBOL to VALUE."
+  "Handle change to `kasten-auto-refresh', set SYMBOL to VALUE."
   (set-default symbol value)
   (if (eq value t)
       (kasten--enable-auto-refresh)
     (kasten--disable-auto-refresh)))
 
 (defun kasten--maybe-auto-refresh (_event)
-  "Triggers `kasten-refresh` if `kasten-auto-refresh` is non-nil."
+  "Triggers `kasten-refresh' if `kasten-auto-refresh' is non-nil."
   (when kasten-auto-refresh
     (kasten-refresh nil t)))
 
 (defun kasten--enable-auto-refresh ()
-  "Enable auto refresh when files change in `kasten-directory`."
+  "Enable auto refresh when files change in `kasten-directory'."
   (when kasten--watch-handle
     (file-notify-rm-watch kasten--watch-handle))
   (setq kasten--watch-handle
@@ -740,8 +740,9 @@ according to IS-AUTO."
     (message "Kasten: created new note `%s' at `%s'" id full-path)))
 
 (defun kasten-create-new-note-at-point ()
-  "Create a new note linked from the current one.  Insert §ID at point.
-Also add a backlink from the new note to the current one."
+  "Create a new note linked from the current one.
+
+Insert ID at point and add a backlink from the new note to the current one."
   (interactive)
   (unless (and buffer-file-name
                (string-prefix-p (file-truename kasten-directory)
@@ -770,7 +771,7 @@ Also add a backlink from the new note to the current one."
 	     new-id new-file origin-id)))
 
 (defun kasten--parse-org-title (file)
-  "Return the Org title from FILE or fallback to base filename."
+  "Return the title from FILE or fallback to base filename."
   (with-temp-buffer
     (insert-file-contents file nil 0 kasten-title-max-pos)
     (let ((contents (buffer-string)))
@@ -791,13 +792,13 @@ Also add a backlink from the new note to the current one."
         kasten-empty-category-placeholder))))
 
 (defun kasten--extension-regexp ()
-  "Return a regexp matching extensions in `kasten-file-extensions`."
+  "Return a regexp matching extensions in `kasten-file-extensions'."
   (concat
    (if kasten-index-hidden-files "\\." "^[^.].*\\.")
    (regexp-opt kasten-file-extensions t) "$"))
 
 (defun kasten--get-note-files ()
-  "Return a list of note file paths in `kasten-directory`."
+  "Return a list of note file paths in `kasten-directory'."
   (directory-files-recursively kasten-directory (kasten--extension-regexp)))
 
 (defun kasten-open-file ()
@@ -834,10 +835,8 @@ Also add a backlink from the new note to the current one."
   "Follow the kasten ID link at point by calling `kasten--follow-id-link'."
   (interactive)
   (let ((id (thing-at-point 'symbol t)))
-    (if id
-        (kasten--follow-id-link id)
-      (debug))))
-
+    (when id
+        (kasten--follow-id-link id))))
 
 (defun kasten--button-action (button)
   "Action to perform when BUTTON is clicked."
@@ -861,7 +860,7 @@ Also add a backlink from the new note to the current one."
            'follow-link t))))))
 
 (defun kasten--setup-id-buttons ()
-  "Setup Kasten ID buttons when opening Org-mode."
+  "Setup Kasten ID buttons when opening notes."
   (add-hook 'after-change-functions #'kasten--after-change-update-buttons nil t)
   (kasten--add-id-buttons))
 
@@ -884,7 +883,8 @@ Also add a backlink from the new note to the current one."
 
 (defun kasten-change-id (old-id)
   "Change occurrences of OLD-ID to a new ID in all note files.
-For each file that contains OLD-ID, ask user whether to replace it."
+
+For each file that contains OLD-ID, ask whether to replace it."
   (interactive
    (let* ((files (kasten--get-note-files))
           (ids (mapcar #'file-name-base files)))
@@ -940,7 +940,7 @@ across %d files; moved file `%s' to `%s'; took %.6f seconds \
 	       elapsed)))))
 
 (defun kasten-search ()
-  "Search using `kasten-search-function`."
+  "Search using `kasten-search-function'."
   (interactive)
   (funcall kasten-search-function kasten-directory))
 
@@ -1018,10 +1018,10 @@ If called interactively and ID is not provided, use buffer filename."
       (user-error "Kasten: given ID does not correspond to a note"))))
 
 (defun kasten-get-attachment-path (id &optional create-if-nonexist subdir)
-  "Return the attachment path of the note corresponding to ID.  If \
-CREATE-IF-NONEXIST is non-nil and the attachment path does not exist, make the \
-directory.  If SUBDIR is non-nil, append SUBDIR to the attachment path.
-If called interactively and ID is not provided, use buffer filename."
+  "Return the attachment path of the note corresponding to ID.
+If CREATE-IF-NONEXIST is non-nil and the attachment path does not exist,
+make the directory.  If SUBDIR is non-nil, append SUBDIR to the attachment
+path.  If called interactively and ID is not provided, use buffer filename."
   (interactive
    (list
     (let* ((file (buffer-file-name))
