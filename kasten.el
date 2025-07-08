@@ -878,9 +878,9 @@ For each file that contains OLD-ID, ask whether to replace it."
   (let* ((files (kasten--get-note-files))
          (ids (mapcar #'file-name-base files))
          (new-id (read-string
-                  (format (concat "[Kasten] Change `" kasten-id-symbol
-                                  "%s' to: " kasten-id-symbol)
-                          old-id)))
+                  (concat "[Kasten] Change `" kasten-id-symbol
+                          "%s' to: " kasten-id-symbol)
+                  old-id))
          (start-time (float-time))
          (modified-file-cnt 0)
          (modification-cnt 0))
