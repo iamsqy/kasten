@@ -254,23 +254,21 @@ Set to 60 for 1 minute."
   (if kasten-minor-mode
       (progn
         (unless (derived-mode-p 'kasten-mode 'text-mode)
-	  (display-warning
-	   'kasten-minor-mode
-	   (format "Kasten minor mode is not intended for `%s'.
+          (display-warning
+           'kasten-minor-mode
+           (format "Kasten minor mode is not intended for `%s'.
 It is designed for text-mode buffers. The major mode of the current buffer is
 not derived from text-mode. Answer `y' if you want to treat `%s' as note."
-		   major-mode (buffer-name))
-	   :warning)
+                   major-mode (buffer-name))
+           :warning)
           (unless (y-or-n-p
-		   (format "[Kasten] Really enable Kasten minor mode in `%s'? "
-			   major-mode))
+                   (format "[Kasten] Really enable Kasten minor mode in `%s'? "
+                           major-mode))
             (setq kasten-minor-mode nil)
             (message "Kasten: minor mode not enabled"))))))
 
 (defvar kasten-filters
-  '(:title ()
-	   :category ()
-	   :mode and)
+  '(:title () :category () :mode and)
   "Filters for kasten-refresh filtering of notes.
 
 :title is a list of substrings to match in the title.
@@ -291,7 +289,7 @@ not derived from text-mode. Answer `y' if you want to treat `%s' as note."
          (title-match (or (null title-filters)
                           (seq-some (lambda (substr)
                                       (string-match-p (downcase substr)
-						      (downcase title)))
+                                                      (downcase title)))
                                     title-filters)))
          (category-match (or (null category-filters)
                              (member category category-filters))))
@@ -314,7 +312,7 @@ not derived from text-mode. Answer `y' if you want to treat `%s' as note."
   "Major mode for editing Kasten filters."
   (setq buffer-read-only nil)
   (setq font-lock-defaults '((("^%.*$" . font-lock-comment-face)
-			      ("^#.*$" . font-lock-keyword-face))))
+                              ("^#.*$" . font-lock-keyword-face))))
   (let ((inhibit-read-only t))
     (goto-char (point-min))
     (while (re-search-forward "^[%#].*$" nil t)
@@ -327,8 +325,8 @@ filters.  \\[kasten-filters-save-and-kill] to apply.  \
 (defun kasten-filters--insert-current ()
   "Insert the current Kasten filter in the editing buffer."
   (let ((inhibit-read-only t)
-	(title-list (plist-get kasten-filters :title))
-	(category-list (plist-get kasten-filters :category))
+        (title-list (plist-get kasten-filters :title))
+        (category-list (plist-get kasten-filters :category))
         (mode (plist-get kasten-filters :mode)))
     (erase-buffer)
     (insert "\
@@ -386,32 +384,32 @@ filters.  \\[kasten-filters-save-and-kill] to apply.  \
         (category-list '())
         mode
         (state :title)
-	(mode-set nil)) ; :title, :category, :mode
+        (mode-set nil)) ; :title, :category, :mode
     (save-excursion
       (goto-char (point-min))
       (while (not (eobp))
         (let ((line (string-trim (thing-at-point 'line t))))
           (cond ((string-prefix-p "#" line)
-		 (cond
-		  ((string-match-p "# title" line) (setq state :title))
-		  ((string-match-p "# category" line) (setq state :category))
-		  ((string-match-p "# mode" line) (setq state :mode))))
-		((= (length line) 0)) ; skip empty line
-		((string-prefix-p "%" line)) ; skip comments
-		(t
-		 (pcase state
-		   (:title (push line title-list))
-		   (:category (push line category-list))
-		   (:mode (unless mode-set
-			    (setq mode (intern line))
-			    (setq mode-set t))))))
+                 (cond
+                  ((string-match-p "# title" line) (setq state :title))
+                  ((string-match-p "# category" line) (setq state :category))
+                  ((string-match-p "# mode" line) (setq state :mode))))
+                ((= (length line) 0)) ; skip empty line
+                ((string-prefix-p "%" line)) ; skip comments
+                (t
+                 (pcase state
+                   (:title (push line title-list))
+                   (:category (push line category-list))
+                   (:mode (unless mode-set
+                            (setq mode (intern line))
+                            (setq mode-set t))))))
           (forward-line 1))))
     (setq title-list (nreverse title-list))
     (setq category-list (nreverse category-list))
     (unless (member mode '(or and))
       (user-error "Kasten: `Mode' must be `and' or `or', got `%s'" mode))
     (setq kasten-filters
-	  `(:title ,title-list :category ,category-list :mode ,mode))
+          `(:title ,title-list :category ,category-list :mode ,mode))
     (kasten-refresh nil nil)
     (kill-buffer-and-window)))
 
@@ -432,9 +430,9 @@ filters.  \\[kasten-filters-save-and-kill] to apply.  \
     (goto-char (point-min))
     (forward-line 2))
   (let ((inhibit-read-only t)
-	(original-map (current-local-map))
-	(map (make-keymap))
-	(i 0))
+        (original-map (current-local-map))
+        (map (make-keymap))
+        (i 0))
     (set-keymap-parent map (current-local-map))
     (set-char-table-range (nth 1 map) (cons #x100 (max-char))
                           'kasten--live-search-inc)
@@ -444,7 +442,7 @@ filters.  \\[kasten-filters-save-and-kill] to apply.  \
       (setq i (1+ i)))
     (defun kasten--quit-live-search ()
       "Quit live search and reset to normal Kasten."
-	(interactive)
+      (interactive)
       (message "Kasten: quit live search")
       (use-local-map original-map)
       (setq kasten--is-live-search nil)
@@ -465,7 +463,7 @@ Type anywhere to search titles, categories and IDs.  C-g to quit.")))
     (let ((term (downcase kasten-search-term)))
       (or (string-match-p (regexp-quote term) (downcase title))
           (and
-	   category (string-match-p (regexp-quote term) (downcase category)))
+           category (string-match-p (regexp-quote term) (downcase category)))
           (string-match-p (regexp-quote term) (downcase filename))))))
 
 (defun kasten--live-search-inc ()
@@ -480,7 +478,7 @@ Type anywhere to search titles, categories and IDs.  C-g to quit.")))
       (setq char ?\s))
      (t
       (setq kasten-search-term
-	    (concat kasten-search-term (char-to-string char)))))
+            (concat kasten-search-term (char-to-string char)))))
     (kasten-refresh nil nil)))
 
 (defun kasten-refresh (&optional is-init is-auto)
@@ -490,143 +488,143 @@ Reset point if IS-INIT is non-nil; display message with time lapsed and
 according to IS-AUTO."
   (interactive)
   (let ((buffer (get-buffer-create "*Kasten*"))
-	(start-time (float-time)))
+        (start-time (float-time)))
     (with-current-buffer buffer
       (let ((inhibit-read-only t)
-	    (saved-point (point))
-	    (files (kasten--get-note-files)))
-	(erase-buffer)
-	;; insert "Kasten" or "Kasten (fs)"
-	(insert (propertize kasten-buffer-title
-			    'face 'kasten-buffer-title-face
-			    'read-only t))
-	(when (or
-	       (kasten-filters-active-p)
-	       kasten--is-live-search)
-	  (progn
-	    (insert (propertize " ("
-				'face 'kasten-buffer-title-face
-				'read-only t))
-	    (when (kasten-filters-active-p)
-	      (insert (propertize "f"
-				  'face 'kasten-buffer-title-face
-				  'read-only t
-				  'help-echo "f: filters activated")))
-	    (when kasten--is-live-search
-	      (insert (propertize "s"
-				  'face 'kasten-buffer-title-face
-				  'read-only t
-				  'help-echo "s: performing a live search")))
-	    (insert (propertize ")"
-				'face 'kasten-buffer-title-face
-				'read-only t))))
-	(insert (propertize "\n"
-			    'face 'kasten-buffer-title-face
-			    'read-only t))
+            (saved-point (point))
+            (files (kasten--get-note-files)))
+        (erase-buffer)
+        ;; insert "Kasten" or "Kasten (fs)"
+        (insert (propertize kasten-buffer-title
+                            'face 'kasten-buffer-title-face
+                            'read-only t))
+        (when (or
+               (kasten-filters-active-p)
+               kasten--is-live-search)
+          (progn
+            (insert (propertize " ("
+                                'face 'kasten-buffer-title-face
+                                'read-only t))
+            (when (kasten-filters-active-p)
+              (insert (propertize "f"
+                                  'face 'kasten-buffer-title-face
+                                  'read-only t
+                                  'help-echo "f: filters activated")))
+            (when kasten--is-live-search
+              (insert (propertize "s"
+                                  'face 'kasten-buffer-title-face
+                                  'read-only t
+                                  'help-echo "s: performing a live search")))
+            (insert (propertize ")"
+                                'face 'kasten-buffer-title-face
+                                'read-only t))))
+        (insert (propertize "\n"
+                            'face 'kasten-buffer-title-face
+                            'read-only t))
 
-	;; insert either live search or buttons
-	(if kasten--is-live-search
-	    (progn
-	      (delete-region (line-beginning-position) (line-end-position))
-	      (insert (propertize "Live search: "
-				  'face 'shadow
-				  'read-only t))
-	      (insert (propertize (if (> (length kasten-search-term)
-					 (- (window-width) 14))
-				      kasten-search-term
-				    (format (format "%%-%ds"
-						    (- (window-width) 14))
-					    kasten-search-term))
-				  'face 'kasten-live-search-edit-face
-				  'read-only t))
-	      (insert "\n"))
-	  (delete-region (line-beginning-position) (line-end-position))
-	  (insert-button
-	   (substitute-command-keys "Live Search (\\[kasten-live-search])")
-	   'face 'kasten-button-face
-	   'action (lambda (_button) (kasten-live-search)))
-	  (insert " ")
-	  (insert-button
-	   (substitute-command-keys "Filters... (\\[kasten-filters-edit])")
-	   'face 'kasten-button-face
-	   'action (lambda (_button) (kasten-filters-edit)))
-	  (insert " ")
-	  (insert-button
-	   (substitute-command-keys "Full Search... (\\[kasten-search])")
-	   'face 'kasten-button-face
-	   'action (lambda (_button) (kasten-search)))
-	  (insert " ")
-	  (insert-button
-	   (substitute-command-keys "Search Tag... (\\[kasten-search-tag])")
-	   'face 'kasten-button-face
-	   'action (lambda (_button) (kasten-search-tag)))
-	  (insert " ")
-	  (insert-button
-	   (substitute-command-keys "New Note... (\\[kasten-create-new-note])")
-	   'face 'kasten-button-face
-	   'action (lambda (_button) (kasten-create-new-note)))
-	  (insert " ")
-	  (insert-button
-	   (substitute-command-keys "Refresh (\\[kasten-refresh])")
-	   'face 'kasten-button-face
-	   'action (lambda (_button) (kasten-refresh nil nil)))
-	  (insert " ")
-	  (insert-button
-	   (substitute-command-keys "Quit Kasten (\\[quit-window])")
-	   'face 'kasten-button-face
-	   'action (lambda (_button) (quit-window)))
-	  (insert "\n"))
+        ;; insert either live search or buttons
+        (if kasten--is-live-search
+            (progn
+              (delete-region (line-beginning-position) (line-end-position))
+              (insert (propertize "Live search: "
+                                  'face 'shadow
+                                  'read-only t))
+              (insert (propertize (if (> (length kasten-search-term)
+                                         (- (window-width) 14))
+                                      kasten-search-term
+                                    (format (format "%%-%ds"
+                                                    (- (window-width) 14))
+                                            kasten-search-term))
+                                  'face 'kasten-live-search-edit-face
+                                  'read-only t))
+              (insert "\n"))
+          (delete-region (line-beginning-position) (line-end-position))
+          (insert-button
+           (substitute-command-keys "Live Search (\\[kasten-live-search])")
+           'face 'kasten-button-face
+           'action (lambda (_button) (kasten-live-search)))
+          (insert " ")
+          (insert-button
+           (substitute-command-keys "Filters... (\\[kasten-filters-edit])")
+           'face 'kasten-button-face
+           'action (lambda (_button) (kasten-filters-edit)))
+          (insert " ")
+          (insert-button
+           (substitute-command-keys "Full Search... (\\[kasten-search])")
+           'face 'kasten-button-face
+           'action (lambda (_button) (kasten-search)))
+          (insert " ")
+          (insert-button
+           (substitute-command-keys "Search Tag... (\\[kasten-search-tag])")
+           'face 'kasten-button-face
+           'action (lambda (_button) (kasten-search-tag)))
+          (insert " ")
+          (insert-button
+           (substitute-command-keys "New Note... (\\[kasten-create-new-note])")
+           'face 'kasten-button-face
+           'action (lambda (_button) (kasten-create-new-note)))
+          (insert " ")
+          (insert-button
+           (substitute-command-keys "Refresh (\\[kasten-refresh])")
+           'face 'kasten-button-face
+           'action (lambda (_button) (kasten-refresh nil nil)))
+          (insert " ")
+          (insert-button
+           (substitute-command-keys "Quit Kasten (\\[quit-window])")
+           'face 'kasten-button-face
+           'action (lambda (_button) (quit-window)))
+          (insert "\n"))
 
-	;; insert file index
-	(dolist (file files)
-	  (let* ((title (kasten--parse-title file))
-		 (category (kasten--parse-category file))
-		 (filename (file-name-base file)))
-	    (when (and
-		   (kasten--matches-filter-p title category)
-		   (kasten--matches-search-term-p title category filename))
-	      (insert (propertize title
-				  'face 'kasten-file-title-face
-				  'read-only t))
-	      (unless (string= category "")
-		(insert (propertize kasten-title-category-split
-				    'face 'kasten-title-category-split-face
-				    'read-only t))
-		(insert (propertize category
-				    'face 'kasten-file-category-face
-				    'read-only t)))
-	      (insert (propertize
-		       (make-string ; align the line so that ID is flushed right
-			(max 2 (-
-				(window-width)
-				(length title)
-				(length filename)
-				(if (string= category "") ; handle category
-				    0
-				  (+ (length category)
-				     (length kasten-title-category-split)))
-				(if (display-graphic-p) ; one char less for TTY
-				    0 1)))
-			?\s)
-		       'read-only t))
-	      (insert (propertize filename
-				  'face 'kasten-file-name-face
-				  'read-only t))
-	      (insert (propertize "\n" 'read-only t)))))
+        ;; insert file index
+        (dolist (file files)
+          (let* ((title (kasten--parse-title file))
+                 (category (kasten--parse-category file))
+                 (filename (file-name-base file)))
+            (when (and
+                   (kasten--matches-filter-p title category)
+                   (kasten--matches-search-term-p title category filename))
+              (insert (propertize title
+                                  'face 'kasten-file-title-face
+                                  'read-only t))
+              (unless (string= category "")
+                (insert (propertize kasten-title-category-split
+                                    'face 'kasten-title-category-split-face
+                                    'read-only t))
+                (insert (propertize category
+                                    'face 'kasten-file-category-face
+                                    'read-only t)))
+              (insert (propertize
+                       (make-string ; align the line so that ID is flushed right
+                        (max 2 (-
+                                (window-width)
+                                (length title)
+                                (length filename)
+                                (if (string= category "") ; handle category
+                                    0
+                                  (+ (length category)
+                                     (length kasten-title-category-split)))
+                                (if (display-graphic-p) ; one char less for TTY
+                                    0 1)))
+                        ?\s)
+                       'read-only t))
+              (insert (propertize filename
+                                  'face 'kasten-file-name-face
+                                  'read-only t))
+              (insert (propertize "\n" 'read-only t)))))
 
-	(if (eq is-init t)
-	    (progn
-	      (goto-char (point-min))
-	      (forward-line 2))
-	  (goto-char saved-point))
-	(let ((elapsed (- (float-time) start-time))
-	      (file-count (length files)))
+        (if (eq is-init t)
+            (progn
+              (goto-char (point-min))
+              (forward-line 2))
+          (goto-char saved-point))
+        (let ((elapsed (- (float-time) start-time))
+              (file-count (length files)))
           (if (eq is-auto t)
-	      (message "Kasten: automatically updated index of %d files in \
+              (message "Kasten: automatically updated index of %d files in \
 %.6f seconds"
-		       file-count elapsed)
-	    (message "Kasten: index of %d files updated in %.6f seconds"
-		     file-count elapsed)))))))
+                       file-count elapsed)
+            (message "Kasten: index of %d files updated in %.6f seconds"
+                     file-count elapsed)))))))
 
 (defvar kasten--resize-timer nil
   "Timer to debounce refresh after window resize.")
@@ -693,10 +691,10 @@ according to IS-AUTO."
     (cl-loop
      with now = (current-time)
      for offset-time = (time-add
-			now (seconds-to-time (* kasten-id-clash-time-inc n)))
+                        now (seconds-to-time (* kasten-id-clash-time-inc n)))
      for id-timeformat = (replace-regexp-in-string "%E"
-						   (kasten--safetitle title)
-						   kasten-id-format)
+                                                   (kasten--safetitle title)
+                                                   kasten-id-format)
      for base = (format-time-string id-timeformat offset-time)
      for dir = (format-time-string kasten-folder-timeformat offset-time)
      for rel-path = (format "%s/%s" dir base)
@@ -714,7 +712,7 @@ according to IS-AUTO."
   "Create and open a new Kasten note."
   (interactive)
   (pcase-let* ((title (read-from-minibuffer "[Kasten] Title for new note: "))
-	       (`(:id ,id :path ,path) (kasten--generate-id-and-path title))
+               (`(:id ,id :path ,path) (kasten--generate-id-and-path title))
                (full-path (concat path "." kasten-default-extension))
                (dir (file-name-directory full-path)))
     (unless (file-directory-p dir)
@@ -739,7 +737,7 @@ Insert ID at point and add a backlink from the new note to the current one."
   (pcase-let* ((origin-path buffer-file-name)
                (origin-id (file-name-base origin-path))
                (title (read-from-minibuffer "[Kasten] Title for new note: "))
-	       (`(:id ,id :path ,path) (kasten--generate-id-and-path title))
+               (`(:id ,id :path ,path) (kasten--generate-id-and-path title))
                (new-file (concat path "." kasten-default-extension))
                (new-dir (file-name-directory new-file)))
     (insert (concat kasten-id-symbol id))
@@ -755,7 +753,7 @@ Insert ID at point and add a backlink from the new note to the current one."
        (concat kasten-backlink-comment kasten-id-symbol origin-id "\n")))
     (save-buffer)
     (message "Kasten: created new note `%s' backlinking to `%s' at `%s'"
-	     id origin-id new-file)))
+             id origin-id new-file)))
 
 (defun kasten--parse-title (file)
   "Return the title from FILE or fallback to base filename."
@@ -764,9 +762,9 @@ Insert ID at point and add a backlink from the new note to the current one."
     (let ((contents (buffer-string)))
       (if (string-match kasten-title-regexp contents)
           (let ((title (string-trim (match-string 1 contents))))
-	    (if (string= title "")
-		(concat "<untitled> " (file-relative-name file))
-	      title))
+            (if (string= title "")
+                (concat "<untitled> " (file-relative-name file))
+              title))
         (file-name-base file)))))
 
 (defun kasten--parse-category (file)
@@ -797,16 +795,16 @@ Insert ID at point and add a backlink from the new note to the current one."
          (id (and line (string-trim (car (last (split-string line))))))
          (file (kasten--id-to-file id)))
     (if file
-	(progn
+        (progn
           (find-file file)
-	  (kasten-minor-mode 1)
-	  (message "Kasten: found file `%s'" file))
+          (kasten-minor-mode 1)
+          (message "Kasten: found file `%s'" file))
       (message "Kasten: could not open file with ID `%s': not found" id))))
 
 (defun kasten--id-to-file (id)
   "Find full path of note file matching ID."
   (seq-find (lambda (f)
-	      (string= (file-name-base f) id))
+              (string= (file-name-base f) id))
             (kasten--get-note-files)))
 
 (defun kasten--follow-id-link (id)
@@ -863,7 +861,7 @@ Insert ID at point and add a backlink from the new note to the current one."
   (let* ((files (kasten--get-note-files))
          (ids (mapcar #'file-name-base files))
          (id (completing-read
-	      (concat "[Kasten] Insert ID: " kasten-id-symbol) ids nil nil)))
+              (concat "[Kasten] Insert ID: " kasten-id-symbol) ids nil nil)))
     (when (and id (not (string-empty-p id)))
       (insert (concat kasten-id-symbol id)))))
 
@@ -875,55 +873,55 @@ For each file that contains OLD-ID, ask whether to replace it."
    (let* ((files (kasten--get-note-files))
           (ids (mapcar #'file-name-base files)))
      (list (completing-read
-	    (concat "[Kasten] Change which ID: " kasten-id-symbol)
-	    ids nil nil))))
+            (concat "[Kasten] Change which ID: " kasten-id-symbol)
+            ids nil nil))))
   (let* ((files (kasten--get-note-files))
          (ids (mapcar #'file-name-base files))
-	 (new-id (read-string
-		  (format (concat "[Kasten] Change `" kasten-id-symbol
-				  "%s' to: " kasten-id-symbol)
-			  old-id)))
-	 (start-time (float-time))
-	 (modified-file-cnt 0)
-	 (modification-cnt 0))
+         (new-id (read-string
+                  (format (concat "[Kasten] Change `" kasten-id-symbol
+                                  "%s' to: " kasten-id-symbol)
+                          old-id)))
+         (start-time (float-time))
+         (modified-file-cnt 0)
+         (modification-cnt 0))
     (when (member new-id ids)
       (user-error "Kasten: new ID already exists"))
     (with-temp-message
-	(format "Kasten: checking for references to `%s', may take some time..."
-		old-id)
+        (format "Kasten: checking for references to `%s', may take some time..."
+                old-id)
       (dolist (file (kasten--get-note-files))
-	(with-temp-buffer
+        (with-temp-buffer
           (insert-file-contents file)
           (when (search-forward old-id nil t)
             (goto-char (point-min))
             (when (y-or-n-p (format "Kasten: change `%s' in `%s' to `%s'?"
                                     old-id (file-name-nondirectory file) new-id))
-	      (progn
-		(setq modified-file-cnt (+ modified-file-cnt 1))
-		(while (search-forward old-id nil t)
-		  (progn
-		    (replace-match new-id)
-		    (setq modification-cnt (+ modification-cnt 1)))
-		  (write-region (point-min) (point-max) file))))))))
+              (progn
+                (setq modified-file-cnt (+ modified-file-cnt 1))
+                (while (search-forward old-id nil t)
+                  (progn
+                    (replace-match new-id)
+                    (setq modification-cnt (+ modification-cnt 1)))
+                  (write-region (point-min) (point-max) file))))))))
     (let* ((old-file (kasten--id-to-file old-id))
-	   (old-file-relative-name (file-relative-name old-file))
-	   (old-file-path (file-name-directory old-file))
-	   (new-file-name (concat new-id
-				  "."
-				  (file-name-extension
-				   (kasten--id-to-file old-id))))
-	   (elapsed (- (float-time) start-time)))
+           (old-file-relative-name (file-relative-name old-file))
+           (old-file-path (file-name-directory old-file))
+           (new-file-name (concat new-id
+                                  "."
+                                  (file-name-extension
+                                   (kasten--id-to-file old-id))))
+           (elapsed (- (float-time) start-time)))
       (rename-file old-file (concat old-file-path new-file-name))
       (message
        (format "Kasten: `%s%s' changed to `%s%s', with %d substitutions \
 across %d files; moved file `%s' to `%s'; took %.6f seconds \
 (including waiting time)"
-	       kasten-id-symbol old-id
-	       kasten-id-symbol new-id
-	       modification-cnt modified-file-cnt
-	       old-file-relative-name
-	       (file-relative-name (kasten--id-to-file new-id))
-	       elapsed)))))
+               kasten-id-symbol old-id
+               kasten-id-symbol new-id
+               modification-cnt modified-file-cnt
+               old-file-relative-name
+               (file-relative-name (kasten--id-to-file new-id))
+               elapsed)))))
 
 (defun kasten-search ()
   "Search using `kasten-search-function'."
@@ -935,13 +933,13 @@ across %d files; moved file `%s' to `%s'; took %.6f seconds \
   (interactive)
   (let* ((tags (kasten--collect-tags))
          (tag (completing-read
-	       "[Kasten] Search tag: " tags nil nil kasten-tag-symbol)))
+               "[Kasten] Search tag: " tags nil nil kasten-tag-symbol)))
     (when tag
       (funcall kasten-search-function
-	       kasten-directory
-	       (concat kasten-tag-first-char-regexp
-		       (regexp-quote (substring tag 1))
-		       "\\b")))))
+               kasten-directory
+               (concat kasten-tag-first-char-regexp
+                       (regexp-quote (substring tag 1))
+                       "\\b")))))
 
 (defun kasten--collect-tags ()
   "Return a list of unique tags found in all notes."
@@ -960,7 +958,7 @@ across %d files; moved file `%s' to `%s'; took %.6f seconds \
   (interactive)
   (let* ((tags (kasten--collect-tags))
          (tag (completing-read
-	       "[Kasten] Insert tag: " tags nil nil kasten-tag-symbol)))
+               "[Kasten] Insert tag: " tags nil nil kasten-tag-symbol)))
     (insert tag)))
 
 (defun kasten-show-backlinks-current-note ()
@@ -971,18 +969,18 @@ across %d files; moved file `%s' to `%s'; took %.6f seconds \
     (if (not id)
         (message "Kasten: not visiting a note file")
       (funcall kasten-search-function
-	       kasten-directory (concat kasten-id-symbol (regexp-quote id))))))
+               kasten-directory (concat kasten-id-symbol (regexp-quote id))))))
 
 (defun kasten-show-backlinks (id)
   "Prompt for an ID and show backlinks to it across the notes."
   (interactive
    (let* ((ids (mapcar #'file-name-base (kasten--get-note-files)))
           (choice (completing-read
-		   "[Kasten] Show backlinks to ID: " kasten-id-symbol
-		   ids nil nil)))
+                   "[Kasten] Show backlinks to ID: " kasten-id-symbol
+                   ids nil nil)))
      (list choice)))
   (funcall kasten-search-function
-	   kasten-directory (concat kasten-id-symbol (regexp-quote id))))
+           kasten-directory (concat kasten-id-symbol (regexp-quote id))))
 
 (defun kasten-get-note-path (id)
   "Return the path of the note corresponding to ID.
@@ -1019,16 +1017,16 @@ path.  If called interactively and ID is not provided, use buffer filename."
   (let ((note-file (kasten--id-to-file id)))
     (if note-file
         (let* ((note-dir (file-name-directory note-file))
-	       (name-no-ext (file-name-base note-file))
-	       (attachment-path (concat note-dir name-no-ext "/"
-					(when subdir
-					  (concat subdir "/")))))
-	  (when (and create-if-nonexist
-		     (not (file-directory-p attachment-path)))
-	    (progn
-	      (make-directory attachment-path t)
-	      (message "Kasten: created attachment directory `%s'"
-		       attachment-path)))
+               (name-no-ext (file-name-base note-file))
+               (attachment-path (concat note-dir name-no-ext "/"
+                                        (when subdir
+                                          (concat subdir "/")))))
+          (when (and create-if-nonexist
+                     (not (file-directory-p attachment-path)))
+            (progn
+              (make-directory attachment-path t)
+              (message "Kasten: created attachment directory `%s'"
+                       attachment-path)))
           (when (called-interactively-p 'interactive)
             (message "Kasten: note attachment path is `%s'" attachment-path))
           attachment-path)
