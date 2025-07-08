@@ -462,12 +462,11 @@ Type anywhere to search titles, categories and IDs.  C-g to quit.")))
   "Return t if TITLE or CATEGORY or FILENAME pass search term."
   (if (string= kasten-search-term "")
       t
-    (progn
-      (let ((term (downcase kasten-search-term)))
-	(or (string-match-p (regexp-quote term) (downcase title))
-            (and
-	     category (string-match-p (regexp-quote term) (downcase category)))
-            (string-match-p (regexp-quote term) (downcase filename)))))))
+    (let ((term (downcase kasten-search-term)))
+      (or (string-match-p (regexp-quote term) (downcase title))
+          (and
+	   category (string-match-p (regexp-quote term) (downcase category)))
+          (string-match-p (regexp-quote term) (downcase filename))))))
 
 (defun kasten--live-search-inc ()
   "Filter visible notes as user types."
@@ -486,6 +485,7 @@ Type anywhere to search titles, categories and IDs.  C-g to quit.")))
 
 (defun kasten-refresh (&optional is-init is-auto)
   "Refresh note list.
+
 Reset point if IS-INIT is non-nil; display message with time lapsed and
 according to IS-AUTO."
   (interactive)
@@ -496,6 +496,7 @@ according to IS-AUTO."
 	    (saved-point (point))
 	    (files (kasten--get-note-files)))
 	(erase-buffer)
+	;; insert "Kasten" or "Kasten (fs)"
 	(insert (propertize kasten-buffer-title
 			    'face 'kasten-buffer-title-face
 			    'read-only t))
@@ -522,6 +523,8 @@ according to IS-AUTO."
 	(insert (propertize "\n"
 			    'face 'kasten-buffer-title-face
 			    'read-only t))
+
+	;; insert either live search or buttons
 	(if kasten--is-live-search
 	    (progn
 	      (delete-region (line-beginning-position) (line-end-position))
@@ -537,43 +540,44 @@ according to IS-AUTO."
 				  'face 'kasten-live-search-edit-face
 				  'read-only t))
 	      (insert "\n"))
-	  (progn
-	    (delete-region (line-beginning-position) (line-end-position))
-	    (insert-button
-	     (substitute-command-keys "Live Search (\\[kasten-live-search])")
-	     'face 'kasten-button-face
-	     'action (lambda (_button) (kasten-live-search)))
-	    (insert " ")
-	    (insert-button
-	     (substitute-command-keys "Filters... (\\[kasten-filters-edit])")
-	     'face 'kasten-button-face
-	     'action (lambda (_button) (kasten-filters-edit)))
-	    (insert " ")
-	    (insert-button
-	     (substitute-command-keys "Full Search... (\\[kasten-search])")
-	     'face 'kasten-button-face
-	     'action (lambda (_button) (kasten-search)))
-	    (insert " ")
-	    (insert-button
-	     (substitute-command-keys "Search Tag... (\\[kasten-search-tag])")
-	     'face 'kasten-button-face
-	     'action (lambda (_button) (kasten-search-tag)))
-	    (insert " ")
-	    (insert-button
-	     (substitute-command-keys "New Note... (\\[kasten-create-new-note])")
-	     'face 'kasten-button-face
-	     'action (lambda (_button) (kasten-create-new-note)))
-	    (insert " ")
-	    (insert-button
-	     (substitute-command-keys "Refresh (\\[kasten-refresh])")
-	     'face 'kasten-button-face
-	     'action (lambda (_button) (kasten-refresh nil nil)))
-	    (insert " ")
-	    (insert-button
-	     (substitute-command-keys "Quit Kasten (\\[quit-window])")
-	     'face 'kasten-button-face
-	     'action (lambda (_button) (quit-window)))
-	    (insert "\n")))
+	  (delete-region (line-beginning-position) (line-end-position))
+	  (insert-button
+	   (substitute-command-keys "Live Search (\\[kasten-live-search])")
+	   'face 'kasten-button-face
+	   'action (lambda (_button) (kasten-live-search)))
+	  (insert " ")
+	  (insert-button
+	   (substitute-command-keys "Filters... (\\[kasten-filters-edit])")
+	   'face 'kasten-button-face
+	   'action (lambda (_button) (kasten-filters-edit)))
+	  (insert " ")
+	  (insert-button
+	   (substitute-command-keys "Full Search... (\\[kasten-search])")
+	   'face 'kasten-button-face
+	   'action (lambda (_button) (kasten-search)))
+	  (insert " ")
+	  (insert-button
+	   (substitute-command-keys "Search Tag... (\\[kasten-search-tag])")
+	   'face 'kasten-button-face
+	   'action (lambda (_button) (kasten-search-tag)))
+	  (insert " ")
+	  (insert-button
+	   (substitute-command-keys "New Note... (\\[kasten-create-new-note])")
+	   'face 'kasten-button-face
+	   'action (lambda (_button) (kasten-create-new-note)))
+	  (insert " ")
+	  (insert-button
+	   (substitute-command-keys "Refresh (\\[kasten-refresh])")
+	   'face 'kasten-button-face
+	   'action (lambda (_button) (kasten-refresh nil nil)))
+	  (insert " ")
+	  (insert-button
+	   (substitute-command-keys "Quit Kasten (\\[quit-window])")
+	   'face 'kasten-button-face
+	   'action (lambda (_button) (quit-window)))
+	  (insert "\n"))
+
+	;; insert file index
 	(dolist (file files)
 	  (let* ((title (kasten--parse-org-title file))
 		 (category (kasten--parse-category file))
@@ -609,6 +613,7 @@ according to IS-AUTO."
 				  'face 'kasten-file-name-face
 				  'read-only t))
 	      (insert (propertize "\n" 'read-only t)))))
+
 	(if (eq is-init t)
 	    (progn
 	      (goto-char (point-min))
