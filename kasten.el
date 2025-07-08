@@ -424,6 +424,18 @@ filters.  \\[kasten-filters-save-and-kill] to apply.  \
 (defvar kasten-search-term ""
   "Quick search term.")
 
+(defvar kasten--original-map nil)
+
+(defun kasten--quit-live-search ()
+  "Quit live search and reset to normal Kasten."
+  (interactive)
+  (message "Kasten: quit live search")
+  (use-local-map kasten--original-map)
+  (setq kasten--is-live-search nil)
+  (setq kasten-search-term "")
+  (kasten-refresh nil nil)
+  (setq buffer-read-only t))
+
 (defun kasten-live-search ()
   "Live search notes by title, category or ID."
   (interactive)
@@ -435,9 +447,9 @@ filters.  \\[kasten-filters-save-and-kill] to apply.  \
     (goto-char (point-min))
     (forward-line 2))
   (let ((inhibit-read-only t)
-        (original-map (current-local-map))
         (map (make-keymap))
         (i 0))
+    (setq kasten--original-map (current-local-map))
     (set-keymap-parent map (current-local-map))
     (set-char-table-range (nth 1 map) (cons #x100 (max-char))
                           'kasten--live-search-inc)
@@ -445,15 +457,6 @@ filters.  \\[kasten-filters-save-and-kill] to apply.  \
     (while (< i 256)
       (define-key map (vector i) 'kasten--live-search-inc)
       (setq i (1+ i)))
-    (defun kasten--quit-live-search ()
-      "Quit live search and reset to normal Kasten."
-      (interactive)
-      (message "Kasten: quit live search")
-      (use-local-map original-map)
-      (setq kasten--is-live-search nil)
-      (setq kasten-search-term "")
-      (kasten-refresh nil nil)
-      (setq buffer-read-only t))
     (define-key map (kbd "C-g") #'kasten--quit-live-search)
     (define-key map (kbd "ESC ESC ESC") #'kasten--quit-live-search)
     (use-local-map map)
