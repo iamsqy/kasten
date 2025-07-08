@@ -23,11 +23,12 @@ jobs:
         pip install ~/melpazoid
         sudo mkdir -p /workspace/jrn/
         sudo mkdir -p /home/runner/jrn
+        sudo chown runner:runner /workspace/jrn
+        sudo chmod -R 777 /workspace/jrn
         whoami
         sudo whoami
         ls -la /workspace/jrn
         ls -la ~/jrn
-        whoami
     - name: Run
       env:
         LOCAL_REPO: ${{ github.workspace }}
