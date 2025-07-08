@@ -176,16 +176,15 @@ following to the Emacs configuration file (such as &#8216;<literal>init.el</lite
 <title>Kasten Major Mode and Kasten Minor Mode</title>
 
 <para>Kasten major mode (&#8216;<literal>kasten-mode</literal>&#8217;) is for note browsing, filtering and editing,
-similar to Deft.  Kasten minor mode (&#8216;<literal>kasten-minor-mode</literal>&#8217;) is for invoking Kasten
-methods whilst visiting a note.  For Kasten major mode map and usage, see
-<link linkend="Kasten-Major-Mode">Kasten Major Mode</link>.
+similar to Deft.  For Kasten major mode map and usage, see <link linkend="Kasten-Major-Mode">Kasten Major Mode</link>.
+Kasten minor mode (&#8216;<literal>kasten-minor-mode</literal>&#8217;) is for invoking Kasten methods whilst
+visiting a note.  For Kasten minor mode map and usage, see <link linkend="Kasten-Minor-Mode">Kasten Minor Mode</link>.
 </para>
 <synopsis><indexterm role="fn"><primary>kasten</primary></indexterm><phrase role="category"><emphasis role="bold">Command</emphasis>:</phrase> <function>kasten</function></synopsis>
 <blockquote><para>Launch Kasten major mode with <userinput>M-x kasten <keycap>RET</keycap></userinput>.
 </para></blockquote>
 <para>Kasten minor mode is enabled by default if the note buffer is created by Kasten.
-Kasten minor mode has a lighter &#8216;<literal>Kt</literal>&#8217; (customisable).  For Kasten minor mode map
-and usage, see <link linkend="Kasten-Minor-Mode">Kasten Minor Mode</link>.
+Kasten minor mode has a lighter &#8216;<literal>Kt</literal>&#8217; (customisable).
 </para>
 <synopsis><indexterm role="fn"><primary>kasten-minor-mode</primary></indexterm><phrase role="category"><emphasis role="bold">Command</emphasis>:</phrase> <function>kasten-minor-mode</function></synopsis>
 <blockquote><para>Toggle <literal>kasten-minor-mode</literal> for current buffer.

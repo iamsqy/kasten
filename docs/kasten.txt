@@ -184,16 +184,16 @@ the following to the Emacs configuration file (such as ‘init.el’):
 ===========================================
 
 Kasten major mode (‘kasten-mode’) is for note browsing, filtering and
-editing, similar to Deft.  Kasten minor mode (‘kasten-minor-mode’) is
-for invoking Kasten methods whilst visiting a note.  For Kasten major
-mode map and usage, see Kasten Major Mode.
+editing, similar to Deft.  For Kasten major mode map and usage, see
+Kasten Major Mode.  Kasten minor mode (‘kasten-minor-mode’) is for
+invoking Kasten methods whilst visiting a note.  For Kasten minor mode
+map and usage, see Kasten Minor Mode.
 
  -- Command: kasten
      Launch Kasten major mode with ‘M-x kasten <RET>’.
 
    Kasten minor mode is enabled by default if the note buffer is created
-by Kasten.  Kasten minor mode has a lighter ‘Kt’ (customisable).  For
-Kasten minor mode map and usage, see Kasten Minor Mode.
+by Kasten.  Kasten minor mode has a lighter ‘Kt’ (customisable).
 
  -- Command: kasten-minor-mode
      Toggle ‘kasten-minor-mode’ for current buffer.
