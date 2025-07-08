@@ -268,8 +268,7 @@ Set to 60 for 1 minute."
   :group 'kasten
   (if kasten-minor-mode
       (progn
-	(with-eval-after-load 'org
-	  (add-hook 'org-mode-hook #'kasten--setup-id-buttons))
+	(add-hook 'org-mode-hook #'kasten--setup-id-buttons)
         (unless (derived-mode-p 'kasten-mode 'text-mode)
           (display-warning
            'kasten-minor-mode
