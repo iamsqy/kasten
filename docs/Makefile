@@ -2,7 +2,7 @@
 
 TEXI=kasten.texi
 BASE=kasten
-CSS=https://www.gnu.org/style.css
+CSS=https://iamsqy.github.io/kasten/gnu.org.css
 
 .PHONY: all clean html html-ns xml docbook pdf text info latex
 
