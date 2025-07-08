@@ -24,7 +24,9 @@ jobs:
         sudo mkdir -p /workspace/jrn/
         sudo mkdir -p /home/runner/jrn
         sudo chown runner:runner /workspace/jrn
+        sudo chown runner:runner /home/runner/jrn
         sudo chmod -R 777 /workspace/jrn
+        sudo chmod -R 777 /home/runner/jrn
         whoami
         sudo whoami
         ls -la /workspace/jrn
