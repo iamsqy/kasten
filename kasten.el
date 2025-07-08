@@ -310,35 +310,27 @@ not derived from text-mode. Answer `y' if you want to treat `%s' as note."
     map)
   "Keymap for Kasten filters mode'.")
 
-(defvar kasten-filters-font-lock-keywords
-  '(("^%.*$" . font-lock-comment-face)
-    ("^#.*$" . font-lock-keyword-face))
-  "Font lock keywords for Kasten filters mode.")
-
 (define-derived-mode kasten-filters-mode text-mode "Kasten-Filters"
   "Major mode for editing Kasten filters."
   (setq buffer-read-only nil)
-  (setq font-lock-defaults '(kasten-filters-font-lock-keywords))
+  (setq font-lock-defaults '((("^%.*$" . font-lock-comment-face)
+			      ("^#.*$" . font-lock-keyword-face))))
   (let ((inhibit-read-only t))
-    (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward "^[%#].*$" nil t)
-        (add-text-properties (match-beginning 0) (match-end 0)
-                             '(read-only t front-sticky t rear-nonsticky t)))))
+    (goto-char (point-min))
+    (while (re-search-forward "^[%#].*$" nil t)
+      (add-text-properties (match-beginning 0) (match-end 0)
+                           '(read-only t front-sticky t rear-nonsticky t))))
   (setq-local header-line-format (substitute-command-keys "[Kasten] Edit \
 filters.  \\[kasten-filters-save-and-kill] to apply.  \
 \\[kill-buffer-and-window] to discard.")))
 
-(add-hook 'kasten-filters-mode-hook
-          (lambda ()
-            (display-line-numbers-mode -1)
-            (setq truncate-lines t)))
-
 (defun kasten-filters--insert-current ()
   "Insert the current Kasten filter in the editing buffer."
-  (let ((title-list (plist-get kasten-filters :title))
-        (category-list (plist-get kasten-filters :category))
+  (let ((inhibit-read-only t)
+	(title-list (plist-get kasten-filters :title))
+	(category-list (plist-get kasten-filters :category))
         (mode (plist-get kasten-filters :mode)))
+    (erase-buffer)
     (insert "\
 % To customise Kasten filters, edit this buffer.  When done, `C-c C-c' to\n")
     (insert "\
@@ -352,8 +344,7 @@ filters.  \\[kasten-filters-save-and-kill] to apply.  \
           (insert elem "\n")
           (setq tail (cdr tail)))))
     (when (null title-list) (insert "\n"))
-    (insert "\
-% Category filters: one per line, case sensitive.\n")
+    (insert "% Category filters: one per line, case sensitive.\n")
     (insert "# category\n")
     (let ((tail category-list))
       (while tail
@@ -372,10 +363,10 @@ filters.  \\[kasten-filters-save-and-kill] to apply.  \
   (interactive)
   (let ((buf (get-buffer-create kasten-filters-buffer-name)))
     (with-current-buffer buf
-      (read-only-mode -1)
-      (erase-buffer)
       (kasten-filters--insert-current)
-      (kasten-filters-mode))
+      (kasten-filters-mode)
+      (display-line-numbers-mode -1)
+      (setq truncate-lines t))
     (pop-to-buffer buf)))
 
 (defun kasten-filters--toggle-the-mode ()
@@ -418,7 +409,7 @@ filters.  \\[kasten-filters-save-and-kill] to apply.  \
     (setq title-list (nreverse title-list))
     (setq category-list (nreverse category-list))
     (unless (member mode '(or and))
-      (user-error "Kasten: `Mode' must be `'or' or `'and', got `%s'" mode))
+      (user-error "Kasten: `Mode' must be `and' or `or', got `%s'" mode))
     (setq kasten-filters
 	  `(:title ,title-list :category ,category-list :mode ,mode))
     (kasten-refresh nil nil)
