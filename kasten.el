@@ -740,7 +740,7 @@ Insert ID at point and add a backlink from the new note to the current one."
                (`(:id ,id :path ,path) (kasten--generate-id-and-path title))
                (new-file (concat path "." kasten-default-extension))
                (new-dir (file-name-directory new-file)))
-    (insert (concat kasten-id-symbol id))
+    (insert kasten-id-symbol id)
     (unless (file-directory-p new-dir)
       (make-directory new-dir t)
       (message "Kasten: created directory `%s'" new-dir))
@@ -750,7 +750,7 @@ Insert ID at point and add a backlink from the new note to the current one."
     (save-excursion
       (insert "\n")
       (insert
-       (concat kasten-backlink-comment kasten-id-symbol origin-id "\n")))
+       kasten-backlink-comment kasten-id-symbol origin-id "\n"))
     (save-buffer)
     (message "Kasten: created new note `%s' backlinking to `%s' at `%s'"
              id origin-id new-file)))
@@ -863,7 +863,7 @@ Insert ID at point and add a backlink from the new note to the current one."
          (id (completing-read
               (concat "[Kasten] Insert ID: " kasten-id-symbol) ids nil nil)))
     (when (and id (not (string-empty-p id)))
-      (insert (concat kasten-id-symbol id)))))
+      (insert kasten-id-symbol id))))
 
 (defun kasten-change-id (old-id)
   "Change occurrences of OLD-ID to a new ID in all note files.
@@ -912,8 +912,7 @@ For each file that contains OLD-ID, ask whether to replace it."
                                    (kasten--id-to-file old-id))))
            (elapsed (- (float-time) start-time)))
       (rename-file old-file (concat old-file-path new-file-name))
-      (message
-       (format "Kasten: `%s%s' changed to `%s%s', with %d substitutions \
+      (message "Kasten: `%s%s' changed to `%s%s', with %d substitutions \
 across %d files; moved file `%s' to `%s'; took %.6f seconds \
 (including waiting time)"
                kasten-id-symbol old-id
@@ -921,7 +920,7 @@ across %d files; moved file `%s' to `%s'; took %.6f seconds \
                modification-cnt modified-file-cnt
                old-file-relative-name
                (file-relative-name (kasten--id-to-file new-id))
-               elapsed)))))
+               elapsed))))
 
 (defun kasten-search ()
   "Search using `kasten-search-function'."
