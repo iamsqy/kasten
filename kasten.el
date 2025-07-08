@@ -275,7 +275,7 @@ not derived from text-mode. Answer `y' if you want to treat `%s' as note."
 
 :title is a list of substrings to match in the title.
 :category is a list of categories for exact matching.
-:mode is either 'or or 'and to combine the title and category filters.")
+:mode is either `or' or `and' to combine the title and category filters.")
 
 (defun kasten-filters-active-p ()
   "Return non-nil if `kasten-filters' has active filters."
