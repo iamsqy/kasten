@@ -215,11 +215,8 @@ Set to 60 for 1 minute."
 (defvar kasten--is-live-search nil
   "Non-nil if currently doing a live search.")
 
-(defcustom kasten-auto-refresh t
-  "If non-nil, automatically refresh Kasten buffer when files change."
-  :type 'boolean
-  :group 'kasten
-  :set #'kasten--set-auto-refresh)
+(defvar kasten-auto-refresh t ;; properly defined later
+  "If non-nil, automatically refresh Kasten buffer when files change.")
 
 (defvar kasten-mode-map
   (let ((map (make-sparse-keymap)))
@@ -680,6 +677,12 @@ according to IS-AUTO."
   (when kasten--watch-handle
     (file-notify-rm-watch kasten--watch-handle)
     (setq kasten--watch-handle nil)))
+
+(defcustom kasten-auto-refresh t
+  "If non-nil, automatically refresh Kasten buffer when files change."
+  :type 'boolean
+  :group 'kasten
+  :set #'kasten--set-auto-refresh)
 
 (defun kasten--safetitle (title)
   "Convert TITLE to a safe short string can be used for ID or filename."
