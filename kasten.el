@@ -752,22 +752,23 @@ Insert ID at point and add a backlink from the new note to the current one."
                (origin-id (file-name-base origin-path))
                (title (read-from-minibuffer "[Kasten] Title for new note: "))
 	       (`(:id ,id :path ,path) (kasten--generate-id-and-path title))
-               (new-file (concat new-path "." kasten-default-extension))
+               (new-file (concat path "." kasten-default-extension))
                (new-dir (file-name-directory new-file)))
-    (insert (concat kasten-id-symbol new-id))
+    (insert (concat kasten-id-symbol id))
     (unless (file-directory-p new-dir)
       (progn
 	(make-directory new-dir t)
 	(message "Kasten: created directory `%s'" new-dir)))
     (find-file new-file)
     (insert kasten-note-title-template)
+    (insert title)
     (save-excursion
       (insert "\n")
       (insert
        (concat kasten-backlink-comment kasten-id-symbol origin-id "\n")))
     (save-buffer)
     (message "Kasten: created new note `%s' backlinking to `%s' at `%s'"
-	     new-id new-file origin-id)))
+	     id origin-id new-file)))
 
 (defun kasten--parse-org-title (file)
   "Return the title from FILE or fallback to base filename."
