@@ -35,6 +35,7 @@
 (require 'consult)
 (require 'filenotify)
 (require 'button)
+(require 'subr-x)
 
 (defgroup kasten nil
   "Zettelkasten note browsing tool."
