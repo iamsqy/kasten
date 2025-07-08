@@ -3,7 +3,7 @@
 <!-- Created by GNU Texinfo 7.2, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!-- This manual is for Kasten (version 0.2, last updated 6 July 2025), which is
+<!-- This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
 an Emacs package for managing Zettelkasten-style notes.
 
 Copyright © 2025 Qiyang Sun
@@ -31,12 +31,15 @@ the section entitled "GNU Free Documentation License".
 <!--
 a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
 div.example {margin-left: 3.2em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
 span:hover a.copiable-link {visibility: visible}
+strong.def-name {font-family: monospace; font-weight: bold; font-size: larger}
 ul.mark-bullet {list-style-type: disc}
 ul.toc-numbered-mark {list-style: none}
 -->
 </style>
-<link rel="stylesheet" type="text/css" href="https://www.gnu.org/style.css">
+<link rel="stylesheet" type="text/css" href="https://iamsqy.github.io/kasten/gnu.org.css">
 
 
 </head>
@@ -53,6 +56,22 @@ ul.toc-numbered-mark {list-style: none}
 Next: <a href="#Synopsis" accesskey="n" rel="next">Synopsis</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
 </div>
 <h1 class="top" id="Kasten-Manual"><span>Kasten Manual<a class="copiable-link" href="#Kasten-Manual"> &para;</a></span></h1>
+
+<p>This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
+an Emacs package for managing Zettelkasten-style notes.
+</p>
+<p>Copyright &copy; 2025 Qiyang Sun
+</p>
+<blockquote class="quotation">
+<p>Permission is granted to copy, distribute and/or modify this
+document under the terms of the GNU Free Documentation License,
+Version 1.3 or any later version published by the Free Software
+Foundation; with no Invariant Sections, with no Front-Cover Texts,
+and with no Back-Cover Texts.  A copy of the license is included in
+the section entitled &ldquo;GNU Free Documentation License&rdquo;.
+</p>
+</blockquote>
+
 
 
 <div class="region-contents" id="SEC_Contents">
@@ -71,11 +90,19 @@ Next: <a href="#Synopsis" accesskey="n" rel="next">Synopsis</a> &nbsp; [<a href=
   <li><a id="toc-Features" href="#Features">4 Features</a></li>
   <li><a id="toc-Installation" href="#Installation">5 Installation</a>
   <ul class="toc-numbered-mark">
-    <li><a id="toc-MELPA-_0028not-yet-published_0029-and-use_002dpackage" href="#MELPA-_0028not-yet-published_0029-and-use_002dpackage">5.1 MELPA (not yet published) and <code class="code">use-package</code></a></li>
-    <li><a id="toc-Tarball" href="#Tarball">5.2 Tarball</a></li>
-    <li><a id="toc-Manual-Installation" href="#Manual-Installation">5.3 Manual Installation</a></li>
+    <li><a id="toc-Tarball" href="#Tarball">5.1 Tarball</a></li>
+    <li><a id="toc-Manual-Installation" href="#Manual-Installation">5.2 Manual Installation</a></li>
   </ul></li>
-  <li><a id="toc-Usage" href="#Usage">6 Usage</a></li>
+  <li><a id="toc-Usage" href="#Usage">6 Usage</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Kasten-Major-Mode-and-Kasten-Minor-Mode" href="#Kasten-Major-Mode-and-Kasten-Minor-Mode">6.1 Kasten Major Mode and Kasten Minor Mode</a></li>
+    <li><a id="toc-Kasten-Major-Mode" href="#Kasten-Major-Mode">6.2 Kasten Major Mode</a>
+    <ul class="toc-numbered-mark">
+      <li><a id="toc-Live-Search" href="#Live-Search">6.2.1 Live Search</a></li>
+      <li><a id="toc-Filters" href="#Filters">6.2.2 Filters</a></li>
+    </ul></li>
+    <li><a id="toc-Kasten-Minor-Mode" href="#Kasten-Minor-Mode">6.3 Kasten Minor Mode</a></li>
+  </ul></li>
   <li><a id="toc-Customisation" href="#Customisation">7 Customisation</a></li>
   <li><a id="toc-Benchmark" href="#Benchmark">8 Benchmark</a></li>
   <li><a id="toc-Contributing" href="#Contributing">9 Contributing</a></li>
@@ -95,7 +122,7 @@ Next: <a href="#Copying" accesskey="n" rel="next">Copying</a>, Previous: <a href
 <p>&lsquo;<samp class="samp">Kasten</samp>&rsquo; is an <a class="uref" href="https://www.gnu.org/software/emacs/">Emacs</a> package designed to provide a focused and efficient
 browsing experience for <a class="uref" href="https://zettelkasten.de/">Zettelkasten</a>-style notes.
 </p>
-<p>Kasten is inspired by <a class="uref" href="https://melpa.org/#/deft">deft</a> and <a class="uref" href="https://melpa.org/#/zetteldeft">zetteldeft</a>.
+<p>Kasten is inspired by <a class="uref" href="https://melpa.org/#/deft">Deft</a> and <a class="uref" href="https://melpa.org/#/zetteldeft">Zetteldeft</a>.
 </p>
 <hr>
 </div>
@@ -105,6 +132,12 @@ browsing experience for <a class="uref" href="https://zettelkasten.de/">Zettelka
 Next: <a href="#Concepts" accesskey="n" rel="next">Concepts</a>, Previous: <a href="#Synopsis" accesskey="p" rel="prev">Synopsis</a>, Up: <a href="#Top" accesskey="u" rel="up">Kasten Manual</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
 </div>
 <h2 class="chapter" id="Copying-1"><span>2 Copying<a class="copiable-link" href="#Copying-1"> &para;</a></span></h2>
+
+<ul class="itemize mark-bullet">
+<li>Kasten is not part of GNU Emacs.
+</li><li>Kasten is free software.
+</li><li>Kasten Manual is free documentation.
+</li></ul>
 
 
 <ul class="mini-toc">
@@ -169,8 +202,32 @@ Next: <a href="#Features" accesskey="n" rel="next">Features</a>, Previous: <a hr
 </div>
 <h2 class="chapter" id="Concepts-1"><span>3 Concepts<a class="copiable-link" href="#Concepts-1"> &para;</a></span></h2>
 
-<p>To be written.
+<p>&ldquo;Zettelkasten&rdquo; is a note-taking and personal knowledge management system
+intensively used by Niklas Luhmann et al.  In Zettelkasten, notes should be
+atomic, connected through meaningful links.
 </p>
+<p>The introduction to Zettelkasten method can be found online, such as
+<a class="uref" href="https://zettelkasten.de/">https://zettelkasten.de/</a> and <a class="uref" href="https://en.wikipedia.org/wiki/Zettelkasten">https://en.wikipedia.org/wiki/Zettelkasten</a>.
+Readers may wish to refer to the literature as the Kasten Manual does not
+provide a detailed introduction to the Zettelkasten methodology itself.
+</p>
+<p>Kasten is inspired by Zetteldeft, a Zettelkasten system on top of Deft.  Deft is
+a note browsing system inspired by Notational Velocity.
+</p>
+<p>Kasten designed based on the following ideas in mind.
+</p><ul class="itemize mark-bullet">
+<li>The system should be highly customisable.
+</li><li>The system should be fast.
+</li><li>Each note has a unique ID as its filename, typically derived from the creation
+time.
+</li><li>Notes can be linked to each other by inserting IDs.
+</li><li>Notes can be tagged.  A note may have zero, one or many tags.
+</li><li>Notes can be categorised.  A note may have zero or one category.  This is
+against the Zettelkasten principles, but Kasten users should have the right to
+category their notes should they wish to, for example, if they have their own
+philosophies of knowledge management.
+</li></ul>
+
 <hr>
 </div>
 <div class="chapter-level-extent" id="Features">
@@ -195,7 +252,7 @@ Next: <a href="#Installation" accesskey="n" rel="next">Installation</a>, Previou
 <ul class="itemize mark-bullet">
 <li>Heavy content search &lsquo;<samp class="samp">consult-ripgrep</samp>&rsquo; (needs package <a class="uref" href="https://melpa.org/#/consult">consult</a>,
 customisable).
-</li><li>Limited use of &lsquo;<samp class="samp">string-match</samp>&rsquo; (<code class="code">C-h</code> <code class="code">f</code> <code class="code">string-match</code> <code class="code">&lt;RET&gt;</code>).
+</li><li>Limited use of &lsquo;<samp class="samp">string-match</samp>&rsquo; (<kbd class="kbd">C-h f string-match <kbd class="key">RET</kbd></kbd>).
 </li></ul>
 </li><li>ID format fully customisable (with the ability to include sanitised title).
 </li><li>Followable note IDs for easy navigation.
@@ -218,40 +275,16 @@ Next: <a href="#Usage" accesskey="n" rel="next">Usage</a>, Previous: <a href="#F
 
 
 <ul class="mini-toc">
-<li><a href="#MELPA-_0028not-yet-published_0029-and-use_002dpackage" accesskey="1">MELPA (not yet published) and <code class="code">use-package</code></a></li>
-<li><a href="#Tarball" accesskey="2">Tarball</a></li>
-<li><a href="#Manual-Installation" accesskey="3">Manual Installation</a></li>
+<li><a href="#Tarball" accesskey="1">Tarball</a></li>
+<li><a href="#Manual-Installation" accesskey="2">Manual Installation</a></li>
 </ul>
 <hr>
-<div class="section-level-extent" id="MELPA-_0028not-yet-published_0029-and-use_002dpackage">
-<div class="nav-panel">
-<p>
-Next: <a href="#Tarball" accesskey="n" rel="next">Tarball</a>, Up: <a href="#Installation" accesskey="u" rel="up">Installation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
-</div>
-<h3 class="section" id="MELPA-_0028not-yet-published_0029-and-use_002dpackage-1"><span>5.1 MELPA (not yet published) and <code class="code">use-package</code><a class="copiable-link" href="#MELPA-_0028not-yet-published_0029-and-use_002dpackage-1"> &para;</a></span></h3>
-
-<p>If MELPA is in the package archives, simply:
-</p>
-<p><code class="code">M-x</code> <code class="code">package-install</code> <code class="code">&lt;RET&gt;</code> <code class="code">kasten</code> <code class="code">&lt;RET&gt;</code>
-</p>
-<p>If using &lsquo;<samp class="samp">use-package</samp>&rsquo;, add the following to the Emacs configuration file (such
-as &lsquo;<samp class="samp">init.el</samp>&rsquo;):
-</p>
-<div class="example lisp">
-<pre class="lisp-preformatted">(use-package kasten
-  :ensure t
-  :defer t
-  :commands (kasten))
-</pre></div>
-
-<hr>
-</div>
 <div class="section-level-extent" id="Tarball">
 <div class="nav-panel">
 <p>
-Next: <a href="#Manual-Installation" accesskey="n" rel="next">Manual Installation</a>, Previous: <a href="#MELPA-_0028not-yet-published_0029-and-use_002dpackage" accesskey="p" rel="prev">MELPA (not yet published) and <code class="code">use-package</code></a>, Up: <a href="#Installation" accesskey="u" rel="up">Installation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+Next: <a href="#Manual-Installation" accesskey="n" rel="next">Manual Installation</a>, Up: <a href="#Installation" accesskey="u" rel="up">Installation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
 </div>
-<h3 class="section" id="Tarball-1"><span>5.2 Tarball<a class="copiable-link" href="#Tarball-1"> &para;</a></span></h3>
+<h3 class="section" id="Tarball-1"><span>5.1 Tarball<a class="copiable-link" href="#Tarball-1"> &para;</a></span></h3>
 
 <ol class="enumerate">
 <li> Download the latest release tarball and signature (&lsquo;<samp class="samp">*.sig</samp>&rsquo;) from the <a class="uref" href="https://github.com/iamsqy/kasten/releases">GitHub
@@ -269,7 +302,7 @@ file has extension &lsquo;<samp class="samp">.tar.gz</samp>&rsquo;, extract it.
 <div class="example">
 <pre class="example-preformatted">gzip -d /path/to/kasten.tar.gz
 </pre></div>
-</li><li> In Emacs, run <br>
+</li><li> In Emacs, run
 <code class="code">M-x</code> <code class="code">package-install-file</code> <code class="code">&lt;RET&gt;</code> <code class="code">/path/to/kasten.tar</code> <code class="code">&lt;RET&gt;</code>
 </li></ol>
 
@@ -280,7 +313,7 @@ file has extension &lsquo;<samp class="samp">.tar.gz</samp>&rsquo;, extract it.
 <p>
 Previous: <a href="#Tarball" accesskey="p" rel="prev">Tarball</a>, Up: <a href="#Installation" accesskey="u" rel="up">Installation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
 </div>
-<h3 class="section" id="Manual-Installation-1"><span>5.3 Manual Installation<a class="copiable-link" href="#Manual-Installation-1"> &para;</a></span></h3>
+<h3 class="section" id="Manual-Installation-1"><span>5.2 Manual Installation<a class="copiable-link" href="#Manual-Installation-1"> &para;</a></span></h3>
 
 <p>Clone or download &lsquo;<samp class="samp">kasten.el</samp>&rsquo; and place it in the &lsquo;<samp class="samp">load-path</samp>&rsquo;. Then add the
 following to the Emacs configuration file (such as &lsquo;<samp class="samp">init.el</samp>&rsquo;):
@@ -299,20 +332,162 @@ Next: <a href="#Customisation" accesskey="n" rel="next">Customisation</a>, Previ
 </div>
 <h2 class="chapter" id="Usage-1"><span>6 Usage<a class="copiable-link" href="#Usage-1"> &para;</a></span></h2>
 
-<p><strong class="strong">TODO: outdated</strong>
-</p>
-<p>Launch Kasten with <code class="code">M-x</code> <code class="code">kasten</code> <code class="code">&lt;RET&gt;</code>
-</p>
-<p>Inside the &lsquo;<samp class="samp">*Kasten*</samp>&rsquo; buffer:
-</p><ul class="itemize mark-bullet">
-<li>Hit &lsquo;<samp class="samp">&lt;RET&gt;</samp>&rsquo; to open the selected note.
-</li><li>Hit &lsquo;<samp class="samp">/</samp>&rsquo; to search notes.
-</li><li>Hit &lsquo;<samp class="samp">g</samp>&rsquo; to refresh the notes list.
-</li></ul>
 
-<p>One may want to add more key bindings to &lsquo;<samp class="samp">kasten-mode-map</samp>&rsquo;.
+<ul class="mini-toc">
+<li><a href="#Kasten-Major-Mode-and-Kasten-Minor-Mode" accesskey="1">Kasten Major Mode and Kasten Minor Mode</a></li>
+<li><a href="#Kasten-Major-Mode" accesskey="2">Kasten Major Mode</a></li>
+<li><a href="#Kasten-Minor-Mode" accesskey="3">Kasten Minor Mode</a></li>
+</ul>
+<hr>
+<div class="section-level-extent" id="Kasten-Major-Mode-and-Kasten-Minor-Mode">
+<div class="nav-panel">
+<p>
+Next: <a href="#Kasten-Major-Mode" accesskey="n" rel="next">Kasten Major Mode</a>, Up: <a href="#Usage" accesskey="u" rel="up">Usage</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<h3 class="section" id="Kasten-Major-Mode-and-Kasten-Minor-Mode-1"><span>6.1 Kasten Major Mode and Kasten Minor Mode<a class="copiable-link" href="#Kasten-Major-Mode-and-Kasten-Minor-Mode-1"> &para;</a></span></h3>
+
+<p>Kasten major mode (&lsquo;<samp class="samp">kasten-mode</samp>&rsquo;) is for note browsing, filtering and editing,
+similar to Deft.  Kasten minor mode (&lsquo;<samp class="samp">kasten-minor-mode</samp>&rsquo;) is for invoking Kasten
+methods whilst visiting a note.  For Kasten major mode map and usage, see
+<a class="ref" href="#Kasten-Major-Mode">Kasten Major Mode</a>.
+</p>
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-kasten"><span class="category-def">Command: </span><span><strong class="def-name">kasten</strong><a class="copiable-link" href="#index-kasten"> &para;</a></span></dt>
+<dd><p>Launch Kasten major mode with <kbd class="kbd">M-x kasten <kbd class="key">RET</kbd></kbd>.
+</p></dd></dl>
+
+<p>Kasten minor mode is enabled by default if the note buffer is created by Kasten.
+Kasten minor mode has a lighter &lsquo;<samp class="samp">Kt</samp>&rsquo; (customisable).  For Kasten minor mode map
+and usage, see <a class="ref" href="#Kasten-Minor-Mode">Kasten Minor Mode</a>.
+</p>
+<dl class="first-deffn def-block">
+<dt class="deffn def-line" id="index-kasten_002dminor_002dmode"><span class="category-def">Command: </span><span><strong class="def-name">kasten-minor-mode</strong><a class="copiable-link" href="#index-kasten_002dminor_002dmode"> &para;</a></span></dt>
+<dd><p>Toggle <code class="code">kasten-minor-mode</code> for current buffer.
+</p></dd></dl>
+
+<p>Refer to the Emacs Lisp code for detailed function and variable documentations.
 </p>
 <hr>
+</div>
+<div class="section-level-extent" id="Kasten-Major-Mode">
+<div class="nav-panel">
+<p>
+Next: <a href="#Kasten-Minor-Mode" accesskey="n" rel="next">Kasten Minor Mode</a>, Previous: <a href="#Kasten-Major-Mode-and-Kasten-Minor-Mode" accesskey="p" rel="prev">Kasten Major Mode and Kasten Minor Mode</a>, Up: <a href="#Usage" accesskey="u" rel="up">Usage</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<h3 class="section" id="Kasten-Major-Mode-1"><span>6.2 Kasten Major Mode<a class="copiable-link" href="#Kasten-Major-Mode-1"> &para;</a></span></h3>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-kasten_002dopen_002dfile"></a>
+<a id="index-RET"></a><span><kbd class="kbd"><kbd class="key">RET</kbd></kbd> (<code class="code">kasten-open-file</code>)<a class="copiable-link" href="#index-RET"> &para;</a></span></dt>
+<dd><p>Open the note file on the current line by matching filename.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dlive_002dsearch"></a>
+<a id="index-_002f"></a><span><kbd class="kbd">/</kbd> (<code class="code">kasten-live-search</code>)<a class="copiable-link" href="#index-_002f"> &para;</a></span></dt>
+<dd><p>Live search notes by title, category or ID.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dfilters_002dedit"></a>
+<a id="index-_003f"></a><span><kbd class="kbd">?</kbd> (<code class="code">kasten-filters-edit</code>)<a class="copiable-link" href="#index-_003f"> &para;</a></span></dt>
+<dd><p>Open a buffer for editing the Kasten filters.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002drefresh"></a>
+<a id="index-g"></a><span><kbd class="kbd">g</kbd> (<code class="code">kasten-refresh</code>)<a class="copiable-link" href="#index-g"> &para;</a></span></dt>
+<dd><p>Refresh
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dsearch"></a>
+<a id="index-s"></a><span><kbd class="kbd">s</kbd> (<code class="code">kasten-search</code>)<a class="copiable-link" href="#index-s"> &para;</a></span></dt>
+<dd><p>Search using ‘kasten-search-function’.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dsearch_002dtag"></a>
+<a id="index-t"></a><span><kbd class="kbd">t</kbd> (<code class="code">kasten-search-tag</code>)<a class="copiable-link" href="#index-t"> &para;</a></span></dt>
+<dd><p>Prompt and search for a tag.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dcreate_002dnew_002dnote"></a>
+<a id="index-n"></a><span><kbd class="kbd">n</kbd> (<code class="code">kasten-create-new-note</code>)<a class="copiable-link" href="#index-n"> &para;</a></span></dt>
+<dd><p>Create and open a new Kasten note.
+</p></dd>
+</dl>
+
+
+<ul class="mini-toc">
+<li><a href="#Live-Search" accesskey="1">Live Search</a></li>
+<li><a href="#Filters" accesskey="2">Filters</a></li>
+</ul>
+<hr>
+<div class="subsection-level-extent" id="Live-Search">
+<div class="nav-panel">
+<p>
+Next: <a href="#Filters" accesskey="n" rel="next">Filters</a>, Up: <a href="#Kasten-Major-Mode" accesskey="u" rel="up">Kasten Major Mode</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<h4 class="subsection" id="Live-Search-1"><span>6.2.1 Live Search<a class="copiable-link" href="#Live-Search-1"> &para;</a></span></h4>
+
+<hr>
+</div>
+<div class="subsection-level-extent" id="Filters">
+<div class="nav-panel">
+<p>
+Previous: <a href="#Live-Search" accesskey="p" rel="prev">Live Search</a>, Up: <a href="#Kasten-Major-Mode" accesskey="u" rel="up">Kasten Major Mode</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<h4 class="subsection" id="Filters-1"><span>6.2.2 Filters<a class="copiable-link" href="#Filters-1"> &para;</a></span></h4>
+
+<hr>
+</div>
+</div>
+<div class="section-level-extent" id="Kasten-Minor-Mode">
+<div class="nav-panel">
+<p>
+Previous: <a href="#Kasten-Major-Mode" accesskey="p" rel="prev">Kasten Major Mode</a>, Up: <a href="#Usage" accesskey="u" rel="up">Usage</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<h3 class="section" id="Kasten-Minor-Mode-1"><span>6.3 Kasten Minor Mode<a class="copiable-link" href="#Kasten-Minor-Mode-1"> &para;</a></span></h3>
+
+<dl class="table">
+<dt><a class="index-entry-id" id="index-kasten-1"></a>
+<a id="index-C_002dc-C_002dk-k"></a><span><kbd class="kbd">C-c C-k k</kbd> (<code class="code">kasten</code>)<a class="copiable-link" href="#index-C_002dc-C_002dk-k"> &para;</a></span></dt>
+<dd><p>Back to Kasten major mode.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dshow_002dbacklinks_002dcurrent_002dnote"></a>
+<a id="index-C_002dc-C_002dk-b"></a><span><kbd class="kbd">C-c C-k b</kbd> (<code class="code">kasten-show-backlinks-current-note</code>)<a class="copiable-link" href="#index-C_002dc-C_002dk-b"> &para;</a></span></dt>
+<dd><p>Show all notes that link to the current note by ID.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dinsert_002did"></a>
+<a id="index-C_002dc-C_002dk-i"></a><span><kbd class="kbd">C-c C-k i</kbd> (<code class="code">kasten-insert-id</code>)<a class="copiable-link" href="#index-C_002dc-C_002dk-i"> &para;</a></span></dt>
+<dd><p>Prompt to insert an ID referencing a note.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dchange_002did"></a>
+<a id="index-C_002dc-C_002dk-I"></a><span><kbd class="kbd">C-c C-k I</kbd> (<code class="code">kasten-change-id</code>)<a class="copiable-link" href="#index-C_002dc-C_002dk-I"> &para;</a></span></dt>
+<dd><p>Change occurrences of OLD-ID to a new ID in all note files.
+</p>
+<p>For each file that contains OLD-ID, ask whether to replace it.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dcreate_002dnew_002dnote_002dat_002dpoint"></a>
+<a id="index-C_002dc-C_002dk-n"></a><span><kbd class="kbd">C-c C-k n</kbd> (<code class="code">kasten-create-new-note-at-point</code>)<a class="copiable-link" href="#index-C_002dc-C_002dk-n"> &para;</a></span></dt>
+<dd><p>Create a new note linked from the current one.
+</p>
+<p>Insert ID at point and add a backlink from the new note to the current one.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dinsert_002dtag"></a>
+<a id="index-C_002dc-C_002dk-t"></a><span><kbd class="kbd">C-c C-k t</kbd> (<code class="code">kasten-insert-tag</code>)<a class="copiable-link" href="#index-C_002dc-C_002dk-t"> &para;</a></span></dt>
+<dd><p>Prompt to insert an existing or new tag at point.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dsearch_002dtag-1"></a>
+<a id="index-C_002dc-C_002dk-T"></a><span><kbd class="kbd">C-c C-k T</kbd> (<code class="code">kasten-search-tag</code>)<a class="copiable-link" href="#index-C_002dc-C_002dk-T"> &para;</a></span></dt>
+<dd><p>Prompt and search for a tag.
+</p></dd>
+</dl>
+
+<hr>
+</div>
 </div>
 <div class="chapter-level-extent" id="Customisation">
 <div class="nav-panel">
@@ -323,8 +498,7 @@ Next: <a href="#Benchmark" accesskey="n" rel="next">Benchmark</a>, Previous: <a 
 
 <p><strong class="strong">TODO: outdated</strong>
 </p>
-<p>Kasten is customisable using &lsquo;<samp class="samp">customize</samp>&rsquo;, via <code class="code">M-x</code> <code class="code">customize-group</code> <code class="code">&lt;RET&gt;</code>
-<code class="code">kasten</code> <code class="code">&lt;RET&gt;</code> or GUI.
+<p>Kasten is customisable using &lsquo;<samp class="samp">customize</samp>&rsquo;, via <kbd class="kbd">M-x customize-group <kbd class="key">RET</kbd> kasten <kbd class="key">RET</kbd></kbd> or GUI.
 </p>
 <p>Alternatively, one can customise Kasten in the Emacs configuration file (such as
 &lsquo;<samp class="samp">init.el</samp>&rsquo;, or under &lsquo;<samp class="samp">use-package</samp>&rsquo;). Below are <em class="emph">default</em> configurations.
@@ -399,7 +573,7 @@ for i in {1..1000}; do
 done
 </pre></div>
 
-<p>The following benchmark is obtained by <code class="code">M-x</code> <code class="code">benchmark</code>. Variables
+<p>The following benchmark is obtained by <kbd class="kbd">M-x benchmark</kbd>. Variables
 &lsquo;<samp class="samp">gc-cons-threshold</samp>&rsquo; and &lsquo;<samp class="samp">gc-cons-percentage</samp>&rsquo; are set to <code class="code">16000000</code> and <code class="code">0.1</code>,
 accordingly.
 </p>
@@ -426,15 +600,15 @@ on the GitHub repository.
 please include the following information, but please <strong class="strong">do not include any
 sensitive information</strong>:
 </p><ul class="itemize mark-bullet">
-<li>Emacs version (<code class="code">M-x</code> <code class="code">emacs-version</code> <code class="code">&lt;RET&gt;</code>)
+<li>Emacs version (<kbd class="kbd">M-x emacs-version <kbd class="key">RET</kbd></kbd>)
 </li><li>Kasten version
 </li><li>Operating system (&lsquo;<samp class="samp">uname -a</samp>&rsquo;)
 </li><li>Number of indexed files (&lsquo;<samp class="samp">ls -1 /path/to/notes | wc -l</samp>&rsquo;)
 </li><li>Total size of indexed files (&lsquo;<samp class="samp">du -sh /path/to/notes</samp>&rsquo;)
-</li><li>Profiler report (<code class="code">M-x</code> <code class="code">profiler-start</code> <code class="code">&lt;RET&gt;</code> <code class="code">&lt;RET&gt;</code>, perform action,
-<code class="code">M-x</code> <code class="code">profiler-stop</code> <code class="code">&lt;RET&gt;</code>, and then <code class="code">M-x</code> <code class="code">profiler-report</code> <code class="code">&lt;RET&gt;</code>)
-</li><li>Benchmark of the slow function (<code class="code">M-x</code> <code class="code">benchmark</code> <code class="code">&lt;RET&gt;</code> followed by the
-function and <code class="code">&lt;RET&gt;</code>)
+</li><li>Profiler report (<kbd class="kbd">M-x profiler-start <kbd class="key">RET</kbd> <kbd class="key">RET</kbd></kbd>, perform action,
+<kbd class="kbd">M-x profiler-stop <kbd class="key">RET</kbd></kbd>, and then <kbd class="kbd">M-x profiler-report <kbd class="key">RET</kbd></kbd>
+</li><li>Benchmark of the slow function (<kbd class="kbd">M-x benchmark <kbd class="key">RET</kbd></kbd> followed by the
+function and <kbd class="kbd"><kbd class="key">RET</kbd></kbd>)
 </li></ul>
 
 <hr>

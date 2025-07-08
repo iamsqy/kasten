@@ -7,7 +7,7 @@
 @c %**end of header
 
 @copying
-This manual is for Kasten (version 0.2, last updated 6 July 2025), which is
+This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
 an Emacs package for managing Zettelkasten-style notes.
 
 Copyright @copyright{} 2025 Qiyang Sun
@@ -23,15 +23,15 @@ the section entitled ``GNU Free Documentation License''.
 @end quotation
 @end copying
 
-@dircategory Misc
+@dircategory Emacs
 @direntry
-* (kasten).             Kasten Manual.
+* Kasten Mode: (kasten). Zettelkasten note browser.
 @end direntry
 
 @finalout
 @titlepage
 @title Kasten Manual
-@subtitle for version 0.2, last updated 6 July 2025
+@subtitle for version 0.2, last updated 2025-07-08
 @author Qiyang Sun
 @page
 @vskip 0pt plus 1filll
@@ -43,6 +43,9 @@ the section entitled ``GNU Free Documentation License''.
 @ifnottex
 @node Top
 @top Kasten Manual
+
+@insertcopying
+
 @end ifnottex
 
 @menu
@@ -68,9 +71,19 @@ Copying
 
 Installation
 
-* MELPA (not yet published) and @code{use-package}::
 * Tarball::
 * Manual Installation::
+
+Usage
+
+* Kasten Major Mode and Kasten Minor Mode::
+* Kasten Major Mode::
+* Kasten Minor Mode::
+
+Kasten Major Mode
+
+* Live Search::
+* Filters::
 
 @end detailmenu
 @end menu
@@ -81,10 +94,19 @@ Installation
 @samp{Kasten} is an @uref{https://www.gnu.org/software/emacs/, Emacs} package designed to provide a focused and efficient
 browsing experience for @uref{https://zettelkasten.de/, Zettelkasten}-style notes.
 
-Kasten is inspired by @uref{https://melpa.org/#/deft, deft} and @uref{https://melpa.org/#/zetteldeft, zetteldeft}.
+Kasten is inspired by @uref{https://melpa.org/#/deft, Deft} and @uref{https://melpa.org/#/zetteldeft, Zetteldeft}.
 
 @node Copying
 @chapter Copying
+
+@itemize
+@item
+Kasten is not part of GNU Emacs.
+@item
+Kasten is free software.
+@item
+Kasten Manual is free documentation.
+@end itemize
 
 @menu
 * Copying Kasten (Software)::
@@ -131,7 +153,37 @@ included in the section entitled ``GNU Free Documentation License''.
 @node Concepts
 @chapter Concepts
 
-To be written.
+``Zettelkasten'' is a note-taking and personal knowledge management system
+intensively used by Niklas Luhmann et al.  In Zettelkasten, notes should be
+atomic, connected through meaningful links.
+
+The introduction to Zettelkasten method can be found online, such as
+@uref{https://zettelkasten.de/} and @uref{https://en.wikipedia.org/wiki/Zettelkasten}.
+Readers may wish to refer to the literature as the Kasten Manual does not
+provide a detailed introduction to the Zettelkasten methodology itself.
+
+Kasten is inspired by Zetteldeft, a Zettelkasten system on top of Deft.  Deft is
+a note browsing system inspired by Notational Velocity.
+
+Kasten designed based on the following ideas in mind.
+@itemize
+@item
+The system should be highly customisable.
+@item
+The system should be fast.
+@item
+Each note has a unique ID as its filename, typically derived from the creation
+time.
+@item
+Notes can be linked to each other by inserting IDs.
+@item
+Notes can be tagged.  A note may have zero, one or many tags.
+@item
+Notes can be categorised.  A note may have zero or one category.  This is
+against the Zettelkasten principles, but Kasten users should have the right to
+category their notes should they wish to, for example, if they have their own
+philosophies of knowledge management.
+@end itemize
 
 @node Features
 @chapter Features
@@ -160,7 +212,7 @@ Note searching significantly faster than deft.
 Heavy content search @samp{consult-ripgrep} (needs package @uref{https://melpa.org/#/consult, consult},
 customisable).
 @item
-Limited use of @samp{string-match} (@code{C-h} @code{f} @code{string-match} @code{<RET>}).
+Limited use of @samp{string-match} (@kbd{C-h f string-match @key{RET}}).
 @end itemize
 @item
 ID format fully customisable (with the ability to include sanitised title).
@@ -183,27 +235,9 @@ Customisable user interface.
 @chapter Installation
 
 @menu
-* MELPA (not yet published) and @code{use-package}::
 * Tarball::
 * Manual Installation::
 @end menu
-
-@node MELPA (not yet published) and @code{use-package}
-@section MELPA (not yet published) and @code{use-package}
-
-If MELPA is in the package archives, simply:
-
-@code{M-x} @code{package-install} @code{<RET>} @code{kasten} @code{<RET>}
-
-If using @samp{use-package}, add the following to the Emacs configuration file (such
-as @samp{init.el}):
-
-@lisp
-(use-package kasten
-  :ensure t
-  :defer t
-  :commands (kasten))
-@end lisp
 
 @node Tarball
 @section Tarball
@@ -228,7 +262,7 @@ file has extension @samp{.tar.gz}, extract it.
 gzip -d /path/to/kasten.tar.gz
 @end example
 @item
-In Emacs, run @*
+In Emacs, run
 @code{M-x} @code{package-install-file} @code{<RET>} @code{/path/to/kasten.tar} @code{<RET>}
 @end enumerate
 
@@ -245,29 +279,135 @@ following to the Emacs configuration file (such as @samp{init.el}):
 @node Usage
 @chapter Usage
 
-@strong{TODO: outdated}
+@menu
+* Kasten Major Mode and Kasten Minor Mode::
+* Kasten Major Mode::
+* Kasten Minor Mode::
+@end menu
 
-Launch Kasten with @code{M-x} @code{kasten} @code{<RET>}
+@node Kasten Major Mode and Kasten Minor Mode
+@section Kasten Major Mode and Kasten Minor Mode
 
-Inside the @samp{*Kasten*} buffer:
-@itemize
-@item
-Hit @samp{<RET>} to open the selected note.
-@item
-Hit @samp{/} to search notes.
-@item
-Hit @samp{g} to refresh the notes list.
-@end itemize
+Kasten major mode (@samp{kasten-mode}) is for note browsing, filtering and editing,
+similar to Deft.  Kasten minor mode (@samp{kasten-minor-mode}) is for invoking Kasten
+methods whilst visiting a note.  For Kasten major mode map and usage, see
+@ref{Kasten Major Mode}.
 
-One may want to add more key bindings to @samp{kasten-mode-map}.
+@deffn Command kasten
+Launch Kasten major mode with @kbd{M-x kasten @key{RET}}.
+@end deffn
+
+Kasten minor mode is enabled by default if the note buffer is created by Kasten.
+Kasten minor mode has a lighter @samp{Kt} (customisable).  For Kasten minor mode map
+and usage, see @ref{Kasten Minor Mode}.
+
+@deffn Command kasten-minor-mode
+Toggle @code{kasten-minor-mode} for current buffer.
+@end deffn
+
+Refer to the Emacs Lisp code for detailed function and variable documentations.
+
+@node Kasten Major Mode
+@section Kasten Major Mode
+
+@table @asis
+@item @kbd{@key{RET}} (@code{kasten-open-file})
+@kindex RET
+@findex kasten-open-file
+Open the note file on the current line by matching filename.
+
+@item @kbd{/} (@code{kasten-live-search})
+@kindex /
+@findex kasten-live-search
+Live search notes by title, category or ID@.
+
+@item @kbd{?} (@code{kasten-filters-edit})
+@kindex ?
+@findex kasten-filters-edit
+Open a buffer for editing the Kasten filters.
+
+@item @kbd{g} (@code{kasten-refresh})
+@kindex g
+@findex kasten-refresh
+Refresh
+
+@item @kbd{s} (@code{kasten-search})
+@kindex s
+@findex kasten-search
+Search using ‘kasten-search-function’.
+
+@item @kbd{t} (@code{kasten-search-tag})
+@kindex t
+@findex kasten-search-tag
+Prompt and search for a tag.
+
+@item @kbd{n} (@code{kasten-create-new-note})
+@kindex n
+@findex kasten-create-new-note
+Create and open a new Kasten note.
+@end table
+
+@menu
+* Live Search::
+* Filters::
+@end menu
+
+@node Live Search
+@subsection Live Search
+
+@node Filters
+@subsection Filters
+
+@node Kasten Minor Mode
+@section Kasten Minor Mode
+
+@table @asis
+@item @kbd{C-c C-k k} (@code{kasten})
+@kindex C-c C-k k
+@findex kasten
+Back to Kasten major mode.
+
+@item @kbd{C-c C-k b} (@code{kasten-show-backlinks-current-note})
+@kindex C-c C-k b
+@findex kasten-show-backlinks-current-note
+Show all notes that link to the current note by ID@.
+
+@item @kbd{C-c C-k i} (@code{kasten-insert-id})
+@kindex C-c C-k i
+@findex kasten-insert-id
+Prompt to insert an ID referencing a note.
+
+@item @kbd{C-c C-k I} (@code{kasten-change-id})
+@kindex C-c C-k I
+@findex kasten-change-id
+Change occurrences of OLD-ID to a new ID in all note files.
+
+For each file that contains OLD-ID, ask whether to replace it.
+
+@item @kbd{C-c C-k n} (@code{kasten-create-new-note-at-point})
+@kindex C-c C-k n
+@findex kasten-create-new-note-at-point
+Create a new note linked from the current one.
+
+Insert ID at point and add a backlink from the new note to the current one.
+
+@item @kbd{C-c C-k t} (@code{kasten-insert-tag})
+@kindex C-c C-k t
+@findex kasten-insert-tag
+Prompt to insert an existing or new tag at point.
+
+@item @kbd{C-c C-k T} (@code{kasten-search-tag})
+@kindex C-c C-k T
+@findex kasten-search-tag
+Prompt and search for a tag.
+@end table
 
 @node Customisation
 @chapter Customisation
 
 @strong{TODO: outdated}
 
-Kasten is customisable using @samp{customize}, via @code{M-x} @code{customize-group} @code{<RET>}
-@code{kasten} @code{<RET>} or GUI@.
+Kasten is customisable using @samp{customize}, via @kbd{M-x customize-group @key{RET} kasten @key{RET}} or GUI@.
 
 Alternatively, one can customise Kasten in the Emacs configuration file (such as
 @samp{init.el}, or under @samp{use-package}). Below are @emph{default} configurations.
@@ -336,7 +476,7 @@ for i in @{1..1000@}; do
 done
 @end example
 
-The following benchmark is obtained by @code{M-x} @code{benchmark}. Variables
+The following benchmark is obtained by @kbd{M-x benchmark}. Variables
 @samp{gc-cons-threshold} and @samp{gc-cons-percentage} are set to @code{16000000} and @code{0.1},
 accordingly.
 
@@ -366,7 +506,7 @@ please include the following information, but please @strong{do not include any
 sensitive information}:
 @itemize
 @item
-Emacs version (@code{M-x} @code{emacs-version} @code{<RET>})
+Emacs version (@kbd{M-x emacs-version @key{RET}})
 @item
 Kasten version
 @item
@@ -376,11 +516,11 @@ Number of indexed files (@samp{ls -1 /path/to/notes | wc -l})
 @item
 Total size of indexed files (@samp{du -sh /path/to/notes})
 @item
-Profiler report (@code{M-x} @code{profiler-start} @code{<RET>} @code{<RET>}, perform action,
-@code{M-x} @code{profiler-stop} @code{<RET>}, and then @code{M-x} @code{profiler-report} @code{<RET>})
+Profiler report (@kbd{M-x profiler-start @key{RET} @key{RET}}, perform action,
+@kbd{M-x profiler-stop @key{RET}}, and then @kbd{M-x profiler-report @key{RET}}
 @item
-Benchmark of the slow function (@code{M-x} @code{benchmark} @code{<RET>} followed by the
-function and @code{<RET>})
+Benchmark of the slow function (@kbd{M-x benchmark @key{RET}} followed by the
+function and @kbd{@key{RET}})
 @end itemize
 
 @node GNU Free Documentation License

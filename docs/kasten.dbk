@@ -5,15 +5,15 @@
 ]>
 <book id="kasten.dbk" lang="en">
 <title>Kasten Manual</title>
-<subtitle>for version 0.2, last updated 6 July 2025</subtitle>
+<subtitle>for version 0.2, last updated 2025-07-08</subtitle>
 <titleabbrev>Kasten Manual</titleabbrev>
 <bookinfo><title>Kasten Manual</title>
-<subtitle>for version 0.2, last updated 6 July 2025</subtitle>
+<subtitle>for version 0.2, last updated 2025-07-08</subtitle>
 <titleabbrev>Kasten Manual</titleabbrev>
 <authorgroup>
 <collab><collabname>Qiyang Sun</collabname></collab>
 </authorgroup>
-<legalnotice><para>This manual is for Kasten (version 0.2, last updated 6 July 2025), which is
+<legalnotice><para>This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
 an Emacs package for managing Zettelkasten-style notes.
 </para>
 <para>Copyright &#169; 2025 Qiyang Sun
@@ -32,12 +32,16 @@ the section entitled &#8220;GNU Free Documentation License&#8221;.
 <para>&#8216;<literal>Kasten</literal>&#8217; is an <ulink url="https://www.gnu.org/software/emacs/">Emacs</ulink> package designed to provide a focused and efficient
 browsing experience for <ulink url="https://zettelkasten.de/">Zettelkasten</ulink>-style notes.
 </para>
-<para>Kasten is inspired by <ulink url="https://melpa.org/#/deft">deft</ulink> and <ulink url="https://melpa.org/#/zetteldeft">zetteldeft</ulink>.
+<para>Kasten is inspired by <ulink url="https://melpa.org/#/deft">Deft</ulink> and <ulink url="https://melpa.org/#/zetteldeft">Zetteldeft</ulink>.
 </para>
 </chapter>
 <chapter label="2" id="Copying">
 <title>Copying</title>
 
+<itemizedlist><listitem><para>Kasten is not part of GNU Emacs.
+</para></listitem><listitem><para>Kasten is free software.
+</para></listitem><listitem><para>Kasten Manual is free documentation.
+</para></listitem></itemizedlist>
 
 <sect1 label="2.1" id="Copying-Kasten-_0028Software_0029">
 <title>Copying Kasten (Software)</title>
@@ -82,8 +86,30 @@ included in the section entitled &#8220;GNU Free Documentation License&#8221;.
 <chapter label="3" id="Concepts">
 <title>Concepts</title>
 
-<para>To be written.
+<para>&#8220;Zettelkasten&#8221; is a note-taking and personal knowledge management system
+intensively used by Niklas Luhmann et al.  In Zettelkasten, notes should be
+atomic, connected through meaningful links.
 </para>
+<para>The introduction to Zettelkasten method can be found online, such as
+<ulink url="https://zettelkasten.de/">https://zettelkasten.de/</ulink> and <ulink url="https://en.wikipedia.org/wiki/Zettelkasten">https://en.wikipedia.org/wiki/Zettelkasten</ulink>.
+Readers may wish to refer to the literature as the Kasten Manual does not
+provide a detailed introduction to the Zettelkasten methodology itself.
+</para>
+<para>Kasten is inspired by Zetteldeft, a Zettelkasten system on top of Deft.  Deft is
+a note browsing system inspired by Notational Velocity.
+</para>
+<para>Kasten designed based on the following ideas in mind.
+</para><itemizedlist><listitem><para>The system should be highly customisable.
+</para></listitem><listitem><para>The system should be fast.
+</para></listitem><listitem><para>Each note has a unique ID as its filename, typically derived from the creation
+time.
+</para></listitem><listitem><para>Notes can be linked to each other by inserting IDs.
+</para></listitem><listitem><para>Notes can be tagged.  A note may have zero, one or many tags.
+</para></listitem><listitem><para>Notes can be categorised.  A note may have zero or one category.  This is
+against the Zettelkasten principles, but Kasten users should have the right to
+category their notes should they wish to, for example, if they have their own
+philosophies of knowledge management.
+</para></listitem></itemizedlist>
 </chapter>
 <chapter label="4" id="Features">
 <title>Features</title>
@@ -99,7 +125,7 @@ included in the section entitled &#8220;GNU Free Documentation License&#8221;.
 </para></listitem><listitem><para>Note searching significantly faster than deft.
 </para><itemizedlist><listitem><para>Heavy content search &#8216;<literal>consult-ripgrep</literal>&#8217; (needs package <ulink url="https://melpa.org/#/consult">consult</ulink>,
 customisable).
-</para></listitem><listitem><para>Limited use of &#8216;<literal>string-match</literal>&#8217; (<literal>C-h</literal> <literal>f</literal> <literal>string-match</literal> <literal>&lt;RET&gt;</literal>).
+</para></listitem><listitem><para>Limited use of &#8216;<literal>string-match</literal>&#8217; (<userinput>C-h f string-match <keycap>RET</keycap></userinput>).
 </para></listitem></itemizedlist></listitem><listitem><para>ID format fully customisable (with the ability to include sanitised title).
 </para></listitem><listitem><para>Followable note IDs for easy navigation.
 </para></listitem><listitem><para>ID changable with auto-update references.
@@ -114,23 +140,7 @@ other packages.
 <title>Installation</title>
 
 
-<sect1 label="5.1" id="MELPA-_0028not-yet-published_0029-and-use_002dpackage">
-<title>MELPA (not yet published) and <literal>use-package</literal></title>
-
-<para>If MELPA is in the package archives, simply:
-</para>
-<para><literal>M-x</literal> <literal>package-install</literal> <literal>&lt;RET&gt;</literal> <literal>kasten</literal> <literal>&lt;RET&gt;</literal>
-</para>
-<para>If using &#8216;<literal>use-package</literal>&#8217;, add the following to the Emacs configuration file (such
-as &#8216;<literal>init.el</literal>&#8217;):
-</para>
-<programlisting>(use-package kasten
-  :ensure t
-  :defer t
-  :commands (kasten))
-</programlisting>
-</sect1>
-<sect1 label="5.2" id="Tarball">
+<sect1 label="5.1" id="Tarball">
 <title>Tarball</title>
 
 <orderedlist numeration="arabic"><listitem><para>Download the latest release tarball and signature (&#8216;<literal>*.sig</literal>&#8217;) from the <ulink url="https://github.com/iamsqy/kasten/releases">GitHub
@@ -144,12 +154,11 @@ gpg --verify /path/to/kasten.tar.gz
 </screen></listitem><listitem><para>GitHub does not allow uploading &#8216;<literal>.tar</literal>&#8217; files in Release. If the
 file has extension &#8216;<literal>.tar.gz</literal>&#8217;, extract it.
 </para><screen>gzip -d /path/to/kasten.tar.gz
-</screen></listitem><listitem><para>In Emacs, run 
-
+</screen></listitem><listitem><para>In Emacs, run
 <literal>M-x</literal> <literal>package-install-file</literal> <literal>&lt;RET&gt;</literal> <literal>/path/to/kasten.tar</literal> <literal>&lt;RET&gt;</literal>
 </para></listitem></orderedlist>
 </sect1>
-<sect1 label="5.3" id="Manual-Installation">
+<sect1 label="5.2" id="Manual-Installation">
 <title>Manual Installation</title>
 
 <para>Clone or download &#8216;<literal>kasten.el</literal>&#8217; and place it in the &#8216;<literal>load-path</literal>&#8217;. Then add the
@@ -162,25 +171,126 @@ following to the Emacs configuration file (such as &#8216;<literal>init.el</lite
 <chapter label="6" id="Usage">
 <title>Usage</title>
 
-<para><emphasis role="bold">TODO: outdated</emphasis>
+
+<sect1 label="6.1" id="Kasten-Major-Mode-and-Kasten-Minor-Mode">
+<title>Kasten Major Mode and Kasten Minor Mode</title>
+
+<para>Kasten major mode (&#8216;<literal>kasten-mode</literal>&#8217;) is for note browsing, filtering and editing,
+similar to Deft.  Kasten minor mode (&#8216;<literal>kasten-minor-mode</literal>&#8217;) is for invoking Kasten
+methods whilst visiting a note.  For Kasten major mode map and usage, see
+<link linkend="Kasten-Major-Mode">Kasten Major Mode</link>.
 </para>
-<para>Launch Kasten with <literal>M-x</literal> <literal>kasten</literal> <literal>&lt;RET&gt;</literal>
+<synopsis><indexterm role="fn"><primary>kasten</primary></indexterm><phrase role="category"><emphasis role="bold">Command</emphasis>:</phrase> <function>kasten</function></synopsis>
+<blockquote><para>Launch Kasten major mode with <userinput>M-x kasten <keycap>RET</keycap></userinput>.
+</para></blockquote>
+<para>Kasten minor mode is enabled by default if the note buffer is created by Kasten.
+Kasten minor mode has a lighter &#8216;<literal>Kt</literal>&#8217; (customisable).  For Kasten minor mode map
+and usage, see <link linkend="Kasten-Minor-Mode">Kasten Minor Mode</link>.
 </para>
-<para>Inside the &#8216;<literal>*Kasten*</literal>&#8217; buffer:
-</para><itemizedlist><listitem><para>Hit &#8216;<literal>&lt;RET&gt;</literal>&#8217; to open the selected note.
-</para></listitem><listitem><para>Hit &#8216;<literal>/</literal>&#8217; to search notes.
-</para></listitem><listitem><para>Hit &#8216;<literal>g</literal>&#8217; to refresh the notes list.
-</para></listitem></itemizedlist>
-<para>One may want to add more key bindings to &#8216;<literal>kasten-mode-map</literal>&#8217;.
+<synopsis><indexterm role="fn"><primary>kasten-minor-mode</primary></indexterm><phrase role="category"><emphasis role="bold">Command</emphasis>:</phrase> <function>kasten-minor-mode</function></synopsis>
+<blockquote><para>Toggle <literal>kasten-minor-mode</literal> for current buffer.
+</para></blockquote>
+<para>Refer to the Emacs Lisp code for detailed function and variable documentations.
 </para>
+</sect1>
+<sect1 label="6.2" id="Kasten-Major-Mode">
+<title>Kasten Major Mode</title>
+
+<variablelist><varlistentry><term><userinput><keycap>RET</keycap></userinput> (<literal>kasten-open-file</literal>)
+</term><listitem><indexterm role="ky"><primary>RET</primary></indexterm>
+<indexterm role="fn"><primary>kasten-open-file</primary></indexterm>
+<para>Open the note file on the current line by matching filename.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>/</userinput> (<literal>kasten-live-search</literal>)
+</term><listitem><indexterm role="ky"><primary>/</primary></indexterm>
+<indexterm role="fn"><primary>kasten-live-search</primary></indexterm>
+<para>Live search notes by title, category or ID.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>?</userinput> (<literal>kasten-filters-edit</literal>)
+</term><listitem><indexterm role="ky"><primary>?</primary></indexterm>
+<indexterm role="fn"><primary>kasten-filters-edit</primary></indexterm>
+<para>Open a buffer for editing the Kasten filters.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>g</userinput> (<literal>kasten-refresh</literal>)
+</term><listitem><indexterm role="ky"><primary>g</primary></indexterm>
+<indexterm role="fn"><primary>kasten-refresh</primary></indexterm>
+<para>Refresh
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>s</userinput> (<literal>kasten-search</literal>)
+</term><listitem><indexterm role="ky"><primary>s</primary></indexterm>
+<indexterm role="fn"><primary>kasten-search</primary></indexterm>
+<para>Search using ‘kasten-search-function’.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>t</userinput> (<literal>kasten-search-tag</literal>)
+</term><listitem><indexterm role="ky"><primary>t</primary></indexterm>
+<indexterm role="fn"><primary>kasten-search-tag</primary></indexterm>
+<para>Prompt and search for a tag.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>n</userinput> (<literal>kasten-create-new-note</literal>)
+</term><listitem><indexterm role="ky"><primary>n</primary></indexterm>
+<indexterm role="fn"><primary>kasten-create-new-note</primary></indexterm>
+<para>Create and open a new Kasten note.
+</para></listitem></varlistentry></variablelist>
+
+<sect2 label="6.2.1" id="Live-Search">
+<title>Live Search</title>
+
+</sect2>
+<sect2 label="6.2.2" id="Filters">
+<title>Filters</title>
+
+</sect2>
+</sect1>
+<sect1 label="6.3" id="Kasten-Minor-Mode">
+<title>Kasten Minor Mode</title>
+
+<variablelist><varlistentry><term><userinput>C-c C-k k</userinput> (<literal>kasten</literal>)
+</term><listitem><indexterm role="ky"><primary>C-c C-k k</primary></indexterm>
+<indexterm role="fn"><primary>kasten</primary></indexterm>
+<para>Back to Kasten major mode.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>C-c C-k b</userinput> (<literal>kasten-show-backlinks-current-note</literal>)
+</term><listitem><indexterm role="ky"><primary>C-c C-k b</primary></indexterm>
+<indexterm role="fn"><primary>kasten-show-backlinks-current-note</primary></indexterm>
+<para>Show all notes that link to the current note by ID.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>C-c C-k i</userinput> (<literal>kasten-insert-id</literal>)
+</term><listitem><indexterm role="ky"><primary>C-c C-k i</primary></indexterm>
+<indexterm role="fn"><primary>kasten-insert-id</primary></indexterm>
+<para>Prompt to insert an ID referencing a note.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>C-c C-k I</userinput> (<literal>kasten-change-id</literal>)
+</term><listitem><indexterm role="ky"><primary>C-c C-k I</primary></indexterm>
+<indexterm role="fn"><primary>kasten-change-id</primary></indexterm>
+<para>Change occurrences of OLD-ID to a new ID in all note files.
+</para>
+<para>For each file that contains OLD-ID, ask whether to replace it.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>C-c C-k n</userinput> (<literal>kasten-create-new-note-at-point</literal>)
+</term><listitem><indexterm role="ky"><primary>C-c C-k n</primary></indexterm>
+<indexterm role="fn"><primary>kasten-create-new-note-at-point</primary></indexterm>
+<para>Create a new note linked from the current one.
+</para>
+<para>Insert ID at point and add a backlink from the new note to the current one.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>C-c C-k t</userinput> (<literal>kasten-insert-tag</literal>)
+</term><listitem><indexterm role="ky"><primary>C-c C-k t</primary></indexterm>
+<indexterm role="fn"><primary>kasten-insert-tag</primary></indexterm>
+<para>Prompt to insert an existing or new tag at point.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>C-c C-k T</userinput> (<literal>kasten-search-tag</literal>)
+</term><listitem><indexterm role="ky"><primary>C-c C-k T</primary></indexterm>
+<indexterm role="fn"><primary>kasten-search-tag</primary></indexterm>
+<para>Prompt and search for a tag.
+</para></listitem></varlistentry></variablelist>
+</sect1>
 </chapter>
 <chapter label="7" id="Customisation">
 <title>Customisation</title>
 
 <para><emphasis role="bold">TODO: outdated</emphasis>
 </para>
-<para>Kasten is customisable using &#8216;<literal>customize</literal>&#8217;, via <literal>M-x</literal> <literal>customize-group</literal> <literal>&lt;RET&gt;</literal>
-<literal>kasten</literal> <literal>&lt;RET&gt;</literal> or GUI.
+<para>Kasten is customisable using &#8216;<literal>customize</literal>&#8217;, via <userinput>M-x customize-group <keycap>RET</keycap> kasten <keycap>RET</keycap></userinput> or GUI.
 </para>
 <para>Alternatively, one can customise Kasten in the Emacs configuration file (such as
 &#8216;<literal>init.el</literal>&#8217;, or under &#8216;<literal>use-package</literal>&#8217;). Below are <emphasis>default</emphasis> configurations.
@@ -246,7 +356,7 @@ for i in {1..1000}; do
     rm &quot;random_${i}.bin&quot;
 done
 </screen>
-<para>The following benchmark is obtained by <literal>M-x</literal> <literal>benchmark</literal>. Variables
+<para>The following benchmark is obtained by <userinput>M-x benchmark</userinput>. Variables
 &#8216;<literal>gc-cons-threshold</literal>&#8217; and &#8216;<literal>gc-cons-percentage</literal>&#8217; are set to <literal>16000000</literal> and <literal>0.1</literal>,
 accordingly.
 </para>
@@ -273,15 +383,15 @@ on the GitHub repository.
 <para>Users are encouraged to report any significant slowness of Kasten! If possible,
 please include the following information, but please <emphasis role="bold">do not include any
 sensitive information</emphasis>:
-</para><itemizedlist><listitem><para>Emacs version (<literal>M-x</literal> <literal>emacs-version</literal> <literal>&lt;RET&gt;</literal>)
+</para><itemizedlist><listitem><para>Emacs version (<userinput>M-x emacs-version <keycap>RET</keycap></userinput>)
 </para></listitem><listitem><para>Kasten version
 </para></listitem><listitem><para>Operating system (&#8216;<literal>uname -a</literal>&#8217;)
 </para></listitem><listitem><para>Number of indexed files (&#8216;<literal>ls -1 /path/to/notes | wc -l</literal>&#8217;)
 </para></listitem><listitem><para>Total size of indexed files (&#8216;<literal>du -sh /path/to/notes</literal>&#8217;)
-</para></listitem><listitem><para>Profiler report (<literal>M-x</literal> <literal>profiler-start</literal> <literal>&lt;RET&gt;</literal> <literal>&lt;RET&gt;</literal>, perform action,
-<literal>M-x</literal> <literal>profiler-stop</literal> <literal>&lt;RET&gt;</literal>, and then <literal>M-x</literal> <literal>profiler-report</literal> <literal>&lt;RET&gt;</literal>)
-</para></listitem><listitem><para>Benchmark of the slow function (<literal>M-x</literal> <literal>benchmark</literal> <literal>&lt;RET&gt;</literal> followed by the
-function and <literal>&lt;RET&gt;</literal>)
+</para></listitem><listitem><para>Profiler report (<userinput>M-x profiler-start <keycap>RET</keycap> <keycap>RET</keycap></userinput>, perform action,
+<userinput>M-x profiler-stop <keycap>RET</keycap></userinput>, and then <userinput>M-x profiler-report <keycap>RET</keycap></userinput>
+</para></listitem><listitem><para>Benchmark of the slow function (<userinput>M-x benchmark <keycap>RET</keycap></userinput> followed by the
+function and <userinput><keycap>RET</keycap></userinput>)
 </para></listitem></itemizedlist>
 </chapter>
 <appendix label="A" id="GNU-Free-Documentation-License">

@@ -6,9 +6,16 @@
 #+LANGUAGE: en
 
 #+MACRO: version 0.2
-#+MACRO: updated last updated 6 July 2025
+#+MACRO: updated last updated 2025-07-08
+#+macro: kbd (eval (org-texinfo-kbd-macro $1))
 
 #+TEXINFO_FILENAME: kasten.info
+
+#+TEXINFO_DIR_CATEGORY: Emacs
+#+TEXINFO_DIR_NAME: Kasten Mode
+#+TEXINFO_DIR_DESC: Zettelkasten note browser
+
+#+texinfo: @insertcopying
 
 * Copying
 :PROPERTIES:
@@ -34,9 +41,13 @@ Copyright \copy 2025 Qiyang Sun
 =Kasten= is an [[https://www.gnu.org/software/emacs/][Emacs]] package designed to provide a focused and efficient
 browsing experience for [[https://zettelkasten.de/][Zettelkasten]]-style notes.
 
-Kasten is inspired by [[https://melpa.org/#/deft][deft]] and [[https://melpa.org/#/zetteldeft][zetteldeft]].
+Kasten is inspired by [[https://melpa.org/#/deft][Deft]] and [[https://melpa.org/#/zetteldeft][Zetteldeft]].
 
 * Copying
+
+- Kasten is not part of GNU Emacs.
+- Kasten is free software.
+- Kasten Manual is free documentation.
 
 ** Copying Kasten (Software)
 
@@ -75,8 +86,30 @@ included in the section entitled "GNU Free Documentation License".
 
 * Concepts
 
-To be written.
+``Zettelkasten'' is a note-taking and personal knowledge management system
+intensively used by Niklas Luhmann et al.  In Zettelkasten, notes should be
+atomic, connected through meaningful links.
 
+The introduction to Zettelkasten method can be found online, such as
+[[https://zettelkasten.de/]] and [[https://en.wikipedia.org/wiki/Zettelkasten]].
+Readers may wish to refer to the literature as the Kasten Manual does not
+provide a detailed introduction to the Zettelkasten methodology itself.
+
+Kasten is inspired by Zetteldeft, a Zettelkasten system on top of Deft.  Deft is
+a note browsing system inspired by Notational Velocity.
+
+Kasten designed based on the following ideas in mind.
+- The system should be highly customisable.
+- The system should be fast.
+- Each note has a unique ID as its filename, typically derived from the creation
+  time.
+- Notes can be linked to each other by inserting IDs.
+- Notes can be tagged.  A note may have zero, one or many tags.
+- Notes can be categorised.  A note may have zero or one category.  This is
+  against the Zettelkasten principles, but Kasten users should have the right to
+  category their notes should they wish to, for example, if they have their own
+  philosophies of knowledge management.
+  
 * Features
 
 This package has the following main features:
@@ -90,7 +123,7 @@ This package has the following main features:
 - Note searching significantly faster than deft.
   - Heavy content search =consult-ripgrep= (needs package [[https://melpa.org/#/consult][consult]],
     customisable).
-  - Limited use of =string-match= (~C-h~ ~f~ ~string-match~ ~<RET>~).
+  - Limited use of =string-match= ({{{kbd(C-h f string-match RET)}}}).
 - ID format fully customisable (with the ability to include sanitised title).
 - Followable note IDs for easy navigation.
 - ID changable with auto-update references.
@@ -102,14 +135,14 @@ This package has the following main features:
 
 * Installation
 
-** +MELPA (not yet published) and ~use-package~+
+** COMMENT MELPA (not yet published) and ~use-package~
 
-+If MELPA is in the package archives, simply:+
+(*unpublished*) If MELPA is in the package archives, simply:
 
-+~M-x~ ~package-install~ ~<RET>~ ~kasten~ ~<RET>~+
+{{{kbd(M-x package-install RET kasten RET)}}}
 
-+If using =use-package=, add the following to the Emacs configuration file (such
-as =init.el=):+
+If using =use-package=, add the following to the Emacs configuration file (such
+as =init.el=):
 
 #+begin_src elisp
   (use-package kasten
@@ -135,7 +168,7 @@ as =init.el=):+
    #+begin_src bash
      gzip -d /path/to/kasten.tar.gz
    #+end_src
-4. In Emacs, run \\
+4. In Emacs, run
    ~M-x~ ~package-install-file~ ~<RET>~ ~/path/to/kasten.tar~ ~<RET>~
 
 ** Manual Installation
@@ -149,23 +182,109 @@ following to the Emacs configuration file (such as =init.el=):
 
 * Usage
 
-*TODO: outdated*
+** Kasten Major Mode and Kasten Minor Mode
 
-Launch Kasten with ~M-x~ ~kasten~ ~<RET>~
+Kasten major mode (=kasten-mode=) is for note browsing, filtering and editing,
+similar to Deft.  Kasten minor mode (=kasten-minor-mode=) is for invoking Kasten
+methods whilst visiting a note.  For Kasten major mode map and usage, see
+[[*Kasten Major Mode]].
 
-Inside the =*Kasten*= buffer:
-- Hit =<RET>= to open the selected note.
-- Hit =/= to search notes.
-- Hit =g= to refresh the notes list.
+- Command: kasten ::
+  Launch Kasten major mode with {{{kbd(M-x kasten RET)}}}.
 
-One may want to add more key bindings to =kasten-mode-map=.
+
+Kasten minor mode is enabled by default if the note buffer is created by Kasten.
+Kasten minor mode has a lighter =Kt= (customisable).  For Kasten minor mode map
+and usage, see [[*Kasten Minor Mode]].
+
+- Command: kasten-minor-mode ::
+  Toggle ~kasten-minor-mode~ for current buffer.
+
+
+Refer to the Emacs Lisp code for detailed function and variable documentations.
+
+** Kasten Major Mode
+
+- Key: RET (kasten-open-file) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-open-file)
+  #+END_SRC
+
+- Key: / (kasten-live-search) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-live-search)
+  #+END_SRC
+
+- Key: ? (kasten-filters-edit) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-filters-edit)
+  #+END_SRC
+
+- Key: g (kasten-refresh) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (car (split-string (documentation #'kasten-refresh)))
+  #+END_SRC
+
+- Key: s (kasten-search) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-search)
+  #+END_SRC
+
+- Key: t (kasten-search-tag) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-search-tag)
+  #+END_SRC
+
+- Key: n (kasten-create-new-note) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-create-new-note)
+  #+END_SRC
+
+*** Live Search
+
+*** Filters
+
+** Kasten Minor Mode
+
+- Key: C-c C-k k (kasten) ::
+  Back to Kasten major mode.
+
+- Key: C-c C-k b (kasten-show-backlinks-current-note) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-show-backlinks-current-note)
+  #+END_SRC
+
+- Key: C-c C-k i (kasten-insert-id) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-insert-id)
+  #+END_SRC
+
+- Key: C-c C-k I (kasten-change-id) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-change-id)
+  #+END_SRC
+
+- Key: C-c C-k n (kasten-create-new-note-at-point) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-create-new-note-at-point)
+  #+END_SRC
+
+- Key: C-c C-k t (kasten-insert-tag) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-insert-tag)
+  #+END_SRC
+
+- Key: C-c C-k T (kasten-search-tag) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-search-tag)
+  #+END_SRC
 
 * Customisation
 
 *TODO: outdated*
 
-Kasten is customisable using =customize=, via ~M-x~ ~customize-group~ ~<RET>~
-~kasten~ ~<RET>~ or GUI.
+Kasten is customisable using =customize=, via {{{kbd(M-x customize-group RET
+kasten RET)}}} or GUI.
 
 Alternatively, one can customise Kasten in the Emacs configuration file (such as
 =init.el=, or under =use-package=). Below are /default/ configurations.
@@ -233,7 +352,7 @@ Alternatively, one can customise Kasten in the Emacs configuration file (such as
   done
 #+end_src
 
-The following benchmark is obtained by ~M-x~ ~benchmark~. Variables
+The following benchmark is obtained by {{{kbd(M-x benchmark)}}}. Variables
 =gc-cons-threshold= and =gc-cons-percentage= are set to ~16000000~ and ~0.1~,
 accordingly.
 
@@ -250,15 +369,15 @@ on the GitHub repository.
 Users are encouraged to report any significant slowness of Kasten! If possible,
 please include the following information, but please *do not include any
 sensitive information*:
-+ Emacs version (~M-x~ ~emacs-version~ ~<RET>~)
++ Emacs version ({{{kbd(M-x emacs-version RET)}}})
 + Kasten version
 + Operating system (=uname -a=)
 + Number of indexed files (=ls -1 /path/to/notes | wc -l=)
 + Total size of indexed files (=du -sh /path/to/notes=)
-+ Profiler report (~M-x~ ~profiler-start~ ~<RET>~ ~<RET>~, perform action,
-  ~M-x~ ~profiler-stop~ ~<RET>~, and then ~M-x~ ~profiler-report~ ~<RET>~)
-+ Benchmark of the slow function (~M-x~ ~benchmark~ ~<RET>~ followed by the
-  function and ~<RET>~)
++ Profiler report ({{{kbd(M-x profiler-start RET RET)}}}, perform action,
+  {{{kbd(M-x profiler-stop RET)}}}, and then {{{kbd(M-x profiler-report RET)}}}
++ Benchmark of the slow function ({{{kbd(M-x benchmark RET)}}} followed by the
+  function and {{{kbd(RET)}}})
 
 * GNU Free Documentation License
 :PROPERTIES:
@@ -277,3 +396,9 @@ sensitive information*:
 #+BEGIN_SRC shell :wrap example :results output :exports results
  cat ../COPYING
 #+END_SRC
+
+
+# Local Variables:
+# org-confirm-babel-evaluate: nil
+# eval: (add-hook 'before-save-hook (lambda () (when (string= (buffer-file-name) "/Users/iamsqy/Desktop/kasten/docs/kasten.org") (save-excursion (goto-char (point-min)) (when (re-search-forward "^#\\+MACRO: updated .*" nil t) (replace-match (concat "#+MACRO: updated last updated " (format-time-string "%Y-%m-%d")))))) nil t))
+# End:

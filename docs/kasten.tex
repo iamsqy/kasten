@@ -8,7 +8,9 @@
 \usepackage{titleps}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{imakeidx}
 \usepackage{array}
+\usepackage{tabularx}
 \usepackage{enumitem}
 \usepackage{float}
 \usepackage{babel}
@@ -17,6 +19,14 @@
 
 \makeatletter
 \newcommand{\Texinfosettitle}{Kasten Manual}%
+
+% no index headers
+\indexsetup{level=\relax,toclevel=section}%
+\makeindex[name=fn,title=]%
+\makeindex[name=ky,title=]%
+
+% style command for kbd in 'cmd_text' formatting context
+\newcommand\Texinfocommandstyletextkbd[1]{{\ttfamily\textsl{#1}}}%
 
 % redefine the \mainmatter command such that it does not clear page
 % as if in double page
@@ -35,6 +45,7 @@
 }
 
 % set defaults for lists that match Texinfo TeX formatting
+\setlist[description]{style=nextline, font=\normalfont}
 \setlist[itemize]{label=\textbullet}
 \setlist[enumerate]{label=\arabic*.}
 
@@ -76,7 +87,7 @@
     \vglue\titlepagetopglue
 {\raggedright {\huge \bfseries Kasten Manual}}
 \vskip 4pt \hrule height 4pt width \hsize \vskip 4pt
-\rightline{for version 0.2, last updated 6 July 2025}
+\rightline{for version 0.2, last updated 2025-07-08}
 \vskip 0pt plus 1filll
 \leftline{\Large \bfseries Qiyang Sun}%
 \vskip4pt \hrule height 2pt width \hsize
@@ -85,7 +96,7 @@
 \newpage{}%
 \phantom{blabla}%
 \vskip 0pt plus 1filll
-This manual is for Kasten (version 0.2, last updated 6 July 2025), which is
+This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
 an Emacs package for managing Zettelkasten-style notes.
 
 Copyright \copyright{} 2025 Qiyang Sun
@@ -111,10 +122,16 @@ the section entitled ``GNU Free Documentation License''.
 `\texttt{Kasten}' is an \href{https://www.gnu.org/software/emacs/}{Emacs (\nolinkurl{https://www.gnu.org/software/emacs/})} package designed to provide a focused and efficient
 browsing experience for \href{https://zettelkasten.de/}{Zettelkasten (\nolinkurl{https://zettelkasten.de/})}-style notes.
 
-Kasten is inspired by \href{https://melpa.org/\#/deft}{deft (\nolinkurl{https://melpa.org/\#/deft})} and \href{https://melpa.org/\#/zetteldeft}{zetteldeft (\nolinkurl{https://melpa.org/\#/zetteldeft})}.
+Kasten is inspired by \href{https://melpa.org/\#/deft}{Deft (\nolinkurl{https://melpa.org/\#/deft})} and \href{https://melpa.org/\#/zetteldeft}{Zetteldeft (\nolinkurl{https://melpa.org/\#/zetteldeft})}.
 
 \chapter{{Copying}}
 \label{anchor:Copying}%
+
+\begin{itemize}
+\item Kasten is not part of GNU Emacs.
+\item Kasten is free software.
+\item Kasten Manual is free documentation.
+\end{itemize}
 
 
 \section{{Copying Kasten (Software)}}
@@ -157,7 +174,31 @@ included in the section entitled ``GNU Free Documentation License''.
 \chapter{{Concepts}}
 \label{anchor:Concepts}%
 
-To be written.
+``Zettelkasten'' is a note-taking and personal knowledge management system
+intensively used by Niklas Luhmann et al.  In Zettelkasten, notes should be
+atomic, connected through meaningful links.
+
+The introduction to Zettelkasten method can be found online, such as
+\url{https://zettelkasten.de/} and \url{https://en.wikipedia.org/wiki/Zettelkasten}.
+Readers may wish to refer to the literature as the Kasten Manual does not
+provide a detailed introduction to the Zettelkasten methodology itself.
+
+Kasten is inspired by Zetteldeft, a Zettelkasten system on top of Deft.  Deft is
+a note browsing system inspired by Notational Velocity.
+
+Kasten designed based on the following ideas in mind.
+\begin{itemize}
+\item The system should be highly customisable.
+\item The system should be fast.
+\item Each note has a unique ID as its filename, typically derived from the creation
+time.
+\item Notes can be linked to each other by inserting IDs.
+\item Notes can be tagged.  A note may have zero, one or many tags.
+\item Notes can be categorised.  A note may have zero or one category.  This is
+against the Zettelkasten principles, but Kasten users should have the right to
+category their notes should they wish to, for example, if they have their own
+philosophies of knowledge management.
+\end{itemize}
 
 \chapter{{Features}}
 \label{anchor:Features}%
@@ -177,7 +218,7 @@ This package has the following main features:
 \begin{itemize}
 \item Heavy content search `\texttt{consult-ripgrep}' (needs package \href{https://melpa.org/\#/consult}{consult (\nolinkurl{https://melpa.org/\#/consult})},
 customisable).
-\item Limited use of `\texttt{string-match}' (\texttt{C-h} \texttt{f} \texttt{string-match} \texttt{<RET>}).
+\item Limited use of `\texttt{string-match}' (\Texinfocommandstyletextkbd{C-h f string-match \texttt{RET}}).
 \end{itemize}
 \item ID format fully customisable (with the ability to include sanitised title).
 \item Followable note IDs for easy navigation.
@@ -192,25 +233,6 @@ other packages.
 \chapter{{Installation}}
 \label{anchor:Installation}%
 
-
-\section{{MELPA (not yet published) and \texttt{use-package}}}
-\label{anchor:MELPA-_0028not-yet-published_0029-and-use_002dpackage}%
-
-If MELPA is in the package archives, simply:
-
-\texttt{M-x} \texttt{package-install} \texttt{<RET>} \texttt{kasten} \texttt{<RET>}
-
-If using `\texttt{use-package}', add the following to the Emacs configuration file (such
-as `\texttt{init.el}'):
-
-\begin{Texinfoindented}
-\begin{Texinfopreformatted}%
-\ttfamily (use-package kasten
-\  :ensure t
-\  :defer t
-\  :commands (kasten))
-\end{Texinfopreformatted}
-\end{Texinfoindented}
 
 \section{{Tarball}}
 \label{anchor:Tarball}%
@@ -235,7 +257,7 @@ file has extension `\texttt{.tar.gz}', extract it.
 \ttfamily gzip -d /path/to/kasten.tar.gz
 \end{Texinfopreformatted}
 \end{Texinfoindented}
-\item In Emacs, run \leavevmode{}\\
+\item In Emacs, run
 \texttt{M-x} \texttt{package-install-file} \texttt{<RET>} \texttt{/path/to/kasten.tar} \texttt{<RET>}
 \end{enumerate}
 
@@ -254,26 +276,156 @@ following to the Emacs configuration file (such as `\texttt{init.el}'):
 \chapter{{Usage}}
 \label{anchor:Usage}%
 
-\textbf{TODO: outdated}
 
-Launch Kasten with \texttt{M-x} \texttt{kasten} \texttt{<RET>}
+\section{{Kasten Major Mode and Kasten Minor Mode}}
+\label{anchor:Kasten-Major-Mode-and-Kasten-Minor-Mode}%
 
-Inside the `\texttt{*Kasten*}' buffer:
-\begin{itemize}
-\item Hit `\texttt{<RET>}' to open the selected note.
-\item Hit `\texttt{/}' to search notes.
-\item Hit `\texttt{g}' to refresh the notes list.
-\end{itemize}
+Kasten major mode (`\texttt{kasten-mode}') is for note browsing, filtering and editing,
+similar to Deft.  Kasten minor mode (`\texttt{kasten-minor-mode}') is for invoking Kasten
+methods whilst visiting a note.  For Kasten major mode map and usage, see
+\hyperref[anchor:Kasten-Major-Mode]{Section~\ref*{anchor:Kasten-Major-Mode} [Kasten Major Mode], page~\pageref*{anchor:Kasten-Major-Mode}}.
 
-One may want to add more key bindings to `\texttt{kasten-mode-map}'.
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten}& [Command]
+\end{tabularx}
+
+\index[fn]{kasten@\texttt{kasten}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Launch Kasten major mode with \Texinfocommandstyletextkbd{M-x kasten \texttt{RET}}.
+\end{quote}
+
+Kasten minor mode is enabled by default if the note buffer is created by Kasten.
+Kasten minor mode has a lighter `\texttt{Kt}' (customisable).  For Kasten minor mode map
+and usage, see \hyperref[anchor:Kasten-Minor-Mode]{Section~\ref*{anchor:Kasten-Minor-Mode} [Kasten Minor Mode], page~\pageref*{anchor:Kasten-Minor-Mode}}.
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-minor-mode}& [Command]
+\end{tabularx}
+
+\index[fn]{kasten-minor-mode@\texttt{kasten-minor-mode}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Toggle \texttt{kasten-minor-mode} for current buffer.
+\end{quote}
+
+Refer to the Emacs Lisp code for detailed function and variable documentations.
+
+\section{{Kasten Major Mode}}
+\label{anchor:Kasten-Major-Mode}%
+
+\begin{description}
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{\texttt{RET}} (\texttt{kasten-open-file})}}]
+\index[ky]{RET@\texttt{RET}}%
+\index[fn]{kasten-open-file@\texttt{kasten-open-file}}%
+Open the note file on the current line by matching filename.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{/} (\texttt{kasten-live-search})}}]
+\index[ky]{/@\texttt{/}}%
+\index[fn]{kasten-live-search@\texttt{kasten-live-search}}%
+Live search notes by title, category or ID\@.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{?} (\texttt{kasten-filters-edit})}}]
+\index[ky]{?@\texttt{?}}%
+\index[fn]{kasten-filters-edit@\texttt{kasten-filters-edit}}%
+Open a buffer for editing the Kasten filters.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{g} (\texttt{kasten-refresh})}}]
+\index[ky]{g@\texttt{g}}%
+\index[fn]{kasten-refresh@\texttt{kasten-refresh}}%
+Refresh
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{s} (\texttt{kasten-search})}}]
+\index[ky]{s@\texttt{s}}%
+\index[fn]{kasten-search@\texttt{kasten-search}}%
+Search using ‘kasten-search-function’.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{t} (\texttt{kasten-search-tag})}}]
+\index[ky]{t@\texttt{t}}%
+\index[fn]{kasten-search-tag@\texttt{kasten-search-tag}}%
+Prompt and search for a tag.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{n} (\texttt{kasten-create-new-note})}}]
+\index[ky]{n@\texttt{n}}%
+\index[fn]{kasten-create-new-note@\texttt{kasten-create-new-note}}%
+Create and open a new Kasten note.
+\end{description}
+
+
+\subsection{{Live Search}}
+\label{anchor:Live-Search}%
+
+\subsection{{Filters}}
+\label{anchor:Filters}%
+
+\section{{Kasten Minor Mode}}
+\label{anchor:Kasten-Minor-Mode}%
+
+\begin{description}
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{C-c C-k k} (\texttt{kasten})}}]
+\index[ky]{C-c C-k k@\texttt{C-c C-k k}}%
+\index[fn]{kasten@\texttt{kasten}}%
+Back to Kasten major mode.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{C-c C-k b} (\texttt{kasten-show-backlinks-current-note})}}]
+\index[ky]{C-c C-k b@\texttt{C-c C-k b}}%
+\index[fn]{kasten-show-backlinks-current-note@\texttt{kasten-show-backlinks-current-note}}%
+Show all notes that link to the current note by ID\@.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{C-c C-k i} (\texttt{kasten-insert-id})}}]
+\index[ky]{C-c C-k i@\texttt{C-c C-k i}}%
+\index[fn]{kasten-insert-id@\texttt{kasten-insert-id}}%
+Prompt to insert an ID referencing a note.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{C-c C-k I} (\texttt{kasten-change-id})}}]
+\index[ky]{C-c C-k I@\texttt{C-c C-k I}}%
+\index[fn]{kasten-change-id@\texttt{kasten-change-id}}%
+Change occurrences of OLD-ID to a new ID in all note files.
+
+For each file that contains OLD-ID, ask whether to replace it.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{C-c C-k n} (\texttt{kasten-create-new-note-at-point})}}]
+\index[ky]{C-c C-k n@\texttt{C-c C-k n}}%
+\index[fn]{kasten-create-new-note-at-point@\texttt{kasten-create-new-note-at-point}}%
+Create a new note linked from the current one.
+
+Insert ID at point and add a backlink from the new note to the current one.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{C-c C-k t} (\texttt{kasten-insert-tag})}}]
+\index[ky]{C-c C-k t@\texttt{C-c C-k t}}%
+\index[fn]{kasten-insert-tag@\texttt{kasten-insert-tag}}%
+Prompt to insert an existing or new tag at point.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{C-c C-k T} (\texttt{kasten-search-tag})}}]
+\index[ky]{C-c C-k T@\texttt{C-c C-k T}}%
+\index[fn]{kasten-search-tag@\texttt{kasten-search-tag}}%
+Prompt and search for a tag.
+\end{description}
 
 \chapter{{Customisation}}
 \label{anchor:Customisation}%
 
 \textbf{TODO: outdated}
 
-Kasten is customisable using `\texttt{customize}', via \texttt{M-x} \texttt{customize-group} \texttt{<RET>}
-\texttt{kasten} \texttt{<RET>} or GUI\@.
+Kasten is customisable using `\texttt{customize}', via \Texinfocommandstyletextkbd{M-x customize-group \texttt{RET}\ kasten \texttt{RET}} or GUI\@.
 
 Alternatively, one can customise Kasten in the Emacs configuration file (such as
 `\texttt{init.el}', or under `\texttt{use-package}'). Below are \emph{default} configurations.
@@ -346,7 +498,7 @@ done
 \end{Texinfopreformatted}
 \end{Texinfoindented}
 
-The following benchmark is obtained by \texttt{M-x} \texttt{benchmark}. Variables
+The following benchmark is obtained by \Texinfocommandstyletextkbd{M-x benchmark}. Variables
 `\texttt{gc-cons-threshold}' and `\texttt{gc-cons-percentage}' are set to \texttt{16000000} and \texttt{0.1},
 accordingly.
 
@@ -375,15 +527,15 @@ Users are encouraged to report any significant slowness of Kasten! If possible,
 please include the following information, but please \textbf{do not include any
 sensitive information}:
 \begin{itemize}
-\item Emacs version (\texttt{M-x} \texttt{emacs-version} \texttt{<RET>})
+\item Emacs version (\Texinfocommandstyletextkbd{M-x emacs-version \texttt{RET}})
 \item Kasten version
 \item Operating system (`\texttt{uname -a}')
 \item Number of indexed files (`\texttt{ls -1 /path/to/notes | wc -l}')
 \item Total size of indexed files (`\texttt{du -sh /path/to/notes}')
-\item Profiler report (\texttt{M-x} \texttt{profiler-start} \texttt{<RET>} \texttt{<RET>}, perform action,
-\texttt{M-x} \texttt{profiler-stop} \texttt{<RET>}, and then \texttt{M-x} \texttt{profiler-report} \texttt{<RET>})
-\item Benchmark of the slow function (\texttt{M-x} \texttt{benchmark} \texttt{<RET>} followed by the
-function and \texttt{<RET>})
+\item Profiler report (\Texinfocommandstyletextkbd{M-x profiler-start \texttt{RET}\ \texttt{RET}}, perform action,
+\Texinfocommandstyletextkbd{M-x profiler-stop \texttt{RET}}, and then \Texinfocommandstyletextkbd{M-x profiler-report \texttt{RET}}
+\item Benchmark of the slow function (\Texinfocommandstyletextkbd{M-x benchmark \texttt{RET}} followed by the
+function and \Texinfocommandstyletextkbd{\texttt{RET}})
 \end{itemize}
 
 \appendix

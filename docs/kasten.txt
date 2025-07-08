@@ -6,10 +6,14 @@ Kasten Manual
 3 Concepts
 4 Features
 5 Installation
-  5.1 MELPA (not yet published) and ‘use-package’
-  5.2 Tarball
-  5.3 Manual Installation
+  5.1 Tarball
+  5.2 Manual Installation
 6 Usage
+  6.1 Kasten Major Mode and Kasten Minor Mode
+  6.2 Kasten Major Mode
+    6.2.1 Live Search
+    6.2.2 Filters
+  6.3 Kasten Minor Mode
 7 Customisation
 8 Benchmark
 9 Contributing
@@ -19,6 +23,18 @@ Appendix B GNU General Public License
 Kasten Manual
 *************
 
+This manual is for Kasten (version 0.2, last updated 2025-07-08), which
+is an Emacs package for managing Zettelkasten-style notes.
+
+   Copyright © 2025 Qiyang Sun
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.3 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with no Front-Cover Texts,
+     and with no Back-Cover Texts.  A copy of the license is included in
+     the section entitled "GNU Free Documentation License".
+
 1 Synopsis
 **********
 
@@ -26,11 +42,15 @@ Kasten Manual
 designed to provide a focused and efficient browsing experience for
 Zettelkasten (https://zettelkasten.de/)-style notes.
 
-   Kasten is inspired by deft (https://melpa.org/#/deft) and zetteldeft
+   Kasten is inspired by Deft (https://melpa.org/#/deft) and Zetteldeft
 (https://melpa.org/#/zetteldeft).
 
 2 Copying
 *********
+
+   • Kasten is not part of GNU Emacs.
+   • Kasten is free software.
+   • Kasten Manual is free documentation.
 
 2.1 Copying Kasten (Software)
 =============================
@@ -76,7 +96,31 @@ Free Documentation License".
 3 Concepts
 **********
 
-To be written.
+"Zettelkasten" is a note-taking and personal knowledge management system
+intensively used by Niklas Luhmann et al.  In Zettelkasten, notes should
+be atomic, connected through meaningful links.
+
+   The introduction to Zettelkasten method can be found online, such as
+<https://zettelkasten.de/> and
+<https://en.wikipedia.org/wiki/Zettelkasten>.  Readers may wish to refer
+to the literature as the Kasten Manual does not provide a detailed
+introduction to the Zettelkasten methodology itself.
+
+   Kasten is inspired by Zetteldeft, a Zettelkasten system on top of
+Deft.  Deft is a note browsing system inspired by Notational Velocity.
+
+   Kasten designed based on the following ideas in mind.
+   • The system should be highly customisable.
+   • The system should be fast.
+   • Each note has a unique ID as its filename, typically derived from
+     the creation time.
+   • Notes can be linked to each other by inserting IDs.
+   • Notes can be tagged.  A note may have zero, one or many tags.
+   • Notes can be categorised.  A note may have zero or one category.
+     This is against the Zettelkasten principles, but Kasten users
+     should have the right to category their notes should they wish to,
+     for example, if they have their own philosophies of knowledge
+     management.
 
 4 Features
 **********
@@ -93,8 +137,7 @@ This package has the following main features:
    • Note searching significantly faster than deft.
         • Heavy content search ‘consult-ripgrep’ (needs package consult
           (https://melpa.org/#/consult), customisable).
-        • Limited use of ‘string-match’ (‘C-h’ ‘f’ ‘string-match’
-          ‘<RET>’).
+        • Limited use of ‘string-match’ (‘C-h f string-match <RET>’).
    • ID format fully customisable (with the ability to include sanitised
      title).
    • Followable note IDs for easy navigation.
@@ -108,22 +151,7 @@ This package has the following main features:
 5 Installation
 **************
 
-5.1 MELPA (not yet published) and ‘use-package’
-===============================================
-
-If MELPA is in the package archives, simply:
-
-   ‘M-x’ ‘package-install’ ‘<RET>’ ‘kasten’ ‘<RET>’
-
-   If using ‘use-package’, add the following to the Emacs configuration
-file (such as ‘init.el’):
-
-     (use-package kasten
-       :ensure t
-       :defer t
-       :commands (kasten))
-
-5.2 Tarball
+5.1 Tarball
 ===========
 
   1. Download the latest release tarball and signature (‘*.sig’) from
@@ -138,10 +166,10 @@ file (such as ‘init.el’):
   3. GitHub does not allow uploading ‘.tar’ files in Release.  If the
      file has extension ‘.tar.gz’, extract it.
           gzip -d /path/to/kasten.tar.gz
-  4. In Emacs, run
-     ‘M-x’ ‘package-install-file’ ‘<RET>’ ‘/path/to/kasten.tar’ ‘<RET>’
+  4. In Emacs, run ‘M-x’ ‘package-install-file’ ‘<RET>’
+     ‘/path/to/kasten.tar’ ‘<RET>’
 
-5.3 Manual Installation
+5.2 Manual Installation
 =======================
 
 Clone or download ‘kasten.el’ and place it in the ‘load-path’.  Then add
@@ -152,24 +180,93 @@ the following to the Emacs configuration file (such as ‘init.el’):
 6 Usage
 *******
 
-*TODO: outdated*
+6.1 Kasten Major Mode and Kasten Minor Mode
+===========================================
 
-   Launch Kasten with ‘M-x’ ‘kasten’ ‘<RET>’
+Kasten major mode (‘kasten-mode’) is for note browsing, filtering and
+editing, similar to Deft.  Kasten minor mode (‘kasten-minor-mode’) is
+for invoking Kasten methods whilst visiting a note.  For Kasten major
+mode map and usage, see Kasten Major Mode.
 
-   Inside the ‘*Kasten*’ buffer:
-   • Hit ‘<RET>’ to open the selected note.
-   • Hit ‘/’ to search notes.
-   • Hit ‘g’ to refresh the notes list.
+ -- Command: kasten
+     Launch Kasten major mode with ‘M-x kasten <RET>’.
 
-   One may want to add more key bindings to ‘kasten-mode-map’.
+   Kasten minor mode is enabled by default if the note buffer is created
+by Kasten.  Kasten minor mode has a lighter ‘Kt’ (customisable).  For
+Kasten minor mode map and usage, see Kasten Minor Mode.
+
+ -- Command: kasten-minor-mode
+     Toggle ‘kasten-minor-mode’ for current buffer.
+
+   Refer to the Emacs Lisp code for detailed function and variable
+documentations.
+
+6.2 Kasten Major Mode
+=====================
+
+‘<RET>’ (‘kasten-open-file’)
+     Open the note file on the current line by matching filename.
+
+‘/’ (‘kasten-live-search’)
+     Live search notes by title, category or ID.
+
+‘?’ (‘kasten-filters-edit’)
+     Open a buffer for editing the Kasten filters.
+
+‘g’ (‘kasten-refresh’)
+     Refresh
+
+‘s’ (‘kasten-search’)
+     Search using ‘kasten-search-function’.
+
+‘t’ (‘kasten-search-tag’)
+     Prompt and search for a tag.
+
+‘n’ (‘kasten-create-new-note’)
+     Create and open a new Kasten note.
+
+6.2.1 Live Search
+-----------------
+
+6.2.2 Filters
+-------------
+
+6.3 Kasten Minor Mode
+=====================
+
+‘C-c C-k k’ (‘kasten’)
+     Back to Kasten major mode.
+
+‘C-c C-k b’ (‘kasten-show-backlinks-current-note’)
+     Show all notes that link to the current note by ID.
+
+‘C-c C-k i’ (‘kasten-insert-id’)
+     Prompt to insert an ID referencing a note.
+
+‘C-c C-k I’ (‘kasten-change-id’)
+     Change occurrences of OLD-ID to a new ID in all note files.
+
+     For each file that contains OLD-ID, ask whether to replace it.
+
+‘C-c C-k n’ (‘kasten-create-new-note-at-point’)
+     Create a new note linked from the current one.
+
+     Insert ID at point and add a backlink from the new note to the
+     current one.
+
+‘C-c C-k t’ (‘kasten-insert-tag’)
+     Prompt to insert an existing or new tag at point.
+
+‘C-c C-k T’ (‘kasten-search-tag’)
+     Prompt and search for a tag.
 
 7 Customisation
 ***************
 
 *TODO: outdated*
 
-   Kasten is customisable using ‘customize’, via ‘M-x’ ‘customize-group’
-‘<RET>’ ‘kasten’ ‘<RET>’ or GUI.
+   Kasten is customisable using ‘customize’, via ‘M-x customize-group
+<RET> kasten <RET>’ or GUI.
 
    Alternatively, one can customise Kasten in the Emacs configuration
 file (such as ‘init.el’, or under ‘use-package’).  Below are _default_
@@ -236,7 +333,7 @@ Kasten.
          rm "random_${i}.bin"
      done
 
-   The following benchmark is obtained by ‘M-x’ ‘benchmark’.  Variables
+   The following benchmark is obtained by ‘M-x benchmark’.  Variables
 ‘gc-cons-threshold’ and ‘gc-cons-percentage’ are set to ‘16000000’ and
 ‘0.1’, accordingly.
 
@@ -254,16 +351,15 @@ requests on the GitHub repository.
    Users are encouraged to report any significant slowness of Kasten!
 If possible, please include the following information, but please *do
 not include any sensitive information*:
-   • Emacs version (‘M-x’ ‘emacs-version’ ‘<RET>’)
+   • Emacs version (‘M-x emacs-version <RET>’)
    • Kasten version
    • Operating system (‘uname -a’)
    • Number of indexed files (‘ls -1 /path/to/notes | wc -l’)
    • Total size of indexed files (‘du -sh /path/to/notes’)
-   • Profiler report (‘M-x’ ‘profiler-start’ ‘<RET>’ ‘<RET>’, perform
-     action, ‘M-x’ ‘profiler-stop’ ‘<RET>’, and then ‘M-x’
-     ‘profiler-report’ ‘<RET>’)
-   • Benchmark of the slow function (‘M-x’ ‘benchmark’ ‘<RET>’ followed
-     by the function and ‘<RET>’)
+   • Profiler report (‘M-x profiler-start <RET> <RET>’, perform action,
+     ‘M-x profiler-stop <RET>’, and then ‘M-x profiler-report <RET>’
+   • Benchmark of the slow function (‘M-x benchmark <RET>’ followed by
+     the function and ‘<RET>’)
 
 Appendix A GNU Free Documentation License
 *****************************************
