@@ -210,6 +210,15 @@ Set to 60 for 1 minute."
   "Face for categories in Kasten."
   :group 'kasten)
 
+(defvar kasten--is-live-search nil
+  "Non-nil if currently doing a live search.")
+
+(defcustom kasten-auto-refresh t
+  "If non-nil, automatically refresh Kasten buffer when files change."
+  :type 'boolean
+  :group 'kasten
+  :set #'kasten--set-auto-refresh)
+
 (defvar kasten-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") #'kasten-open-file)
@@ -415,9 +424,6 @@ filters.  \\[kasten-filters-save-and-kill] to apply.  \
 
 (defvar kasten-search-term ""
   "Quick search term.")
-
-(defvar kasten--is-live-search nil
-  "Non-nil if currently doing a live search.")
 
 (defun kasten-live-search ()
   "Live search notes by title, category or ID."
@@ -672,12 +678,6 @@ according to IS-AUTO."
   (when kasten--watch-handle
     (file-notify-rm-watch kasten--watch-handle)
     (setq kasten--watch-handle nil)))
-
-(defcustom kasten-auto-refresh t
-  "If non-nil, automatically refresh Kasten buffer when files change."
-  :type 'boolean
-  :group 'kasten
-  :set #'kasten--set-auto-refresh)
 
 (defun kasten--safetitle (title)
   "Convert TITLE to a safe short string can be used for ID or filename."
