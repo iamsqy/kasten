@@ -579,7 +579,7 @@ according to IS-AUTO."
 
 	;; insert file index
 	(dolist (file files)
-	  (let* ((title (kasten--parse-org-title file))
+	  (let* ((title (kasten--parse-title file))
 		 (category (kasten--parse-category file))
 		 (filename (file-name-base file)))
 	    (when (and
@@ -718,9 +718,8 @@ according to IS-AUTO."
                (full-path (concat path "." kasten-default-extension))
                (dir (file-name-directory full-path)))
     (unless (file-directory-p dir)
-      (progn
-	(make-directory dir t)
-	(message "Kasten: created directory `%s'" dir)))
+      (make-directory dir t)
+      (message "Kasten: created directory `%s'" dir))
     (find-file full-path)
     (insert kasten-note-title-template)
     (insert title)
@@ -745,9 +744,8 @@ Insert ID at point and add a backlink from the new note to the current one."
                (new-dir (file-name-directory new-file)))
     (insert (concat kasten-id-symbol id))
     (unless (file-directory-p new-dir)
-      (progn
-	(make-directory new-dir t)
-	(message "Kasten: created directory `%s'" new-dir)))
+      (make-directory new-dir t)
+      (message "Kasten: created directory `%s'" new-dir))
     (find-file new-file)
     (insert kasten-note-title-template)
     (insert title)
@@ -759,7 +757,7 @@ Insert ID at point and add a backlink from the new note to the current one."
     (message "Kasten: created new note `%s' backlinking to `%s' at `%s'"
 	     id origin-id new-file)))
 
-(defun kasten--parse-org-title (file)
+(defun kasten--parse-title (file)
   "Return the title from FILE or fallback to base filename."
   (with-temp-buffer
     (insert-file-contents file nil 0 kasten-title-max-pos)
@@ -824,7 +822,7 @@ Insert ID at point and add a backlink from the new note to the current one."
   (interactive)
   (let ((id (thing-at-point 'symbol t)))
     (when id
-        (kasten--follow-id-link id))))
+      (kasten--follow-id-link id))))
 
 (defun kasten--button-action (button)
   "Action to perform when BUTTON is clicked."
@@ -880,14 +878,14 @@ For each file that contains OLD-ID, ask whether to replace it."
 	    (concat "[Kasten] Change which ID: " kasten-id-symbol)
 	    ids nil nil))))
   (let* ((files (kasten--get-note-files))
-        (ids (mapcar #'file-name-base files))
-	(new-id (read-string
-		 (format (concat "[Kasten] Change `" kasten-id-symbol
-				 "%s' to: " kasten-id-symbol)
-			 old-id)))
-	(start-time (float-time))
-	(modified-file-cnt 0)
-	(modification-cnt 0))
+         (ids (mapcar #'file-name-base files))
+	 (new-id (read-string
+		  (format (concat "[Kasten] Change `" kasten-id-symbol
+				  "%s' to: " kasten-id-symbol)
+			  old-id)))
+	 (start-time (float-time))
+	 (modified-file-cnt 0)
+	 (modification-cnt 0))
     (when (member new-id ids)
       (user-error "Kasten: new ID already exists"))
     (with-temp-message
@@ -1021,10 +1019,10 @@ path.  If called interactively and ID is not provided, use buffer filename."
   (let ((note-file (kasten--id-to-file id)))
     (if note-file
         (let* ((note-dir (file-name-directory note-file))
-	      (name-no-ext (file-name-base note-file))
-	      (attachment-path (concat note-dir name-no-ext "/"
-				       (when subdir
-					 (concat subdir "/")))))
+	       (name-no-ext (file-name-base note-file))
+	       (attachment-path (concat note-dir name-no-ext "/"
+					(when subdir
+					  (concat subdir "/")))))
 	  (when (and create-if-nonexist
 		     (not (file-directory-p attachment-path)))
 	    (progn
