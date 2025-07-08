@@ -261,6 +261,8 @@ Set to 60 for 1 minute."
   :group 'kasten
   (if kasten-minor-mode
       (progn
+	(with-eval-after-load 'org
+	  (add-hook 'org-mode-hook #'kasten--setup-id-buttons))
         (unless (derived-mode-p 'kasten-mode 'text-mode)
           (display-warning
            'kasten-minor-mode
@@ -495,6 +497,7 @@ Type anywhere to search titles, categories and IDs.  C-g to quit.")))
 Reset point if IS-INIT is non-nil; display message with time lapsed and
 according to IS-AUTO."
   (interactive)
+  (add-hook 'window-size-change-functions #'kasten--debounced-refresh)
   (let ((buffer (get-buffer-create "*Kasten*"))
         (start-time (float-time)))
     (with-current-buffer buffer
@@ -647,8 +650,6 @@ according to IS-AUTO."
          (lambda ()
            (when (derived-mode-p 'kasten-mode)
              (kasten-refresh))))))
-
-(add-hook 'window-size-change-functions #'kasten--debounced-refresh)
 
 (defvar kasten--watch-handle nil
   "Handle returned by `file-notify-add-watch'.")
@@ -861,8 +862,6 @@ Insert ID at point and add a backlink from the new note to the current one."
   (remove-overlays)
   (kasten--add-id-buttons))
 
-(add-hook 'org-mode-hook #'kasten--setup-id-buttons)
-
 (defun kasten-insert-id ()
   "Prompt to insert an ID referencing a note."
   (interactive)
@@ -903,7 +902,8 @@ For each file that contains OLD-ID, ask whether to replace it."
           (when (search-forward old-id nil t)
             (goto-char (point-min))
             (when (y-or-n-p (format "Kasten: change `%s' in `%s' to `%s'?"
-                                    old-id (file-name-nondirectory file) new-id))
+                                    old-id
+                                    (file-name-nondirectory file) new-id))
               (progn
                 (setq modified-file-cnt (+ modified-file-cnt 1))
                 (while (search-forward old-id nil t)
