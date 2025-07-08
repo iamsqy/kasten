@@ -991,7 +991,7 @@ across %d files; moved file `%s' to `%s'; took %.6f seconds \
   (interactive
    (let* ((ids (mapcar #'file-name-base (kasten--get-note-files)))
           (choice (completing-read
-		   ("[Kasten] Show backlinks to ID: " kasten-id-symbol)
+		   "[Kasten] Show backlinks to ID: " kasten-id-symbol
 		   ids nil nil)))
      (list choice)))
   (funcall kasten-search-function
