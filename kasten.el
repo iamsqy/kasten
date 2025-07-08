@@ -814,8 +814,7 @@ Insert ID at point and add a backlink from the new note to the current one."
           (find-file file)
 	  (kasten-minor-mode 1)
 	  (message "Kasten: found file `%s'" file))
-      (message "Kasten: could not open file with ID `%s': not found"
-	       filename))))
+      (message "Kasten: could not open file with ID `%s': not found" id))))
 
 (defun kasten--id-to-file (id)
   "Find full path of note file matching ID."
