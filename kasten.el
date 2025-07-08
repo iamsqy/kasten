@@ -256,8 +256,8 @@ Set to 60 for 1 minute."
         (unless (derived-mode-p 'kasten-mode 'text-mode)
 	  (display-warning
 	   'kasten-minor-mode
-	   (format "Kasten minor mode is not intended for `%s'. \
-It is designed for text-mode buffers. The major mode of the current buffer is \
+	   (format "Kasten minor mode is not intended for `%s'.
+It is designed for text-mode buffers. The major mode of the current buffer is
 not derived from text-mode. Answer `y' if you want to treat `%s' as note."
 		   major-mode (buffer-name))
 	   :warning)
@@ -265,12 +265,12 @@ not derived from text-mode. Answer `y' if you want to treat `%s' as note."
 		   (format "[Kasten] Really enable Kasten minor mode in `%s'? "
 			   major-mode))
             (setq kasten-minor-mode nil)
-            (message "[Kasten] Kasten minor mode not enabled."))))))
+            (message "Kasten: minor mode not enabled"))))))
 
 (defvar kasten-filters
   '(:title ()
-    :category ()
-    :mode and)
+	   :category ()
+	   :mode and)
   "Filters for kasten-refresh filtering of notes.
 
 :title is a list of substrings to match in the title.
