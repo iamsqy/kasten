@@ -28,7 +28,14 @@
 
 ;;; Commentary:
 
-;; To Be Written
+;; `Kasten' is an Emacs package designed to provide a focused and efficient
+;; browsing experience for Zettelkasten-style notes.
+
+;; Kasten is inspired by deft and zetteldeft (both of the packages can be found
+;; at melpa.org).
+
+;; For detailed information, refer to Kasten Manual, which can be found along
+;; with this file, under a folder named docs.  Various of formats are available.
 
 ;;; Code:
 
