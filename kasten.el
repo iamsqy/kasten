@@ -37,6 +37,7 @@
 ;; For detailed information, refer to Kasten Manual, which can be found along
 ;; with this file, under a folder named docs.  Various of formats are available.
 
+
 ;;; Code:
 
 
@@ -222,7 +223,7 @@ Set to 60 for 1 minute."
 (defvar kasten--is-live-search nil
   "Non-nil if currently doing a live search.")
 
-(defvar kasten-auto-refresh t ;; properly defined later
+(defvar kasten-auto-refresh nil ;; properly defined later
   "If non-nil, automatically refresh Kasten buffer when files change.")
 
 (defvar kasten-mode-map
@@ -688,7 +689,7 @@ according to IS-AUTO."
     (file-notify-rm-watch kasten--watch-handle)
     (setq kasten--watch-handle nil)))
 
-(defcustom kasten-auto-refresh t
+(defcustom kasten-auto-refresh nil
   "If non-nil, automatically refresh Kasten buffer when files change."
   :type 'boolean
   :group 'kasten
