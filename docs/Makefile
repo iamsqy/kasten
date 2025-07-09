@@ -33,6 +33,6 @@ latex:
 	texi2any --latex -o $(BASE).tex $(TEXI)
 
 clean:
-	rm -f *.html *.xml *.dbk *.pdf *.txt *.aux *.log *.out *.toc *.cp *.fn *.ky *.pg *.tp *.vr *.cps *.fns *.kys *.pgs *.tps *.vrs *.info *.tex
+	rm -f kasten.html *.xml *.dbk *.pdf *.txt *.aux *.log *.out *.toc *.cp *.fn *.ky *.pg *.tp *.vr *.cps *.fns *.kys *.pgs *.tps *.vrs *.info *.tex
 	rm -rf $(BASE) *.tmp *.toc *.dvi
 	rm -rf kasten_html/
