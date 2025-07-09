@@ -24,6 +24,7 @@
 \indexsetup{level=\relax,toclevel=section}%
 \makeindex[name=fn,title=]%
 \makeindex[name=ky,title=]%
+\makeindex[name=vr,title=]%
 
 % style command for kbd in 'cmd_text' formatting context
 \newcommand\Texinfocommandstyletextkbd[1]{{\ttfamily\textsl{#1}}}%
@@ -87,7 +88,7 @@
     \vglue\titlepagetopglue
 {\raggedright {\huge \bfseries Kasten Manual}}
 \vskip 4pt \hrule height 4pt width \hsize \vskip 4pt
-\rightline{for version 0.2, last updated 2025-07-08}
+\rightline{for version 0.90.0, last updated 2025-07-09}
 \vskip 0pt plus 1filll
 \leftline{\Large \bfseries Qiyang Sun}%
 \vskip4pt \hrule height 2pt width \hsize
@@ -96,7 +97,7 @@
 \newpage{}%
 \phantom{blabla}%
 \vskip 0pt plus 1filll
-This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
+This manual is for Kasten (version 0.90.0, last updated 2025-07-09), which is
 an Emacs package for managing Zettelkasten-style notes.
 
 Copyright \copyright{} 2025 Qiyang Sun
@@ -186,7 +187,7 @@ provide a detailed introduction to the Zettelkasten methodology itself.
 Kasten is inspired by Zetteldeft, a Zettelkasten system on top of Deft.  Deft is
 a note browsing system inspired by Notational Velocity.
 
-Kasten designed based on the following ideas in mind.
+Kasten is designed base on the following ideas in mind.
 \begin{itemize}
 \item The system should be highly customisable.
 \item The system should be fast.
@@ -222,7 +223,7 @@ customisable).
 \end{itemize}
 \item ID format fully customisable (with the ability to include sanitised title).
 \item Followable note IDs for easy navigation.
-\item ID changable with auto-update references.
+\item ID is changable with auto-update references.
 \item Insert tags and note IDs with auto-completion support.
 \item Backlink searching to find references between notes.
 \item Functions to get note path and attachment directory path for integration with
@@ -312,7 +313,7 @@ Kasten minor mode has a lighter `\texttt{Kt}' (customisable).
 Toggle \texttt{kasten-minor-mode} for current buffer.
 \end{quote}
 
-Refer to the Emacs Lisp code for detailed function and variable documentations.
+Refer to the Emacs Lisp code for detailed function and variable documentation.
 
 \section{{Kasten Major Mode}}
 \label{anchor:Kasten-Major-Mode}%
@@ -365,8 +366,102 @@ Create and open a new Kasten note.
 \subsection{{Live Search}}
 \label{anchor:Live-Search}%
 
+In a Live Search, one can type anywhere to search titles, categories and IDs.
+It is unnecessary to place the point into the text box---a temporary key map is
+used to handle input, supporting letters, symbols and non-ASCII characters.
+Case is insensitive.
+
+\begin{description}
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{C-g} (\texttt{kasten{-}{-}quit-live-search})\\
+\index[vr]{C-g (kasten--quit-live-search)@\texttt{\Texinfocommandstyletextkbd{C-g}\ (\texttt{kasten{-}{-}quit-live-search})}}%
+\Texinfocommandstyletextkbd{\texttt{ESC}\ \texttt{ESC}\ \texttt{ESC}} (\texttt{kasten{-}{-}quit-live-search})
+\index[vr]{ESC ESC ESC (kasten--quit-live-search)@\texttt{\Texinfocommandstyletextkbd{\texttt{ESC}\ \texttt{ESC}\ \texttt{ESC}}\ (\texttt{kasten{-}{-}quit-live-search})}}%
+}}]
+\index[ky]{C-g@\texttt{C-g}}%
+\index[ky]{ESC ESC ESC@\texttt{ESC ESC ESC}}%
+\index[fn]{kasten--quit-live-search@\texttt{kasten{-}{-}quit-live-search}}%
+Quit live search and reset to normal Kasten.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{\texttt{DEL}}
+\index[vr]{DEL@\texttt{\Texinfocommandstyletextkbd{\texttt{DEL}}}}%
+}}]
+\index[ky]{DEL@\texttt{DEL}}%
+Delete the last input character.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{\texttt{RET}} (\texttt{kasten-open-file})
+\index[vr]{RET (kasten-open-file)@\texttt{\Texinfocommandstyletextkbd{\texttt{RET}}\ (\texttt{kasten-open-file})}}%
+}}]
+\index[ky]{RET@\texttt{RET}}%
+\index[fn]{kasten-open-file@\texttt{kasten-open-file}}%
+Open the note file on the current line by matching filename.
+\end{description}
+
+
+A letter `\texttt{s}' will appear next to Kasten buffer title indicating Live Search is
+activated.
+
 \subsection{{Filters}}
 \label{anchor:Filters}%
+
+With Filters, one can filter titles and/or categories.
+
+By invoking `\texttt{kasten-filters-edit}', a new buffer `\texttt{*Kasten Filters*}' is
+created.  This buffer is in \texttt{kasten-filters-mode}, for users to edit filters.
+
+Lines starting with a `\texttt{\%}' symbol are read-only comments.  Lines starting with a
+`\texttt{\#}' are read-only headers which will be parsed.
+
+\begin{description}
+\item[{\parbox[b]{\linewidth}{%
+Title filters}}]
+Enter titles one per line.  Case is insensitive.  A note will be displayed if
+it has at least one title filter as its substring.  Use of Emacs regular
+expressions is allowed.  Leave this field empty to keep all notes.
+
+\item[{\parbox[b]{\linewidth}{%
+Category filters}}]
+Enter categories one per line.  Case is sensitive.  A note will be displayed
+if it has a category and the category is exactly one of the category filters.
+Leave this field empty to keep all notes.
+
+\item[{\parbox[b]{\linewidth}{%
+Mode}}]
+Logic operator for the filter operation.  May be either `and' or `or'.  If
+only one of the title filters and category filters is needed, use `and'.
+\end{description}
+
+
+Kasten-Filters mode has the following key bindings.
+
+\begin{description}
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{C-c C-c} (\texttt{kasten-filters-save-and-kill})}}]
+\index[ky]{C-c C-c@\texttt{C-c C-c}}%
+\index[fn]{kasten-filters-save-and-kill@\texttt{kasten-filters-save-and-kill}}%
+Try to parse the buffer contents and apply them to Kasten filters, then kill
+this buffer and delete the selected window.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{C-c C-k} (\texttt{kill-buffer-and-window})}}]
+\index[ky]{C-c C-k@\texttt{C-c C-k}}%
+\index[fn]{kill-buffer-and-window@\texttt{kill-buffer-and-window}}%
+Kill the Kasten-Filters buffer and delete the selected window; discard any
+changes to the filters.
+
+\item[{\parbox[b]{\linewidth}{%
+\Texinfocommandstyletextkbd{C-c C-t} (\texttt{kasten-filters{-}{-}toggle-the-mode})}}]
+\index[ky]{C-c C-t@\texttt{C-c C-t}}%
+\index[fn]{kasten-filters--toggle-the-mode@\texttt{kasten-filters{-}{-}toggle-the-mode}}%
+Toggle the mode on the current line between `or' and `and'.  Only valid if the
+point is placed on the mode text (placed on the text `or' or `and').
+\end{description}
+
+
+A letter `\texttt{f}' will appear next to Kasten buffer title indicating Kasten Filters
+are activated.
 
 \section{{Kasten Minor Mode}}
 \label{anchor:Kasten-Minor-Mode}%
@@ -422,64 +517,524 @@ Prompt and search for a tag.
 \chapter{{Customisation}}
 \label{anchor:Customisation}%
 
-\textbf{TODO: outdated}
 
-Kasten is customisable using `\texttt{customize}', via \Texinfocommandstyletextkbd{M-x customize-group \texttt{RET}\ kasten \texttt{RET}} or GUI\@.
+\section{{Customisable Variables}}
+\label{anchor:Customisable-Variables}%
 
-Alternatively, one can customise Kasten in the Emacs configuration file (such as
-`\texttt{init.el}', or under `\texttt{use-package}'). Below are \emph{default} configurations.
+Kasten is customisable using `\texttt{customize}', via \Texinfocommandstyletextkbd{M-x customize-group \texttt{RET}\ kasten \texttt{RET}}. Alternatively, one may use \texttt{setq}.  For
+example, to change the variable `\texttt{kasten-directory}' to `\texttt{\~{}/notes}' using \texttt{setq},
+one may add the following code to their Emacs configuration file (such as
+`\texttt{init.el}', preferably under `\texttt{use-package}').
 
 \begin{Texinfoindented}
 \begin{Texinfopreformatted}%
-\ttfamily ;;\ Directory containing your notes
-;;\ Kasten recursively finds all notes under kasten-directory
-(setq kasten-directory (expand-file-name "\~{}/jrn/"))
-
-;;\ File extensions to include in search
-;;\ E.g.,\ Org mode files,\ text files,\ and (La)TeX files
-(setq kasten-file-extensions '("org" "txt" "tex"))
-
-;;\ Function used for searching within the Kasten directory
-;;\ If consult-ripgrep is not ideal,\ one may change here
-(setq kasten-search-function \#'consult-ripgrep)
-
-;;\ Regexp to match the title of a note
-;;\ Matches `\textbackslash{}\#+title:' ,\ `\textbackslash{}\#+TITLE:' ,\ `\textbackslash{}\#+Title:',\ ...
-(setq kasten-title-regexp "\^{}\#\textbackslash{}\textbackslash{}+[tT][iI][tT][lL][eE]:\ *\textbackslash{}\textbackslash{}(.*\textbackslash{}\textbackslash{})\$")
-
-;;\ Max position of the title of a note
-;;\ Reduce if slow
-(setq kasten-title-max-pos 4096)
-
-;;\ Regexp to match a tag of a note
-;;\ Matches `\textbackslash{}\#foobar'
-(setq kasten-tag-regexp "\#\textbackslash{}\textbackslash{}([[:alnum:]\_-]+\textbackslash{}\textbackslash{})")
-
-;;\ Max position of the title of a note
-;;\ Reduce if slow
-(setq kasten-tag-max-pos 65536)
-
-;;\ Regexp for the tag char (for consult-ripgrep to understand)
-;;\ `\textbackslash{}\textbackslash{}x23' is `\textbackslash{}\#' in PCRE
-(setq kasten-tag-first-char-regexp "\textbackslash{}\textbackslash{}x23")
-
-;;\ Leading symbol for ID
-;;\ May be longer than 1 char
-(setq kasten-id-symbol "§")
-
-;;\ Regexp to match the ID
-;;\ Matches `\textbackslash{}§20250229-2333'
-(setq kasten-id-regexp "§\textbackslash{}\textbackslash{}([0-9]\textbackslash{}\textbackslash{}\{8\textbackslash{}\textbackslash{}\}-[0-9]\textbackslash{}\textbackslash{}\{4\textbackslash{}\textbackslash{}\}\textbackslash{}\textbackslash{})")
-
-;;\ Buffer title
-;;\ If you don't like `Kasten' as the name
-(setq kasten-buffer-title "Kasten\textbackslash{}n")
-
-;;\ Auto refresh
-;;\ If non-nil,\ automatically refresh Kasten buffer when files change
-(setq kasten-auto-refresh t)
+\ttfamily (setq kasten-directory (expand-file-name "\~{}/notes/"))
 \end{Texinfopreformatted}
 \end{Texinfoindented}
+
+Default values in the manual may be evaluated, simplified or slightly modified.
+Please refer to the source code and search for `\texttt{defcustom}'.
+
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-directory}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-directory@\texttt{kasten-directory}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Note directory.
+
+Default value: `\texttt{\~{}/jrn/}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-file-extensions}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-file-extensions@\texttt{kasten-file-extensions}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+List of searchable file extensions for Kasten.
+
+Default value: `\texttt{("org" "txt" "tex")}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-default-extension}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-default-extension@\texttt{kasten-default-extension}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Default extension for new notes.
+
+Default value: `\texttt{org}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-note-title-template}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-note-title-template@\texttt{kasten-note-title-template}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Template for new notes.
+
+Default value: `\texttt{\#+title:}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-index-hidden-files}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-index-hidden-files@\texttt{kasten-index-hidden-files}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+If non-nil, include dot files when indexing.
+May cause problem if backup files present in the directory.
+
+Default value: `\texttt{nil}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-search-function}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-search-function@\texttt{kasten-search-function}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Function used for searching within the Kasten directory.
+
+Default value: `\texttt{consult-ripgrep}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-title-regexp}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-title-regexp@\texttt{kasten-title-regexp}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Regexp to match the title of a note.
+
+Default value: `\texttt{"\^{}\#\textbackslash{}\textbackslash{}+[tT][iI][tT][lL][eE]:\ *\textbackslash{}\textbackslash{}(.*\textbackslash{}\textbackslash{})\$"}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-title-max-pos}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-title-max-pos@\texttt{kasten-title-max-pos}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Max position of the title of a note.
+Depth for Kasten to match ‘kasten-title-regexp’.
+
+Default value: `\texttt{4096}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-category-regexp}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-category-regexp@\texttt{kasten-category-regexp}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Regexp to match the category of a note.
+
+Default value: `\texttt{"\^{}\#\textbackslash{}\textbackslash{}+[cC][aA][tT][eE][gG][oO][rR][yY]:\ *\textbackslash{}\textbackslash{}(.*\textbackslash{}\textbackslash{})\$"}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-empty-category-placeholder}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-empty-category-placeholder@\texttt{kasten-empty-category-placeholder}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+If non-empty, display in category field for uncategorised notes.
+Leave empty to omit empty category for uncategorised notes.
+
+Default value: `\texttt{""}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-category-max-pos}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-category-max-pos@\texttt{kasten-category-max-pos}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Max position of the category of a note.
+Depth for Kasten to match ‘kasten-category-regexp’.
+
+Default value: `\texttt{4096}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-title-category-split}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-title-category-split@\texttt{kasten-title-category-split}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Split title and category in Kasten view.
+
+Default value: `\texttt{" {-}{-}{-} "}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-tag-regexp}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-tag-regexp@\texttt{kasten-tag-regexp}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Regexp to match a tag of a note.
+
+Default value: `\texttt{"\#\textbackslash{}\textbackslash{}([[:alnum:]\_-]+\textbackslash{}\textbackslash{})"}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-tag-max-pos}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-tag-max-pos@\texttt{kasten-tag-max-pos}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Max position of the title of a note.
+Depth for Kasten to match ‘kasten-tag-regexp’.
+
+Default value: `\texttt{65536}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-tag-symbol}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-tag-symbol@\texttt{kasten-tag-symbol}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Leading symbol for tag.
+
+Default value: `\texttt{"\#"}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-tag-first-char-regexp}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-tag-first-char-regexp@\texttt{kasten-tag-first-char-regexp}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Regexp for the tag char to make ‘kasten-search-function’ understand.
+
+If using ‘consult-ripgrep’, use ‘\textbackslash{}x23’ instead of ‘\#’.
+
+Default value: `\texttt{"\textbackslash{}\textbackslash{}x23"}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-id-symbol}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-id-symbol@\texttt{kasten-id-symbol}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Leading symbol for ID\@.
+
+Default value: `\texttt{"§"}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-id-format}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-id-format@\texttt{kasten-id-format}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Time format for generating ID\@.  Use ‘\%E’ for shortened title.
+See man page ‘strftime(3)’ for wildcards.
+
+Default value: `\texttt{"\%y\%m\%d-\%H\%M-\%E"}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-folder-timeformat}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-folder-timeformat@\texttt{kasten-folder-timeformat}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Time format for folder.
+See man page ‘strftime(3)’ for wildcards.
+
+Default value: `\texttt{"\%Y\%m"}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-id-clash-time-inc}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-id-clash-time-inc@\texttt{kasten-id-clash-time-inc}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Time interval to increment if the time-based ID clashes, in seconds.
+Set to 60 for 1 minute.
+
+Default value: `\texttt{60}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-id-regexp}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-id-regexp@\texttt{kasten-id-regexp}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Regexp for an ID in a note.
+
+Default value: `\texttt{"§\textbackslash{}\textbackslash{}([0-9]\textbackslash{}\textbackslash{}\{6\textbackslash{}\textbackslash{}\}-[0-9]\textbackslash{}\textbackslash{}\{4\textbackslash{}\textbackslash{}\}\textbackslash{}\textbackslash{})"}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-backlink-comment}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-backlink-comment@\texttt{kasten-backlink-comment}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Insert before backlink ID when creating new note at point.
+
+Default value: `\texttt{\#+backlink:}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-buffer-title}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-buffer-title@\texttt{kasten-buffer-title}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Kasten mode buffer title.
+
+Default value: `\texttt{"Kasten"}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-minor-mode-lighter}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-minor-mode-lighter@\texttt{kasten-minor-mode-lighter}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Function used for searching within the Kasten directory.
+
+Default value: `\texttt{Kt}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-auto-refresh}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-auto-refresh@\texttt{kasten-auto-refresh}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+If non-nil, automatically refresh Kasten buffer when files change.
+
+Default value: `\texttt{t}'.
+\end{quote}
+
+\section{{Customisable Functions and Hooks}}
+\label{anchor:Customisable-Functions-and-Hooks}%
+
+If the ID contains title (for example, using `\texttt{§250229-23 332.\ 2.\ -foo}' as ID of the
+note created on 2025-02-29 at 23:33 titled `\texttt{foo}'), one can customise how to
+convert the note title to a safer string which can be used as part of the
+filename.
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-safetitle-function}& [Variable]
+\end{tabularx}
+
+\index[vr]{kasten-safetitle-function@\texttt{kasten-safetitle-function}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Function to convert a title to a safe short string.
+
+Default value: `\texttt{kasten{-}{-}default-safetitle}'.
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten{-}{-}default-safetitle}& [Function]
+\end{tabularx}
+
+\index[fn]{kasten--default-safetitle@\texttt{kasten{-}{-}default-safetitle}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Default safetitle function to convert TITLE to max 8 char string.
+\end{quote}
+
+\section{{Customisable Faces}}
+\label{anchor:Customisable-Faces}%
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-buffer-title-face}& [User Option]
+\end{tabularx}
+
+\index[vr]{kasten-buffer-title-face@\texttt{kasten-buffer-title-face}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Face for the Kasten buffer title.
+
+Default attributes: `\texttt{((:family .\ unspecified) (:foundry .\ unspecified) (:width .\ unspecified) (:height .\ unspecified) (:weight .\ unspecified) (:slant .\ unspecified) (:underline .\ unspecified) (:overline .\ unspecified) (:extend .\ unspecified) (:strike-through .\ unspecified) (:box .\ unspecified) (:inverse-video .\ unspecified) (:foreground .\ unspecified) (:background .\ unspecified) (:stipple .\ unspecified) (:inherit .\ unspecified))}'
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-file-title-face}& [User Option]
+\end{tabularx}
+
+\index[vr]{kasten-file-title-face@\texttt{kasten-file-title-face}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Face for file titles in Kasten.
+
+Default attributes: `\texttt{((:family .\ unspecified) (:foundry .\ unspecified) (:width .\ unspecified) (:height .\ unspecified) (:weight .\ unspecified) (:slant .\ unspecified) (:underline .\ unspecified) (:overline .\ unspecified) (:extend .\ unspecified) (:strike-through .\ unspecified) (:box .\ unspecified) (:inverse-video .\ unspecified) (:foreground .\ unspecified) (:background .\ unspecified) (:stipple .\ unspecified) (:inherit .\ unspecified))}'
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-title-category-split-face}& [User Option]
+\end{tabularx}
+
+\index[vr]{kasten-title-category-split-face@\texttt{kasten-title-category-split-face}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Face for title category split in Kasten.
+
+Default attributes: `\texttt{((:family .\ unspecified) (:foundry .\ unspecified) (:width .\ unspecified) (:height .\ unspecified) (:weight .\ unspecified) (:slant .\ unspecified) (:underline .\ unspecified) (:overline .\ unspecified) (:extend .\ unspecified) (:strike-through .\ unspecified) (:box .\ unspecified) (:inverse-video .\ unspecified) (:foreground .\ unspecified) (:background .\ unspecified) (:stipple .\ unspecified) (:inherit .\ unspecified))}'
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-file-category-face}& [User Option]
+\end{tabularx}
+
+\index[vr]{kasten-file-category-face@\texttt{kasten-file-category-face}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Face for categories in Kasten.
+
+Default attributes: `\texttt{((:family .\ unspecified) (:foundry .\ unspecified) (:width .\ unspecified) (:height .\ unspecified) (:weight .\ unspecified) (:slant .\ unspecified) (:underline .\ unspecified) (:overline .\ unspecified) (:extend .\ unspecified) (:strike-through .\ unspecified) (:box .\ unspecified) (:inverse-video .\ unspecified) (:foreground .\ unspecified) (:background .\ unspecified) (:stipple .\ unspecified) (:inherit .\ unspecified))}'
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-file-name-face}& [User Option]
+\end{tabularx}
+
+\index[vr]{kasten-file-name-face@\texttt{kasten-file-name-face}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Face for filenames in Kasten.
+
+Default attributes: `\texttt{((:family .\ unspecified) (:foundry .\ unspecified) (:width .\ unspecified) (:height .\ unspecified) (:weight .\ unspecified) (:slant .\ unspecified) (:underline .\ unspecified) (:overline .\ unspecified) (:extend .\ unspecified) (:strike-through .\ unspecified) (:box .\ unspecified) (:inverse-video .\ unspecified) (:foreground .\ unspecified) (:background .\ unspecified) (:stipple .\ unspecified) (:inherit .\ unspecified))}'
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-live-search-edit-face}& [User Option]
+\end{tabularx}
+
+\index[vr]{kasten-live-search-edit-face@\texttt{kasten-live-search-edit-face}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Face for categories in Kasten.
+
+Default attributes: `\texttt{((:family .\ unspecified) (:foundry .\ unspecified) (:width .\ unspecified) (:height .\ unspecified) (:weight .\ unspecified) (:slant .\ unspecified) (:underline .\ unspecified) (:overline .\ unspecified) (:extend .\ unspecified) (:strike-through .\ unspecified) (:box .\ unspecified) (:inverse-video .\ unspecified) (:foreground .\ unspecified) (:background .\ unspecified) (:stipple .\ unspecified) (:inherit .\ unspecified))}'
+\end{quote}
+
+
+\noindent\begin{tabularx}{\linewidth}{@{}Xr}
+\rightskip=5em plus 1 fill \hangindent=2em \hyphenpenalty=10000
+\texttt{kasten-button-face}& [User Option]
+\end{tabularx}
+
+\index[vr]{kasten-button-face@\texttt{kasten-button-face}}%
+\begin{quote}
+\unskip{\parskip=0pt\noindent}%
+Face for categories in Kasten.
+
+Default attributes: `\texttt{((:family .\ unspecified) (:foundry .\ unspecified) (:width .\ unspecified) (:height .\ unspecified) (:weight .\ unspecified) (:slant .\ unspecified) (:underline .\ unspecified) (:overline .\ unspecified) (:extend .\ unspecified) (:strike-through .\ unspecified) (:box .\ unspecified) (:inverse-video .\ unspecified) (:foreground .\ unspecified) (:background .\ unspecified) (:stipple .\ unspecified) (:inherit .\ unspecified))}'
+\end{quote}
+
+The prompt text `\texttt{Live search:}' in Live Search uses default face `\texttt{shadow}'.
+
+In Kasten Filters, lines start with `\texttt{\%}' use `\texttt{font-lock-comment-face}'; lines
+start with `\texttt{\#}' use `\texttt{font-lock-keyword-face}'.
 
 \chapter{{Benchmark}}
 \label{anchor:Benchmark}%
@@ -497,11 +1052,11 @@ done
 \end{Texinfopreformatted}
 \end{Texinfoindented}
 
-The following benchmark is obtained by \Texinfocommandstyletextkbd{M-x benchmark}. Variables
-`\texttt{gc-cons-threshold}' and `\texttt{gc-cons-percentage}' are set to \texttt{16000000} and \texttt{0.1},
-accordingly.
+The following benchmark is obtained by \Texinfocommandstyletextkbd{M-x benchmark} using Emacs
+30.1, on an Apple Darwin machine with Apple SSD\@.  Variables `\texttt{gc-cons-threshold}'
+and `\texttt{gc-cons-percentage}' are set to \texttt{16000000} and \texttt{0.1}, accordingly.
 
-\begin{tabular}{m{0.145833333333333\textwidth} m{0.208333333333333\textwidth} m{0.25\textwidth} m{0.395833333333333\textwidth}}%
+\begin{tabular}{m{0.106060606060606\textwidth} m{0.424242424242424\textwidth} m{0.181818181818182\textwidth} m{0.287878787878788\textwidth}}%
 Package&
 Form&
 Elapsed Time&
@@ -514,13 +1069,22 @@ Kasten&
 `\texttt{(kasten)}'&
 0.682055s&
 1\\
+Kasten&
+`\texttt{(kasten-change-id "oldid")}'&
+11.295669s&
+0\\
 \end{tabular}%
 
 \chapter{{Contributing}}
 \label{anchor:Contributing}%
 
-Contributions and bug reports are welcome! Please open issues or pull requests
-on the GitHub repository.
+Contributions and bug reports are welcome!  For code contributions, please open
+pull requests on GitHub.  For general issues (except security concerns), please
+open issues on GitHub.
+
+
+\section{{Reporting Slowness}}
+\label{anchor:Reporting-Slowness}%
 
 Users are encouraged to report any significant slowness of Kasten! If possible,
 please include the following information, but please \textbf{do not include any
@@ -536,6 +1100,31 @@ sensitive information}:
 \item Benchmark of the slow function (\Texinfocommandstyletextkbd{M-x benchmark \texttt{RET}} followed by the
 function and \Texinfocommandstyletextkbd{\texttt{RET}})
 \end{itemize}
+
+\section{{Reporting Security Concerns}}
+\label{anchor:Reporting-Security-Concerns}%
+
+If you found any vulnerabilities or would like to report any security concerns,
+please \textbf{do not} use any public channels.  Please contact the package author via
+email.  Please \textbf{sign} and \textbf{encrypt} your email with PGP\footnote{\href{https://en.wikipedia.org/wiki/Pretty_Good_Privacy}{Pretty Good Privacy (\nolinkurl{https://en.wikipedia.org/wiki/Pretty_Good_Privacy})},
+see also \href{https://gnupg.org}{GnuPG (\nolinkurl{https://gnupg.org})}}.  \textbf{Encrypted plain text email} MIMEs are preferred (do not use
+\texttt{multipart/alternative} to include HTML copies of the email).
+
+\begin{description}
+\item[{\parbox[b]{\linewidth}{%
+Key Server}}]
+\href{https://keyserver.ubuntu.com/}{hkps://keyserver.ubuntu.com (\nolinkurl{https://keyserver.ubuntu.com/})}
+\item[{\parbox[b]{\linewidth}{%
+Email Address}}]
+\texttt{iamsqy αt outlo◯k d0t c○m} \footnote{Please replace `\texttt{at}', `\texttt{dot}', etc. to actual
+symbols and characters.}
+\item[{\parbox[b]{\linewidth}{%
+Key ID}}]
+\texttt{F8AD5243C3CFB24E}
+\item[{\parbox[b]{\linewidth}{%
+Primary key fingerprint}}]
+\texttt{548E 2320 AFD8 0063 1C76  274C F8AD 5243 C3CF B24E}
+\end{description}
 
 \appendix
 \chapter{{GNU Free Documentation License}}
@@ -1678,5 +2267,31 @@ Public License instead of this License.\  But first,\ please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
 \end{Texinfopreformatted}
 \end{Texinfoindented}
+
+\chapter{{Too Long; Didn't Read}}
+\label{anchor:Too-Long_003b-Didn_0027t-Read}%
+
+\begin{enumerate}[start=1]
+\item Install \texttt{Kasten} (not yet published).
+\begin{Texinfoindented}
+\begin{Texinfopreformatted}%
+\ttfamily (use-package kasten)
+\end{Texinfopreformatted}
+\end{Texinfoindented}
+\item Customise.
+\begin{Texinfoindented}
+\begin{Texinfopreformatted}%
+\ttfamily ;;\ Below configurations are not default values.
+(setq kasten-directory (expand-file-name "\~{}/notes/")
+\      kasten-file-extensions '("org" "txt" "tex")
+\      kasten-title-max-pos 2048
+\      kasten-tag-max-pos 8192
+\      kasten-id-symbol "§"
+\      kasten-id-regexp "§\textbackslash{}\textbackslash{}([0-9]\textbackslash{}\textbackslash{}\{8\textbackslash{}\textbackslash{}\}-[0-9]\textbackslash{}\textbackslash{}\{4\textbackslash{}\textbackslash{}\}\textbackslash{}\textbackslash{})"
+\      kasten-auto-refresh t)
+\end{Texinfopreformatted}
+\end{Texinfoindented}
+\item Launch \texttt{Kasten} with \Texinfocommandstyletextkbd{M-x kasten \texttt{RET}}.
+\end{enumerate}
 
 \end{document}

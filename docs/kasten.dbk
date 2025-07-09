@@ -5,15 +5,15 @@
 ]>
 <book id="kasten.dbk" lang="en">
 <title>Kasten Manual</title>
-<subtitle>for version 0.2, last updated 2025-07-08</subtitle>
+<subtitle>for version 0.90.0, last updated 2025-07-09</subtitle>
 <titleabbrev>Kasten Manual</titleabbrev>
 <bookinfo><title>Kasten Manual</title>
-<subtitle>for version 0.2, last updated 2025-07-08</subtitle>
+<subtitle>for version 0.90.0, last updated 2025-07-09</subtitle>
 <titleabbrev>Kasten Manual</titleabbrev>
 <authorgroup>
 <collab><collabname>Qiyang Sun</collabname></collab>
 </authorgroup>
-<legalnotice><para>This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
+<legalnotice><para>This manual is for Kasten (version 0.90.0, last updated 2025-07-09), which is
 an Emacs package for managing Zettelkasten-style notes.
 </para>
 <para>Copyright &#169; 2025 Qiyang Sun
@@ -98,7 +98,7 @@ provide a detailed introduction to the Zettelkasten methodology itself.
 <para>Kasten is inspired by Zetteldeft, a Zettelkasten system on top of Deft.  Deft is
 a note browsing system inspired by Notational Velocity.
 </para>
-<para>Kasten designed based on the following ideas in mind.
+<para>Kasten is designed base on the following ideas in mind.
 </para><itemizedlist><listitem><para>The system should be highly customisable.
 </para></listitem><listitem><para>The system should be fast.
 </para></listitem><listitem><para>Each note has a unique ID as its filename, typically derived from the creation
@@ -128,7 +128,7 @@ customisable).
 </para></listitem><listitem><para>Limited use of &#8216;<literal>string-match</literal>&#8217; (<userinput>C-h f string-match <keycap>RET</keycap></userinput>).
 </para></listitem></itemizedlist></listitem><listitem><para>ID format fully customisable (with the ability to include sanitised title).
 </para></listitem><listitem><para>Followable note IDs for easy navigation.
-</para></listitem><listitem><para>ID changable with auto-update references.
+</para></listitem><listitem><para>ID is changable with auto-update references.
 </para></listitem><listitem><para>Insert tags and note IDs with auto-completion support.
 </para></listitem><listitem><para>Backlink searching to find references between notes.
 </para></listitem><listitem><para>Functions to get note path and attachment directory path for integration with
@@ -189,7 +189,7 @@ Kasten minor mode has a lighter &#8216;<literal>Kt</literal>&#8217; (customisabl
 <synopsis><indexterm role="fn"><primary>kasten-minor-mode</primary></indexterm><phrase role="category"><emphasis role="bold">Command</emphasis>:</phrase> <function>kasten-minor-mode</function></synopsis>
 <blockquote><para>Toggle <literal>kasten-minor-mode</literal> for current buffer.
 </para></blockquote>
-<para>Refer to the Emacs Lisp code for detailed function and variable documentations.
+<para>Refer to the Emacs Lisp code for detailed function and variable documentation.
 </para>
 </sect1>
 <sect1 label="6.2" id="Kasten-Major-Mode">
@@ -234,10 +234,82 @@ Kasten minor mode has a lighter &#8216;<literal>Kt</literal>&#8217; (customisabl
 <sect2 label="6.2.1" id="Live-Search">
 <title>Live Search</title>
 
+<para>In a Live Search, one can type anywhere to search titles, categories and IDs.
+It is unnecessary to place the point into the text box&#8212;a temporary key map is
+used to handle input, supporting letters, symbols and non-ASCII characters.
+Case is insensitive.
+</para>
+<variablelist><varlistentry><term><indexterm role="vr"><primary><userinput>C-g</userinput> (<literal>kasten--quit-live-search</literal>)</primary></indexterm><userinput>C-g</userinput> (<literal>kasten--quit-live-search</literal>)
+</term><term><indexterm role="vr"><primary><userinput><keycap>ESC</keycap> <keycap>ESC</keycap> <keycap>ESC</keycap></userinput> (<literal>kasten--quit-live-search</literal>)</primary></indexterm><userinput><keycap>ESC</keycap> <keycap>ESC</keycap> <keycap>ESC</keycap></userinput> (<literal>kasten--quit-live-search</literal>)
+</term><listitem><indexterm role="ky"><primary>C-g</primary></indexterm>
+<indexterm role="ky"><primary>ESC ESC ESC</primary></indexterm>
+<indexterm role="fn"><primary>kasten--quit-live-search</primary></indexterm>
+<para>Quit live search and reset to normal Kasten.
+</para>
+</listitem></varlistentry><varlistentry><term><indexterm role="vr"><primary><userinput><keycap>DEL</keycap></userinput></primary></indexterm><userinput><keycap>DEL</keycap></userinput>
+</term><listitem><indexterm role="ky"><primary>DEL</primary></indexterm>
+<para>Delete the last input character.
+</para>
+</listitem></varlistentry><varlistentry><term><indexterm role="vr"><primary><userinput><keycap>RET</keycap></userinput> (<literal>kasten-open-file</literal>)</primary></indexterm><userinput><keycap>RET</keycap></userinput> (<literal>kasten-open-file</literal>)
+</term><listitem><indexterm role="ky"><primary>RET</primary></indexterm>
+<indexterm role="fn"><primary>kasten-open-file</primary></indexterm>
+<para>Open the note file on the current line by matching filename.
+</para></listitem></varlistentry></variablelist>
+
+<para>A letter &#8216;<literal>s</literal>&#8217; will appear next to Kasten buffer title indicating Live Search is
+activated.
+</para>
 </sect2>
 <sect2 label="6.2.2" id="Filters">
 <title>Filters</title>
 
+<para>With Filters, one can filter titles and/or categories.
+</para>
+<para>By invoking &#8216;<literal>kasten-filters-edit</literal>&#8217;, a new buffer &#8216;<literal>*Kasten Filters*</literal>&#8217; is
+created.  This buffer is in <literal>kasten-filters-mode</literal>, for users to edit filters.
+</para>
+<para>Lines starting with a &#8216;<literal>%</literal>&#8217; symbol are read-only comments.  Lines starting with a
+&#8216;<literal>#</literal>&#8217; are read-only headers which will be parsed.
+</para>
+<variablelist><varlistentry><term>Title filters
+</term><listitem><para>Enter titles one per line.  Case is insensitive.  A note will be displayed if
+it has at least one title filter as its substring.  Use of Emacs regular
+expressions is allowed.  Leave this field empty to keep all notes.
+</para>
+</listitem></varlistentry><varlistentry><term>Category filters
+</term><listitem><para>Enter categories one per line.  Case is sensitive.  A note will be displayed
+if it has a category and the category is exactly one of the category filters.
+Leave this field empty to keep all notes.
+</para>
+</listitem></varlistentry><varlistentry><term>Mode
+</term><listitem><para>Logic operator for the filter operation.  May be either &#8216;and&#8217; or &#8216;or&#8217;.  If
+only one of the title filters and category filters is needed, use &#8216;and&#8217;.
+</para></listitem></varlistentry></variablelist>
+
+<para>Kasten-Filters mode has the following key bindings.
+</para>
+<variablelist><varlistentry><term><userinput>C-c C-c</userinput> (<literal>kasten-filters-save-and-kill</literal>)
+</term><listitem><indexterm role="ky"><primary>C-c C-c</primary></indexterm>
+<indexterm role="fn"><primary>kasten-filters-save-and-kill</primary></indexterm>
+<para>Try to parse the buffer contents and apply them to Kasten filters, then kill
+this buffer and delete the selected window.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>C-c C-k</userinput> (<literal>kill-buffer-and-window</literal>)
+</term><listitem><indexterm role="ky"><primary>C-c C-k</primary></indexterm>
+<indexterm role="fn"><primary>kill-buffer-and-window</primary></indexterm>
+<para>Kill the Kasten-Filters buffer and delete the selected window; discard any
+changes to the filters.
+</para>
+</listitem></varlistentry><varlistentry><term><userinput>C-c C-t</userinput> (<literal>kasten-filters--toggle-the-mode</literal>)
+</term><listitem><indexterm role="ky"><primary>C-c C-t</primary></indexterm>
+<indexterm role="fn"><primary>kasten-filters--toggle-the-mode</primary></indexterm>
+<para>Toggle the mode on the current line between &#8216;or&#8217; and &#8216;and&#8217;.  Only valid if the
+point is placed on the mode text (placed on the text &#8216;or&#8217; or &#8216;and&#8217;).
+</para></listitem></varlistentry></variablelist>
+
+<para>A letter &#8216;<literal>f</literal>&#8217; will appear next to Kasten buffer title indicating Kasten Filters
+are activated.
+</para>
 </sect2>
 </sect1>
 <sect1 label="6.3" id="Kasten-Minor-Mode">
@@ -287,61 +359,218 @@ Kasten minor mode has a lighter &#8216;<literal>Kt</literal>&#8217; (customisabl
 <chapter label="7" id="Customisation">
 <title>Customisation</title>
 
-<para><emphasis role="bold">TODO: outdated</emphasis>
+
+<sect1 label="7.1" id="Customisable-Variables">
+<title>Customisable Variables</title>
+
+<para>Kasten is customisable using &#8216;<literal>customize</literal>&#8217;, via <userinput>M-x customize-group <keycap>RET</keycap> kasten <keycap>RET</keycap></userinput>. Alternatively, one may use <literal>setq</literal>.  For
+example, to change the variable &#8216;<literal>kasten-directory</literal>&#8217; to &#8216;<literal>~/notes</literal>&#8217; using <literal>setq</literal>,
+one may add the following code to their Emacs configuration file (such as
+&#8216;<literal>init.el</literal>&#8217;, preferably under &#8216;<literal>use-package</literal>&#8217;).
 </para>
-<para>Kasten is customisable using &#8216;<literal>customize</literal>&#8217;, via <userinput>M-x customize-group <keycap>RET</keycap> kasten <keycap>RET</keycap></userinput> or GUI.
-</para>
-<para>Alternatively, one can customise Kasten in the Emacs configuration file (such as
-&#8216;<literal>init.el</literal>&#8217;, or under &#8216;<literal>use-package</literal>&#8217;). Below are <emphasis>default</emphasis> configurations.
-</para>
-<programlisting>;; Directory containing your notes
-;; Kasten recursively finds all notes under kasten-directory
-(setq kasten-directory (expand-file-name &quot;~/jrn/&quot;))
-
-;; File extensions to include in search
-;; E.g., Org mode files, text files, and (La)TeX files
-(setq kasten-file-extensions '(&quot;org&quot; &quot;txt&quot; &quot;tex&quot;))
-
-;; Function used for searching within the Kasten directory
-;; If consult-ripgrep is not ideal, one may change here
-(setq kasten-search-function #'consult-ripgrep)
-
-;; Regexp to match the title of a note
-;; Matches `\#+title:' , `\#+TITLE:' , `\#+Title:', ...
-(setq kasten-title-regexp &quot;^#\\+[tT][iI][tT][lL][eE]: *\\(.*\\)$&quot;)
-
-;; Max position of the title of a note
-;; Reduce if slow
-(setq kasten-title-max-pos 4096)
-
-;; Regexp to match a tag of a note
-;; Matches `\#foobar'
-(setq kasten-tag-regexp &quot;#\\([[:alnum:]_-]+\\)&quot;)
-
-;; Max position of the title of a note
-;; Reduce if slow
-(setq kasten-tag-max-pos 65536)
-
-;; Regexp for the tag char (for consult-ripgrep to understand)
-;; `\\x23' is `\#' in PCRE
-(setq kasten-tag-first-char-regexp &quot;\\x23&quot;)
-
-;; Leading symbol for ID
-;; May be longer than 1 char
-(setq kasten-id-symbol &quot;§&quot;)
-
-;; Regexp to match the ID
-;; Matches `\§20250229-2333'
-(setq kasten-id-regexp &quot;§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)&quot;)
-
-;; Buffer title
-;; If you don't like `Kasten' as the name
-(setq kasten-buffer-title &quot;Kasten\n&quot;)
-
-;; Auto refresh
-;; If non-nil, automatically refresh Kasten buffer when files change
-(setq kasten-auto-refresh t)
+<programlisting>(setq kasten-directory (expand-file-name &quot;~/notes/&quot;))
 </programlisting>
+<para>Default values in the manual may be evaluated, simplified or slightly modified.
+Please refer to the source code and search for &#8216;<literal>defcustom</literal>&#8217;.
+</para>
+
+<synopsis><indexterm role="vr"><primary>kasten-directory</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-directory</varname></synopsis>
+<blockquote><para>Note directory.
+</para>
+<para>Default value: &#8216;<literal>~/jrn/</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-file-extensions</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-file-extensions</varname></synopsis>
+<blockquote><para>List of searchable file extensions for Kasten.
+</para>
+<para>Default value: &#8216;<literal>(&quot;org&quot; &quot;txt&quot; &quot;tex&quot;)</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-default-extension</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-default-extension</varname></synopsis>
+<blockquote><para>Default extension for new notes.
+</para>
+<para>Default value: &#8216;<literal>org</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-note-title-template</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-note-title-template</varname></synopsis>
+<blockquote><para>Template for new notes.
+</para>
+<para>Default value: &#8216;<literal>#+title:</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-index-hidden-files</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-index-hidden-files</varname></synopsis>
+<blockquote><para>If non-nil, include dot files when indexing.
+May cause problem if backup files present in the directory.
+</para>
+<para>Default value: &#8216;<literal>nil</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-search-function</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-search-function</varname></synopsis>
+<blockquote><para>Function used for searching within the Kasten directory.
+</para>
+<para>Default value: &#8216;<literal>consult-ripgrep</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-title-regexp</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-title-regexp</varname></synopsis>
+<blockquote><para>Regexp to match the title of a note.
+</para>
+<para>Default value: &#8216;<literal>&quot;^#\\+[tT][iI][tT][lL][eE]: *\\(.*\\)$&quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-title-max-pos</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-title-max-pos</varname></synopsis>
+<blockquote><para>Max position of the title of a note.
+Depth for Kasten to match ‘kasten-title-regexp’.
+</para>
+<para>Default value: &#8216;<literal>4096</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-category-regexp</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-category-regexp</varname></synopsis>
+<blockquote><para>Regexp to match the category of a note.
+</para>
+<para>Default value: &#8216;<literal>&quot;^#\\+[cC][aA][tT][eE][gG][oO][rR][yY]: *\\(.*\\)$&quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-empty-category-placeholder</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-empty-category-placeholder</varname></synopsis>
+<blockquote><para>If non-empty, display in category field for uncategorised notes.
+Leave empty to omit empty category for uncategorised notes.
+</para>
+<para>Default value: &#8216;<literal>&quot;&quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-category-max-pos</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-category-max-pos</varname></synopsis>
+<blockquote><para>Max position of the category of a note.
+Depth for Kasten to match ‘kasten-category-regexp’.
+</para>
+<para>Default value: &#8216;<literal>4096</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-title-category-split</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-title-category-split</varname></synopsis>
+<blockquote><para>Split title and category in Kasten view.
+</para>
+<para>Default value: &#8216;<literal>&quot; --- &quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-tag-regexp</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-tag-regexp</varname></synopsis>
+<blockquote><para>Regexp to match a tag of a note.
+</para>
+<para>Default value: &#8216;<literal>&quot;#\\([[:alnum:]_-]+\\)&quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-tag-max-pos</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-tag-max-pos</varname></synopsis>
+<blockquote><para>Max position of the title of a note.
+Depth for Kasten to match ‘kasten-tag-regexp’.
+</para>
+<para>Default value: &#8216;<literal>65536</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-tag-symbol</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-tag-symbol</varname></synopsis>
+<blockquote><para>Leading symbol for tag.
+</para>
+<para>Default value: &#8216;<literal>&quot;#&quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-tag-first-char-regexp</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-tag-first-char-regexp</varname></synopsis>
+<blockquote><para>Regexp for the tag char to make ‘kasten-search-function’ understand.
+</para>
+<para>If using ‘consult-ripgrep’, use ‘\x23’ instead of ‘#’.
+</para>
+<para>Default value: &#8216;<literal>&quot;\\x23&quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-id-symbol</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-id-symbol</varname></synopsis>
+<blockquote><para>Leading symbol for ID.
+</para>
+<para>Default value: &#8216;<literal>&quot;§&quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-id-format</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-id-format</varname></synopsis>
+<blockquote><para>Time format for generating ID.  Use ‘%E’ for shortened title.
+See man page ‘strftime(3)’ for wildcards.
+</para>
+<para>Default value: &#8216;<literal>&quot;%y%m%d-%H%M-%E&quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-folder-timeformat</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-folder-timeformat</varname></synopsis>
+<blockquote><para>Time format for folder.
+See man page ‘strftime(3)’ for wildcards.
+</para>
+<para>Default value: &#8216;<literal>&quot;%Y%m&quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-id-clash-time-inc</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-id-clash-time-inc</varname></synopsis>
+<blockquote><para>Time interval to increment if the time-based ID clashes, in seconds.
+Set to 60 for 1 minute.
+</para>
+<para>Default value: &#8216;<literal>60</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-id-regexp</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-id-regexp</varname></synopsis>
+<blockquote><para>Regexp for an ID in a note.
+</para>
+<para>Default value: &#8216;<literal>&quot;§\\([0-9]\\{6\\}-[0-9]\\{4\\}\\)&quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-backlink-comment</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-backlink-comment</varname></synopsis>
+<blockquote><para>Insert before backlink ID when creating new note at point.
+</para>
+<para>Default value: &#8216;<literal>#+backlink:</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-buffer-title</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-buffer-title</varname></synopsis>
+<blockquote><para>Kasten mode buffer title.
+</para>
+<para>Default value: &#8216;<literal>&quot;Kasten&quot;</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-minor-mode-lighter</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-minor-mode-lighter</varname></synopsis>
+<blockquote><para>Function used for searching within the Kasten directory.
+</para>
+<para>Default value: &#8216;<literal>Kt</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-auto-refresh</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-auto-refresh</varname></synopsis>
+<blockquote><para>If non-nil, automatically refresh Kasten buffer when files change.
+</para>
+<para>Default value: &#8216;<literal>t</literal>&#8217;.
+</para></blockquote>
+</sect1>
+<sect1 label="7.2" id="Customisable-Functions-and-Hooks">
+<title>Customisable Functions and Hooks</title>
+
+<para>If the ID contains title (for example, using &#8216;<literal>§250229-23 332. 2. -foo</literal>&#8217; as ID of the
+note created on 2025-02-29 at 23:33 titled &#8216;<literal>foo</literal>&#8217;), one can customise how to
+convert the note title to a safer string which can be used as part of the
+filename.
+</para>
+<synopsis><indexterm role="vr"><primary>kasten-safetitle-function</primary></indexterm><phrase role="category"><emphasis role="bold">Variable</emphasis>:</phrase> <varname>kasten-safetitle-function</varname></synopsis>
+<blockquote><para>Function to convert a title to a safe short string.
+</para>
+<para>Default value: &#8216;<literal>kasten--default-safetitle</literal>&#8217;.
+</para></blockquote>
+<synopsis><indexterm role="fn"><primary>kasten--default-safetitle</primary></indexterm><phrase role="category"><emphasis role="bold">Function</emphasis>:</phrase> <function>kasten--default-safetitle</function></synopsis>
+<blockquote><para>Default safetitle function to convert TITLE to max 8 char string.
+</para></blockquote>
+</sect1>
+<sect1 label="7.3" id="Customisable-Faces">
+<title>Customisable Faces</title>
+
+<synopsis><indexterm role="vr"><primary>kasten-buffer-title-face</primary></indexterm><phrase role="category"><emphasis role="bold">User Option</emphasis>:</phrase> <varname>kasten-buffer-title-face</varname></synopsis>
+<blockquote><para>Face for the Kasten buffer title.
+</para>
+<para>Default attributes: &#8216;<literal>((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</literal>&#8217;
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-file-title-face</primary></indexterm><phrase role="category"><emphasis role="bold">User Option</emphasis>:</phrase> <varname>kasten-file-title-face</varname></synopsis>
+<blockquote><para>Face for file titles in Kasten.
+</para>
+<para>Default attributes: &#8216;<literal>((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</literal>&#8217;
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-title-category-split-face</primary></indexterm><phrase role="category"><emphasis role="bold">User Option</emphasis>:</phrase> <varname>kasten-title-category-split-face</varname></synopsis>
+<blockquote><para>Face for title category split in Kasten.
+</para>
+<para>Default attributes: &#8216;<literal>((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</literal>&#8217;
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-file-category-face</primary></indexterm><phrase role="category"><emphasis role="bold">User Option</emphasis>:</phrase> <varname>kasten-file-category-face</varname></synopsis>
+<blockquote><para>Face for categories in Kasten.
+</para>
+<para>Default attributes: &#8216;<literal>((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</literal>&#8217;
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-file-name-face</primary></indexterm><phrase role="category"><emphasis role="bold">User Option</emphasis>:</phrase> <varname>kasten-file-name-face</varname></synopsis>
+<blockquote><para>Face for filenames in Kasten.
+</para>
+<para>Default attributes: &#8216;<literal>((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</literal>&#8217;
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-live-search-edit-face</primary></indexterm><phrase role="category"><emphasis role="bold">User Option</emphasis>:</phrase> <varname>kasten-live-search-edit-face</varname></synopsis>
+<blockquote><para>Face for categories in Kasten.
+</para>
+<para>Default attributes: &#8216;<literal>((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</literal>&#8217;
+</para></blockquote>
+<synopsis><indexterm role="vr"><primary>kasten-button-face</primary></indexterm><phrase role="category"><emphasis role="bold">User Option</emphasis>:</phrase> <varname>kasten-button-face</varname></synopsis>
+<blockquote><para>Face for categories in Kasten.
+</para>
+<para>Default attributes: &#8216;<literal>((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</literal>&#8217;
+</para></blockquote>
+<para>The prompt text &#8216;<literal>Live search:</literal>&#8217; in Live Search uses default face &#8216;<literal>shadow</literal>&#8217;.
+</para>
+<para>In Kasten Filters, lines start with &#8216;<literal>%</literal>&#8217; use &#8216;<literal>font-lock-comment-face</literal>&#8217;; lines
+start with &#8216;<literal>#</literal>&#8217; use &#8216;<literal>font-lock-keyword-face</literal>&#8217;.
+</para>
+</sect1>
 </chapter>
 <chapter label="8" id="Benchmark">
 <title>Benchmark</title>
@@ -355,11 +584,11 @@ for i in {1..1000}; do
     rm &quot;random_${i}.bin&quot;
 done
 </screen>
-<para>The following benchmark is obtained by <userinput>M-x benchmark</userinput>. Variables
-&#8216;<literal>gc-cons-threshold</literal>&#8217; and &#8216;<literal>gc-cons-percentage</literal>&#8217; are set to <literal>16000000</literal> and <literal>0.1</literal>,
-accordingly.
+<para>The following benchmark is obtained by <userinput>M-x benchmark</userinput> using Emacs
+30.1, on an Apple Darwin machine with Apple SSD.  Variables &#8216;<literal>gc-cons-threshold</literal>&#8217;
+and &#8216;<literal>gc-cons-percentage</literal>&#8217; are set to <literal>16000000</literal> and <literal>0.1</literal>, accordingly.
 </para>
-<informaltable><tgroup cols="4"><colspec colwidth="7*"></colspec><colspec colwidth="10*"></colspec><colspec colwidth="12*"></colspec><colspec colwidth="19*"></colspec><thead><row><entry><para>Package
+<informaltable><tgroup cols="4"><colspec colwidth="7*"></colspec><colspec colwidth="28*"></colspec><colspec colwidth="12*"></colspec><colspec colwidth="19*"></colspec><thead><row><entry><para>Package
 </para></entry><entry><para>Form
 </para></entry><entry><para>Elapsed Time
 </para></entry><entry><para>Garbage Collections
@@ -371,14 +600,23 @@ accordingly.
 </para></entry><entry><para>&#8216;<literal>(kasten)</literal>&#8217;
 </para></entry><entry><para>0.682055s
 </para></entry><entry><para>1
+</para></entry></row><row><entry><para>Kasten
+</para></entry><entry><para>&#8216;<literal>(kasten-change-id &quot;oldid&quot;)</literal>&#8217;
+</para></entry><entry><para>11.295669s
+</para></entry><entry><para>0
 </para></entry></row></tbody></tgroup></informaltable>
 </chapter>
 <chapter label="9" id="Contributing">
 <title>Contributing</title>
 
-<para>Contributions and bug reports are welcome! Please open issues or pull requests
-on the GitHub repository.
+<para>Contributions and bug reports are welcome!  For code contributions, please open
+pull requests on GitHub.  For general issues (except security concerns), please
+open issues on GitHub.
 </para>
+
+<sect1 label="9.1" id="Reporting-Slowness">
+<title>Reporting Slowness</title>
+
 <para>Users are encouraged to report any significant slowness of Kasten! If possible,
 please include the following information, but please <emphasis role="bold">do not include any
 sensitive information</emphasis>:
@@ -392,6 +630,27 @@ sensitive information</emphasis>:
 </para></listitem><listitem><para>Benchmark of the slow function (<userinput>M-x benchmark <keycap>RET</keycap></userinput> followed by the
 function and <userinput><keycap>RET</keycap></userinput>)
 </para></listitem></itemizedlist>
+</sect1>
+<sect1 label="9.2" id="Reporting-Security-Concerns">
+<title>Reporting Security Concerns</title>
+
+<para>If you found any vulnerabilities or would like to report any security concerns,
+please <emphasis role="bold">do not</emphasis> use any public channels.  Please contact the package author via
+email.  Please <emphasis role="bold">sign</emphasis> and <emphasis role="bold">encrypt</emphasis> your email with PGP<footnote><para><ulink url="https://en.wikipedia.org/wiki/Pretty_Good_Privacy">Pretty Good Privacy</ulink>,
+see also <ulink url="https://gnupg.org">GnuPG</ulink></para></footnote>.  <emphasis role="bold">Encrypted plain text email</emphasis> MIMEs are preferred (do not use
+<literal>multipart/alternative</literal> to include HTML copies of the email).
+</para>
+<variablelist><varlistentry><term>Key Server
+</term><listitem><para><ulink url="https://keyserver.ubuntu.com/">hkps://keyserver.ubuntu.com</ulink>
+</para></listitem></varlistentry><varlistentry><term>Email Address
+</term><listitem><para><literal>iamsqy αt outlo◯k d0t c○m</literal> <footnote><para>Please replace &#8216;<literal>at</literal>&#8217;, &#8216;<literal>dot</literal>&#8217;, etc. to actual
+symbols and characters.</para></footnote>
+</para></listitem></varlistentry><varlistentry><term>Key ID
+</term><listitem><para><literal>F8AD5243C3CFB24E</literal>
+</para></listitem></varlistentry><varlistentry><term>Primary key fingerprint
+</term><listitem><para><literal>548E 2320 AFD8 0063 1C76  274C F8AD 5243 C3CF B24E</literal>
+</para></listitem></varlistentry></variablelist>
+</sect1>
 </chapter>
 <appendix label="A" id="GNU-Free-Documentation-License">
 <title>GNU Free Documentation License</title>
@@ -1527,5 +1786,22 @@ the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 &lt;https://www.gnu.org/licenses/why-not-lgpl.html&gt;.
 </screen>
+</appendix>
+<appendix label="C" id="Too-Long_003b-Didn_0027t-Read">
+<title>Too Long; Didn&#8217;t Read</title>
+
+<orderedlist numeration="arabic"><listitem><para>Install <literal>Kasten</literal> (not yet published).
+</para><programlisting>(use-package kasten)
+</programlisting></listitem><listitem><para>Customise.
+</para><programlisting>;; Below configurations are not default values.
+(setq kasten-directory (expand-file-name &quot;~/notes/&quot;)
+      kasten-file-extensions '(&quot;org&quot; &quot;txt&quot; &quot;tex&quot;)
+      kasten-title-max-pos 2048
+      kasten-tag-max-pos 8192
+      kasten-id-symbol &quot;§&quot;
+      kasten-id-regexp &quot;§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)&quot;
+      kasten-auto-refresh t)
+</programlisting></listitem><listitem><para>Launch <literal>Kasten</literal> with <userinput>M-x kasten <keycap>RET</keycap></userinput>.
+</para></listitem></orderedlist>
 </appendix>
 </book>

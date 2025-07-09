@@ -15,16 +15,22 @@ Kasten Manual
     6.2.2 Filters
   6.3 Kasten Minor Mode
 7 Customisation
+  7.1 Customisable Variables
+  7.2 Customisable Functions and Hooks
+  7.3 Customisable Faces
 8 Benchmark
 9 Contributing
+  9.1 Reporting Slowness
+  9.2 Reporting Security Concerns
 Appendix A GNU Free Documentation License
 Appendix B GNU General Public License
+Appendix C Too Long; Didn't Read
 
 Kasten Manual
 *************
 
-This manual is for Kasten (version 0.2, last updated 2025-07-08), which
-is an Emacs package for managing Zettelkasten-style notes.
+This manual is for Kasten (version 0.90.0, last updated 2025-07-09),
+which is an Emacs package for managing Zettelkasten-style notes.
 
    Copyright © 2025 Qiyang Sun
 
@@ -109,7 +115,7 @@ introduction to the Zettelkasten methodology itself.
    Kasten is inspired by Zetteldeft, a Zettelkasten system on top of
 Deft.  Deft is a note browsing system inspired by Notational Velocity.
 
-   Kasten designed based on the following ideas in mind.
+   Kasten is designed base on the following ideas in mind.
    • The system should be highly customisable.
    • The system should be fast.
    • Each note has a unique ID as its filename, typically derived from
@@ -141,7 +147,7 @@ This package has the following main features:
    • ID format fully customisable (with the ability to include sanitised
      title).
    • Followable note IDs for easy navigation.
-   • ID changable with auto-update references.
+   • ID is changable with auto-update references.
    • Insert tags and note IDs with auto-completion support.
    • Backlink searching to find references between notes.
    • Functions to get note path and attachment directory path for
@@ -199,7 +205,7 @@ by Kasten.  Kasten minor mode has a lighter ‘Kt’ (customisable).
      Toggle ‘kasten-minor-mode’ for current buffer.
 
    Refer to the Emacs Lisp code for detailed function and variable
-documentations.
+documentation.
 
 6.2 Kasten Major Mode
 =====================
@@ -228,8 +234,69 @@ documentations.
 6.2.1 Live Search
 -----------------
 
+In a Live Search, one can type anywhere to search titles, categories and
+IDs.  It is unnecessary to place the point into the text box--a
+temporary key map is used to handle input, supporting letters, symbols
+and non-ASCII characters.  Case is insensitive.
+
+‘C-g’ (‘kasten--quit-live-search’)
+‘<ESC> <ESC> <ESC>’ (‘kasten--quit-live-search’)
+     Quit live search and reset to normal Kasten.
+
+‘<DEL>’
+     Delete the last input character.
+
+‘<RET>’ (‘kasten-open-file’)
+     Open the note file on the current line by matching filename.
+
+   A letter ‘s’ will appear next to Kasten buffer title indicating Live
+Search is activated.
+
 6.2.2 Filters
 -------------
+
+With Filters, one can filter titles and/or categories.
+
+   By invoking ‘kasten-filters-edit’, a new buffer ‘*Kasten Filters*’ is
+created.  This buffer is in ‘kasten-filters-mode’, for users to edit
+filters.
+
+   Lines starting with a ‘%’ symbol are read-only comments.  Lines
+starting with a ‘#’ are read-only headers which will be parsed.
+
+Title filters
+     Enter titles one per line.  Case is insensitive.  A note will be
+     displayed if it has at least one title filter as its substring.
+     Use of Emacs regular expressions is allowed.  Leave this field
+     empty to keep all notes.
+
+Category filters
+     Enter categories one per line.  Case is sensitive.  A note will be
+     displayed if it has a category and the category is exactly one of
+     the category filters.  Leave this field empty to keep all notes.
+
+Mode
+     Logic operator for the filter operation.  May be either 'and' or
+     'or'.  If only one of the title filters and category filters is
+     needed, use 'and'.
+
+   Kasten-Filters mode has the following key bindings.
+
+‘C-c C-c’ (‘kasten-filters-save-and-kill’)
+     Try to parse the buffer contents and apply them to Kasten filters,
+     then kill this buffer and delete the selected window.
+
+‘C-c C-k’ (‘kill-buffer-and-window’)
+     Kill the Kasten-Filters buffer and delete the selected window;
+     discard any changes to the filters.
+
+‘C-c C-t’ (‘kasten-filters--toggle-the-mode’)
+     Toggle the mode on the current line between 'or' and 'and'.  Only
+     valid if the point is placed on the mode text (placed on the text
+     'or' or 'and').
+
+   A letter ‘f’ will appear next to Kasten buffer title indicating
+Kasten Filters are activated.
 
 6.3 Kasten Minor Mode
 =====================
@@ -263,62 +330,264 @@ documentations.
 7 Customisation
 ***************
 
-*TODO: outdated*
+7.1 Customisable Variables
+==========================
 
-   Kasten is customisable using ‘customize’, via ‘M-x customize-group
-<RET> kasten <RET>’ or GUI.
+Kasten is customisable using ‘customize’, via ‘M-x customize-group <RET>
+kasten <RET>’.  Alternatively, one may use ‘setq’.  For example, to
+change the variable ‘kasten-directory’ to ‘~/notes’ using ‘setq’, one
+may add the following code to their Emacs configuration file (such as
+‘init.el’, preferably under ‘use-package’).
 
-   Alternatively, one can customise Kasten in the Emacs configuration
-file (such as ‘init.el’, or under ‘use-package’).  Below are _default_
-configurations.
+     (setq kasten-directory (expand-file-name "~/notes/"))
 
-     ;; Directory containing your notes
-     ;; Kasten recursively finds all notes under kasten-directory
-     (setq kasten-directory (expand-file-name "~/jrn/"))
+   Default values in the manual may be evaluated, simplified or slightly
+modified.  Please refer to the source code and search for ‘defcustom’.
 
-     ;; File extensions to include in search
-     ;; E.g., Org mode files, text files, and (La)TeX files
-     (setq kasten-file-extensions '("org" "txt" "tex"))
+ -- Variable: kasten-directory
+     Note directory.
 
-     ;; Function used for searching within the Kasten directory
-     ;; If consult-ripgrep is not ideal, one may change here
-     (setq kasten-search-function #'consult-ripgrep)
+     Default value: ‘~/jrn/’.
 
-     ;; Regexp to match the title of a note
-     ;; Matches `\#+title:' , `\#+TITLE:' , `\#+Title:', ...
-     (setq kasten-title-regexp "^#\\+[tT][iI][tT][lL][eE]: *\\(.*\\)$")
+ -- Variable: kasten-file-extensions
+     List of searchable file extensions for Kasten.
 
-     ;; Max position of the title of a note
-     ;; Reduce if slow
-     (setq kasten-title-max-pos 4096)
+     Default value: ‘("org" "txt" "tex")’.
 
-     ;; Regexp to match a tag of a note
-     ;; Matches `\#foobar'
-     (setq kasten-tag-regexp "#\\([[:alnum:]_-]+\\)")
+ -- Variable: kasten-default-extension
+     Default extension for new notes.
 
-     ;; Max position of the title of a note
-     ;; Reduce if slow
-     (setq kasten-tag-max-pos 65536)
+     Default value: ‘org’.
 
-     ;; Regexp for the tag char (for consult-ripgrep to understand)
-     ;; `\\x23' is `\#' in PCRE
-     (setq kasten-tag-first-char-regexp "\\x23")
+ -- Variable: kasten-note-title-template
+     Template for new notes.
 
-     ;; Leading symbol for ID
-     ;; May be longer than 1 char
-     (setq kasten-id-symbol "§")
+     Default value: ‘#+title:’.
 
-     ;; Regexp to match the ID
-     ;; Matches `\§20250229-2333'
-     (setq kasten-id-regexp "§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)")
+ -- Variable: kasten-index-hidden-files
+     If non-nil, include dot files when indexing.  May cause problem if
+     backup files present in the directory.
 
-     ;; Buffer title
-     ;; If you don't like `Kasten' as the name
-     (setq kasten-buffer-title "Kasten\n")
+     Default value: ‘nil’.
 
-     ;; Auto refresh
-     ;; If non-nil, automatically refresh Kasten buffer when files change
-     (setq kasten-auto-refresh t)
+ -- Variable: kasten-search-function
+     Function used for searching within the Kasten directory.
+
+     Default value: ‘consult-ripgrep’.
+
+ -- Variable: kasten-title-regexp
+     Regexp to match the title of a note.
+
+     Default value: ‘"^#\\+[tT][iI][tT][lL][eE]: *\\(.*\\)$"’.
+
+ -- Variable: kasten-title-max-pos
+     Max position of the title of a note.  Depth for Kasten to match
+     ‘kasten-title-regexp’.
+
+     Default value: ‘4096’.
+
+ -- Variable: kasten-category-regexp
+     Regexp to match the category of a note.
+
+     Default value: ‘"^#\\+[cC][aA][tT][eE][gG][oO][rR][yY]:
+     *\\(.*\\)$"’.
+
+ -- Variable: kasten-empty-category-placeholder
+     If non-empty, display in category field for uncategorised notes.
+     Leave empty to omit empty category for uncategorised notes.
+
+     Default value: ‘""’.
+
+ -- Variable: kasten-category-max-pos
+     Max position of the category of a note.  Depth for Kasten to match
+     ‘kasten-category-regexp’.
+
+     Default value: ‘4096’.
+
+ -- Variable: kasten-title-category-split
+     Split title and category in Kasten view.
+
+     Default value: ‘" --- "’.
+
+ -- Variable: kasten-tag-regexp
+     Regexp to match a tag of a note.
+
+     Default value: ‘"#\\([[:alnum:]_-]+\\)"’.
+
+ -- Variable: kasten-tag-max-pos
+     Max position of the title of a note.  Depth for Kasten to match
+     ‘kasten-tag-regexp’.
+
+     Default value: ‘65536’.
+
+ -- Variable: kasten-tag-symbol
+     Leading symbol for tag.
+
+     Default value: ‘"#"’.
+
+ -- Variable: kasten-tag-first-char-regexp
+     Regexp for the tag char to make ‘kasten-search-function’
+     understand.
+
+     If using ‘consult-ripgrep’, use ‘\x23’ instead of ‘#’.
+
+     Default value: ‘"\\x23"’.
+
+ -- Variable: kasten-id-symbol
+     Leading symbol for ID.
+
+     Default value: ‘"§"’.
+
+ -- Variable: kasten-id-format
+     Time format for generating ID.  Use ‘%E’ for shortened title.  See
+     man page ‘strftime(3)’ for wildcards.
+
+     Default value: ‘"%y%m%d-%H%M-%E"’.
+
+ -- Variable: kasten-folder-timeformat
+     Time format for folder.  See man page ‘strftime(3)’ for wildcards.
+
+     Default value: ‘"%Y%m"’.
+
+ -- Variable: kasten-id-clash-time-inc
+     Time interval to increment if the time-based ID clashes, in
+     seconds.  Set to 60 for 1 minute.
+
+     Default value: ‘60’.
+
+ -- Variable: kasten-id-regexp
+     Regexp for an ID in a note.
+
+     Default value: ‘"§\\([0-9]\\{6\\}-[0-9]\\{4\\}\\)"’.
+
+ -- Variable: kasten-backlink-comment
+     Insert before backlink ID when creating new note at point.
+
+     Default value: ‘#+backlink:’.
+
+ -- Variable: kasten-buffer-title
+     Kasten mode buffer title.
+
+     Default value: ‘"Kasten"’.
+
+ -- Variable: kasten-minor-mode-lighter
+     Function used for searching within the Kasten directory.
+
+     Default value: ‘Kt’.
+
+ -- Variable: kasten-auto-refresh
+     If non-nil, automatically refresh Kasten buffer when files change.
+
+     Default value: ‘t’.
+
+7.2 Customisable Functions and Hooks
+====================================
+
+If the ID contains title (for example, using ‘§250229-23 332. 2. -foo’
+as ID of the note created on 2025-02-29 at 23:33 titled ‘foo’), one can
+customise how to convert the note title to a safer string which can be
+used as part of the filename.
+
+ -- Variable: kasten-safetitle-function
+     Function to convert a title to a safe short string.
+
+     Default value: ‘kasten--default-safetitle’.
+
+ -- Function: kasten--default-safetitle
+     Default safetitle function to convert TITLE to max 8 char string.
+
+7.3 Customisable Faces
+======================
+
+ -- User Option: kasten-buffer-title-face
+     Face for the Kasten buffer title.
+
+     Default attributes: ‘((:family . unspecified) (:foundry .
+     unspecified) (:width . unspecified) (:height . unspecified)
+     (:weight . unspecified) (:slant . unspecified) (:underline .
+     unspecified) (:overline . unspecified) (:extend . unspecified)
+     (:strike-through . unspecified) (:box . unspecified)
+     (:inverse-video . unspecified) (:foreground . unspecified)
+     (:background . unspecified) (:stipple . unspecified) (:inherit .
+     unspecified))’
+
+ -- User Option: kasten-file-title-face
+     Face for file titles in Kasten.
+
+     Default attributes: ‘((:family . unspecified) (:foundry .
+     unspecified) (:width . unspecified) (:height . unspecified)
+     (:weight . unspecified) (:slant . unspecified) (:underline .
+     unspecified) (:overline . unspecified) (:extend . unspecified)
+     (:strike-through . unspecified) (:box . unspecified)
+     (:inverse-video . unspecified) (:foreground . unspecified)
+     (:background . unspecified) (:stipple . unspecified) (:inherit .
+     unspecified))’
+
+ -- User Option: kasten-title-category-split-face
+     Face for title category split in Kasten.
+
+     Default attributes: ‘((:family . unspecified) (:foundry .
+     unspecified) (:width . unspecified) (:height . unspecified)
+     (:weight . unspecified) (:slant . unspecified) (:underline .
+     unspecified) (:overline . unspecified) (:extend . unspecified)
+     (:strike-through . unspecified) (:box . unspecified)
+     (:inverse-video . unspecified) (:foreground . unspecified)
+     (:background . unspecified) (:stipple . unspecified) (:inherit .
+     unspecified))’
+
+ -- User Option: kasten-file-category-face
+     Face for categories in Kasten.
+
+     Default attributes: ‘((:family . unspecified) (:foundry .
+     unspecified) (:width . unspecified) (:height . unspecified)
+     (:weight . unspecified) (:slant . unspecified) (:underline .
+     unspecified) (:overline . unspecified) (:extend . unspecified)
+     (:strike-through . unspecified) (:box . unspecified)
+     (:inverse-video . unspecified) (:foreground . unspecified)
+     (:background . unspecified) (:stipple . unspecified) (:inherit .
+     unspecified))’
+
+ -- User Option: kasten-file-name-face
+     Face for filenames in Kasten.
+
+     Default attributes: ‘((:family . unspecified) (:foundry .
+     unspecified) (:width . unspecified) (:height . unspecified)
+     (:weight . unspecified) (:slant . unspecified) (:underline .
+     unspecified) (:overline . unspecified) (:extend . unspecified)
+     (:strike-through . unspecified) (:box . unspecified)
+     (:inverse-video . unspecified) (:foreground . unspecified)
+     (:background . unspecified) (:stipple . unspecified) (:inherit .
+     unspecified))’
+
+ -- User Option: kasten-live-search-edit-face
+     Face for categories in Kasten.
+
+     Default attributes: ‘((:family . unspecified) (:foundry .
+     unspecified) (:width . unspecified) (:height . unspecified)
+     (:weight . unspecified) (:slant . unspecified) (:underline .
+     unspecified) (:overline . unspecified) (:extend . unspecified)
+     (:strike-through . unspecified) (:box . unspecified)
+     (:inverse-video . unspecified) (:foreground . unspecified)
+     (:background . unspecified) (:stipple . unspecified) (:inherit .
+     unspecified))’
+
+ -- User Option: kasten-button-face
+     Face for categories in Kasten.
+
+     Default attributes: ‘((:family . unspecified) (:foundry .
+     unspecified) (:width . unspecified) (:height . unspecified)
+     (:weight . unspecified) (:slant . unspecified) (:underline .
+     unspecified) (:overline . unspecified) (:extend . unspecified)
+     (:strike-through . unspecified) (:box . unspecified)
+     (:inverse-video . unspecified) (:foreground . unspecified)
+     (:background . unspecified) (:stipple . unspecified) (:inherit .
+     unspecified))’
+
+   The prompt text ‘Live search:’ in Live Search uses default face
+‘shadow’.
+
+   In Kasten Filters, lines start with ‘%’ use ‘font-lock-comment-face’;
+lines start with ‘#’ use ‘font-lock-keyword-face’.
 
 8 Benchmark
 ***********
@@ -333,24 +602,30 @@ Kasten.
          rm "random_${i}.bin"
      done
 
-   The following benchmark is obtained by ‘M-x benchmark’.  Variables
+   The following benchmark is obtained by ‘M-x benchmark’ using Emacs
+30.1, on an Apple Darwin machine with Apple SSD.  Variables
 ‘gc-cons-threshold’ and ‘gc-cons-percentage’ are set to ‘16000000’ and
 ‘0.1’, accordingly.
 
-Package   Form         Elapsed Time   Garbage Collections
-------------------------------------------------------------
-Deft      ‘(deft)’     148.025919s    86
-Kasten    ‘(kasten)’   0.682055s      1
+Package   Form                           Elapsed Time   Garbage Collections
+------------------------------------------------------------------------------
+Deft      ‘(deft)’                       148.025919s    86
+Kasten    ‘(kasten)’                     0.682055s      1
+Kasten    ‘(kasten-change-id "oldid")’   11.295669s     0
 
 9 Contributing
 **************
 
-Contributions and bug reports are welcome!  Please open issues or pull
-requests on the GitHub repository.
+Contributions and bug reports are welcome!  For code contributions,
+please open pull requests on GitHub.  For general issues (except
+security concerns), please open issues on GitHub.
 
-   Users are encouraged to report any significant slowness of Kasten!
-If possible, please include the following information, but please *do
-not include any sensitive information*:
+9.1 Reporting Slowness
+======================
+
+Users are encouraged to report any significant slowness of Kasten!  If
+possible, please include the following information, but please *do not
+include any sensitive information*:
    • Emacs version (‘M-x emacs-version <RET>’)
    • Kasten version
    • Operating system (‘uname -a’)
@@ -360,6 +635,33 @@ not include any sensitive information*:
      ‘M-x profiler-stop <RET>’, and then ‘M-x profiler-report <RET>’
    • Benchmark of the slow function (‘M-x benchmark <RET>’ followed by
      the function and ‘<RET>’)
+
+9.2 Reporting Security Concerns
+===============================
+
+If you found any vulnerabilities or would like to report any security
+concerns, please *do not* use any public channels.  Please contact the
+package author via email.  Please *sign* and *encrypt* your email with
+PGP(1).  *Encrypted plain text email* MIMEs are preferred (do not use
+‘multipart/alternative’ to include HTML copies of the email).
+
+Key Server
+     hkps://keyserver.ubuntu.com (https://keyserver.ubuntu.com/)
+Email Address
+     ‘iamsqy αt outlo◯k d0t c○m’ (2)
+Key ID
+     ‘F8AD5243C3CFB24E’
+Primary key fingerprint
+     ‘548E 2320 AFD8 0063 1C76 274C F8AD 5243 C3CF B24E’
+
+   ---------- Footnotes ----------
+
+   (1) Pretty Good Privacy
+(https://en.wikipedia.org/wiki/Pretty_Good_Privacy), see also GnuPG
+(https://gnupg.org)
+
+   (2) Please replace ‘at’, ‘dot’, etc.  to actual symbols and
+characters.
 
 Appendix A GNU Free Documentation License
 *****************************************
@@ -1493,4 +1795,20 @@ Appendix B GNU General Public License
      the library.  If this is what you want to do, use the GNU Lesser General
      Public License instead of this License.  But first, please read
      <https://www.gnu.org/licenses/why-not-lgpl.html>.
+
+Appendix C Too Long; Didn't Read
+********************************
+
+  1. Install ‘Kasten’ (not yet published).
+          (use-package kasten)
+  2. Customise.
+          ;; Below configurations are not default values.
+          (setq kasten-directory (expand-file-name "~/notes/")
+                kasten-file-extensions '("org" "txt" "tex")
+                kasten-title-max-pos 2048
+                kasten-tag-max-pos 8192
+                kasten-id-symbol "§"
+                kasten-id-regexp "§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)"
+                kasten-auto-refresh t)
+  3. Launch ‘Kasten’ with ‘M-x kasten <RET>’.
 

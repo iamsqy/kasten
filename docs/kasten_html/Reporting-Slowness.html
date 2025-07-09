@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.2, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This manual is for Kasten (version 0.90.0, last updated 2025-07-09), which is
+an Emacs package for managing Zettelkasten-style notes.
+
+Copyright © 2025 Qiyang Sun
+
+Permission is granted to copy, distribute and/or modify this
+document under the terms of the GNU Free Documentation License,
+Version 1.3 or any later version published by the Free Software
+Foundation; with no Invariant Sections, with no Front-Cover Texts,
+and with no Back-Cover Texts.  A copy of the license is included in
+the section entitled "GNU Free Documentation License".
+ -->
+<title>Reporting Slowness (Kasten Manual)</title>
+
+<meta name="description" content="Reporting Slowness (Kasten Manual)">
+<meta name="keywords" content="Reporting Slowness (Kasten Manual)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Contributing.html" rel="up" title="Contributing">
+<link href="Reporting-Security-Concerns.html" rel="next" title="Reporting Security Concerns">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://iamsqy.github.io/kasten/gnu.org.css">
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Reporting-Slowness">
+<div class="nav-panel">
+<p>
+Next: <a href="Reporting-Security-Concerns.html" accesskey="n" rel="next">Reporting Security Concerns</a>, Up: <a href="Contributing.html" accesskey="u" rel="up">Contributing</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Reporting-Slowness-1"><span>9.1 Reporting Slowness<a class="copiable-link" href="#Reporting-Slowness-1"> &para;</a></span></h3>
+
+<p>Users are encouraged to report any significant slowness of Kasten! If possible,
+please include the following information, but please <strong class="strong">do not include any
+sensitive information</strong>:
+</p><ul class="itemize mark-bullet">
+<li>Emacs version (<kbd class="kbd">M-x emacs-version <kbd class="key">RET</kbd></kbd>)
+</li><li>Kasten version
+</li><li>Operating system (&lsquo;<samp class="samp">uname -a</samp>&rsquo;)
+</li><li>Number of indexed files (&lsquo;<samp class="samp">ls -1 /path/to/notes | wc -l</samp>&rsquo;)
+</li><li>Total size of indexed files (&lsquo;<samp class="samp">du -sh /path/to/notes</samp>&rsquo;)
+</li><li>Profiler report (<kbd class="kbd">M-x profiler-start <kbd class="key">RET</kbd> <kbd class="key">RET</kbd></kbd>, perform action,
+<kbd class="kbd">M-x profiler-stop <kbd class="key">RET</kbd></kbd>, and then <kbd class="kbd">M-x profiler-report <kbd class="key">RET</kbd></kbd>
+</li><li>Benchmark of the slow function (<kbd class="kbd">M-x benchmark <kbd class="key">RET</kbd></kbd> followed by the
+function and <kbd class="kbd"><kbd class="key">RET</kbd></kbd>)
+</li></ul>
+
+</div>
+
+
+
+</body>
+</html>

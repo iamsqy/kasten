@@ -5,8 +5,8 @@
 #+OPTIONS: ':t toc:t author:t
 #+LANGUAGE: en
 
-#+MACRO: version 0.2
-#+MACRO: updated last updated 2025-07-08
+#+MACRO: version 0.90.0
+#+MACRO: updated last updated 2025-07-09
 #+macro: kbd (eval (org-texinfo-kbd-macro $1))
 
 #+TEXINFO_FILENAME: kasten.info
@@ -98,7 +98,7 @@ provide a detailed introduction to the Zettelkasten methodology itself.
 Kasten is inspired by Zetteldeft, a Zettelkasten system on top of Deft.  Deft is
 a note browsing system inspired by Notational Velocity.
 
-Kasten designed based on the following ideas in mind.
+Kasten is designed base on the following ideas in mind.
 - The system should be highly customisable.
 - The system should be fast.
 - Each note has a unique ID as its filename, typically derived from the creation
@@ -126,7 +126,7 @@ This package has the following main features:
   - Limited use of =string-match= ({{{kbd(C-h f string-match RET)}}}).
 - ID format fully customisable (with the ability to include sanitised title).
 - Followable note IDs for easy navigation.
-- ID changable with auto-update references.
+- ID is changable with auto-update references.
 - Insert tags and note IDs with auto-completion support.
 - Backlink searching to find references between notes.
 - Functions to get note path and attachment directory path for integration with
@@ -200,7 +200,7 @@ Kasten minor mode has a lighter =Kt= (customisable).
   Toggle ~kasten-minor-mode~ for current buffer.
 
 
-Refer to the Emacs Lisp code for detailed function and variable documentations.
+Refer to the Emacs Lisp code for detailed function and variable documentation.
 
 ** Kasten Major Mode
 
@@ -241,7 +241,72 @@ Refer to the Emacs Lisp code for detailed function and variable documentations.
 
 *** Live Search
 
+In a Live Search, one can type anywhere to search titles, categories and IDs.
+It is unnecessary to place the point into the text box---a temporary key map is
+used to handle input, supporting letters, symbols and non-ASCII characters.
+Case is insensitive.
+
+#+ATTR_TEXINFO: :table-type vtable :indic asis :compact t
+- Key: C-g (kasten--quit-live-search) ::
+- Key: ESC ESC ESC (kasten--quit-live-search) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten--quit-live-search)
+  #+END_SRC
+
+- Key: DEL ::
+  Delete the last input character.
+
+- Key: RET (kasten-open-file) ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten-open-file)
+  #+END_SRC
+
+
+A letter =s= will appear next to Kasten buffer title indicating Live Search is
+activated.
+
 *** Filters
+
+With Filters, one can filter titles and/or categories.
+
+By invoking =kasten-filters-edit=, a new buffer =*Kasten Filters*= is
+created.  This buffer is in ~kasten-filters-mode~, for users to edit filters.
+
+Lines starting with a =%= symbol are read-only comments.  Lines starting with a
+=#= are read-only headers which will be parsed.
+
+- Title filters ::
+  Enter titles one per line.  Case is insensitive.  A note will be displayed if
+  it has at least one title filter as its substring.  Use of Emacs regular
+  expressions is allowed.  Leave this field empty to keep all notes.
+
+- Category filters ::
+  Enter categories one per line.  Case is sensitive.  A note will be displayed
+  if it has a category and the category is exactly one of the category filters.
+  Leave this field empty to keep all notes.
+
+- Mode ::
+  Logic operator for the filter operation.  May be either `and' or `or'.  If
+  only one of the title filters and category filters is needed, use `and'.
+
+
+Kasten-Filters mode has the following key bindings.
+
+- Key: C-c C-c (kasten-filters-save-and-kill) ::
+  Try to parse the buffer contents and apply them to Kasten filters, then kill
+  this buffer and delete the selected window.
+  
+- Key: C-c C-k (kill-buffer-and-window) ::
+  Kill the Kasten-Filters buffer and delete the selected window; discard any
+  changes to the filters.
+  
+- Key: C-c C-t (kasten-filters--toggle-the-mode) ::
+  Toggle the mode on the current line between `or' and `and'.  Only valid if the
+  point is placed on the mode text (placed on the text `or' or `and').
+
+
+A letter =f= will appear next to Kasten buffer title indicating Kasten Filters
+are activated.
 
 ** Kasten Minor Mode
 
@@ -280,63 +345,428 @@ Refer to the Emacs Lisp code for detailed function and variable documentations.
 
 * Customisation
 
-*TODO: outdated*
+** Customisable Variables
 
 Kasten is customisable using =customize=, via {{{kbd(M-x customize-group RET
-kasten RET)}}} or GUI.
-
-Alternatively, one can customise Kasten in the Emacs configuration file (such as
-=init.el=, or under =use-package=). Below are /default/ configurations.
+kasten RET)}}}. Alternatively, one may use ~setq~.  For
+example, to change the variable =kasten-directory= to =~/notes= using ~setq~,
+one may add the following code to their Emacs configuration file (such as
+=init.el=, preferably under =use-package=).
 
 #+begin_src elisp
-  ;; Directory containing your notes
-  ;; Kasten recursively finds all notes under kasten-directory
-  (setq kasten-directory (expand-file-name "~/jrn/"))
-
-  ;; File extensions to include in search
-  ;; E.g., Org mode files, text files, and (La)TeX files
-  (setq kasten-file-extensions '("org" "txt" "tex"))
-
-  ;; Function used for searching within the Kasten directory
-  ;; If consult-ripgrep is not ideal, one may change here
-  (setq kasten-search-function #'consult-ripgrep)
-
-  ;; Regexp to match the title of a note
-  ;; Matches `\#+title:' , `\#+TITLE:' , `\#+Title:', ...
-  (setq kasten-title-regexp "^#\\+[tT][iI][tT][lL][eE]: *\\(.*\\)$")
-
-  ;; Max position of the title of a note
-  ;; Reduce if slow
-  (setq kasten-title-max-pos 4096)
-
-  ;; Regexp to match a tag of a note
-  ;; Matches `\#foobar'
-  (setq kasten-tag-regexp "#\\([[:alnum:]_-]+\\)")
-
-  ;; Max position of the title of a note
-  ;; Reduce if slow
-  (setq kasten-tag-max-pos 65536)
-
-  ;; Regexp for the tag char (for consult-ripgrep to understand)
-  ;; `\\x23' is `\#' in PCRE
-  (setq kasten-tag-first-char-regexp "\\x23")
-
-  ;; Leading symbol for ID
-  ;; May be longer than 1 char
-  (setq kasten-id-symbol "§")
-
-  ;; Regexp to match the ID
-  ;; Matches `\§20250229-2333'
-  (setq kasten-id-regexp "§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)")
-
-  ;; Buffer title
-  ;; If you don't like `Kasten' as the name
-  (setq kasten-buffer-title "Kasten\n")
-
-  ;; Auto refresh
-  ;; If non-nil, automatically refresh Kasten buffer when files change
-  (setq kasten-auto-refresh t)
+  (setq kasten-directory (expand-file-name "~/notes/"))
 #+end_src
+
+Default values in the manual may be evaluated, simplified or slightly modified.
+Please refer to the source code and search for =defcustom=.
+
+
+- Variable: kasten-directory ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-directory 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: =" "~/jrn/" "=.")
+  #+END_SRC
+     
+- Variable: kasten-file-extensions ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-file-extensions 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-file-extensions))
+    	 "=.")
+  #+END_SRC
+
+- Variable: kasten-default-extension ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-default-extension 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: =" (default-value 'kasten-default-extension) "=.")
+  #+END_SRC
+
+- Variable: kasten-note-title-template ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-note-title-template 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: =#+title:=.")
+  #+END_SRC
+
+- Variable: kasten-index-hidden-files ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-index-hidden-files 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-index-hidden-files))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-search-function ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-search-function 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-search-function))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-title-regexp ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-title-regexp 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-title-regexp))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-title-max-pos ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-title-max-pos 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-title-max-pos))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-category-regexp ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-category-regexp 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-category-regexp))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-empty-category-placeholder ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property
+     'kasten-empty-category-placeholder
+     'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-empty-category-placeholder))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-category-max-pos ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-category-max-pos 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-category-max-pos))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-title-category-split ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-title-category-split 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-title-category-split))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-tag-regexp ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-tag-regexp 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-tag-regexp))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-tag-max-pos ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-tag-max-pos 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-tag-max-pos))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-tag-symbol ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-tag-symbol 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-tag-symbol))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-tag-first-char-regexp ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property
+      'kasten-tag-first-char-regexp
+      'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-tag-first-char-regexp))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-id-symbol ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-id-symbol 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-id-symbol))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-id-format ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-id-format 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-id-format))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-folder-timeformat ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-folder-timeformat 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-folder-timeformat))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-id-clash-time-inc ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-id-clash-time-inc 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-id-clash-time-inc))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-id-regexp ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-id-regexp 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-id-regexp))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-backlink-comment ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-backlink-comment 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: =#+backlink:=.")
+  #+END_SRC
+
+- Variable: kasten-buffer-title ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-buffer-title 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-buffer-title))
+    	"=.")
+  #+END_SRC
+
+- Variable: kasten-minor-mode-lighter ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-search-function 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: =Kt=.")
+  #+END_SRC
+
+- Variable: kasten-auto-refresh ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-auto-refresh 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-auto-refresh))
+    	"=.")
+  #+END_SRC
+
+** Customisable Functions and Hooks
+
+If the ID contains title (for example, using =§250229-23 332. 2. -foo= as ID of the
+note created on 2025-02-29 at 23:33 titled =foo=), one can customise how to
+convert the note title to a safer string which can be used as part of the
+filename.
+
+- Variable: kasten-safetitle-function ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-safetitle-function 'variable-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default value: ="
+    	(prin1-to-string (default-value 'kasten-safetitle-function))
+    	"=.")
+  #+END_SRC
+
+- Function: kasten--default-safetitle ::
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation #'kasten--default-safetitle)
+  #+END_SRC
+
+** Customisable Faces
+
+- User Option: kasten-buffer-title-face ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-buffer-title-face 'face-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default attributes: ="
+    	(prin1-to-string (face-all-attributes 'kasten-buffer-title-face))
+    	"=")
+  #+END_SRC
+
+- User Option: kasten-file-title-face ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-file-title-face 'face-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default attributes: ="
+    	(prin1-to-string (face-all-attributes 'kasten-file-title-face))
+    	"=")
+  #+END_SRC
+
+- User Option: kasten-title-category-split-face ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property
+     'kasten-title-category-split-face
+     'face-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default attributes: ="
+    	(prin1-to-string (face-all-attributes
+    			  'kasten-title-category-split-face))
+    	"=")
+  #+END_SRC
+
+- User Option: kasten-file-category-face ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-file-category-face 'face-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default attributes: ="
+    	(prin1-to-string (face-all-attributes 'kasten-file-category-face))
+    	"=")
+  #+END_SRC
+
+- User Option: kasten-file-name-face ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-file-name-face 'face-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default attributes: ="
+    	(prin1-to-string (face-all-attributes 'kasten-file-name-face))
+    	"=")
+  #+END_SRC
+
+- User Option: kasten-live-search-edit-face ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-live-search-edit-face 'face-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default attributes: ="
+    	(prin1-to-string (face-all-attributes 'kasten-live-search-edit-face))
+    	"=")
+  #+END_SRC
+
+- User Option: kasten-button-face ::
+  #+BEGIN_SRC elisp :results raw :exports results
+    (documentation-property 'kasten-button-face 'face-documentation)
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :results raw :exports results
+    (concat "Default attributes: ="
+    	(prin1-to-string (face-all-attributes 'kasten-button-face))
+    	"=")
+  #+END_SRC
+
+
+The prompt text =Live search:= in Live Search uses default face =shadow=.
+
+In Kasten Filters, lines start with =%= use =font-lock-comment-face=; lines
+start with =#= use =font-lock-keyword-face=.
 
 * Benchmark
 
@@ -351,19 +781,23 @@ Alternatively, one can customise Kasten in the Emacs configuration file (such as
   done
 #+end_src
 
-The following benchmark is obtained by {{{kbd(M-x benchmark)}}}. Variables
-=gc-cons-threshold= and =gc-cons-percentage= are set to ~16000000~ and ~0.1~,
-accordingly.
+The following benchmark is obtained by {{{kbd(M-x benchmark)}}} using Emacs
+30.1, on an Apple Darwin machine with Apple SSD.  Variables =gc-cons-threshold=
+and =gc-cons-percentage= are set to ~16000000~ and ~0.1~, accordingly.
 
-| Package | Form       | Elapsed Time | Garbage Collections |
-|---------+------------+--------------+---------------------|
-| Deft    | =(deft)=   | 148.025919s  |                  86 |
-| Kasten  | =(kasten)= | 0.682055s    |                   1 |
+| Package | Form                         | Elapsed Time | Garbage Collections |
+|---------+------------------------------+--------------+---------------------|
+| Deft    | =(deft)=                     | 148.025919s  |                  86 |
+| Kasten  | =(kasten)=                   | 0.682055s    |                   1 |
+| Kasten  | =(kasten-change-id "oldid")= | 11.295669s   |                   0 |
 
 * Contributing
 
-Contributions and bug reports are welcome! Please open issues or pull requests
-on the GitHub repository.
+Contributions and bug reports are welcome!  For code contributions, please open
+pull requests on GitHub.  For general issues (except security concerns), please
+open issues on GitHub.
+
+** Reporting Slowness
 
 Users are encouraged to report any significant slowness of Kasten! If possible,
 please include the following information, but please *do not include any
@@ -377,6 +811,25 @@ sensitive information*:
   {{{kbd(M-x profiler-stop RET)}}}, and then {{{kbd(M-x profiler-report RET)}}}
 + Benchmark of the slow function ({{{kbd(M-x benchmark RET)}}} followed by the
   function and {{{kbd(RET)}}})
+
+** Reporting Security Concerns
+
+If you found any vulnerabilities or would like to report any security concerns,
+please *do not* use any public channels.  Please contact the package author via
+email.  Please *sign* and *encrypt* your email with PGP[fn::[[https://en.wikipedia.org/wiki/Pretty_Good_Privacy][Pretty Good Privacy]],
+see also [[https://gnupg.org][GnuPG]]].  *Encrypted plain text email* MIMEs are preferred (do not use
+~multipart/alternative~ to include HTML copies of the email).
+
+- Key Server ::
+  [[https://keyserver.ubuntu.com/][hkps://keyserver.ubuntu.com]]
+- Email Address ::
+  ~iamsqy αt outlo◯k d0t c○m~ [fn::Please replace =at=, =dot=, etc. to actual
+  symbols and characters.]
+- Key ID ::
+  ~F8AD5243C3CFB24E~
+- Primary key fingerprint ::
+  ~548E 2320 AFD8 0063 1C76  274C F8AD 5243 C3CF B24E~
+ 
 
 * GNU Free Documentation License
 :PROPERTIES:
@@ -396,6 +849,27 @@ sensitive information*:
  cat ../COPYING
 #+END_SRC
 
+* Too Long; Didn't Read
+:PROPERTIES:
+:APPENDIX: t
+:END:
+
+1. Install ~Kasten~ (not yet published).
+   #+BEGIN_SRC elisp
+     (use-package kasten)
+   #+END_SRC
+2. Customise.
+   #+BEGIN_SRC elisp
+     ;; Below configurations are not default values.
+     (setq kasten-directory (expand-file-name "~/notes/")
+           kasten-file-extensions '("org" "txt" "tex")
+           kasten-title-max-pos 2048
+           kasten-tag-max-pos 8192
+           kasten-id-symbol "§"
+           kasten-id-regexp "§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)"
+           kasten-auto-refresh t)
+   #+END_SRC
+3. Launch ~Kasten~ with {{{kbd(M-x kasten RET)}}}.
 
 # Local Variables:
 # org-confirm-babel-evaluate: nil

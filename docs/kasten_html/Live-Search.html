@@ -3,7 +3,7 @@
 <!-- Created by GNU Texinfo 7.2, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!-- This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
+<!-- This manual is for Kasten (version 0.90.0, last updated 2025-07-09), which is
 an Emacs package for managing Zettelkasten-style notes.
 
 Copyright © 2025 Qiyang Sun
@@ -31,6 +31,8 @@ the section entitled "GNU Free Documentation License".
 <style type="text/css">
 <!--
 a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
 span:hover a.copiable-link {visibility: visible}
 -->
 </style>
@@ -48,6 +50,36 @@ Next: <a href="Filters.html" accesskey="n" rel="next">Filters</a>, Up: <a href="
 <hr>
 <h4 class="subsection" id="Live-Search-1"><span>6.2.1 Live Search<a class="copiable-link" href="#Live-Search-1"> &para;</a></span></h4>
 
+<p>In a Live Search, one can type anywhere to search titles, categories and IDs.
+It is unnecessary to place the point into the text box&mdash;a temporary key map is
+used to handle input, supporting letters, symbols and non-ASCII characters.
+Case is insensitive.
+</p>
+<dl class="vtable">
+<dt><a id="index-C_002dg-_0028kasten_002d_002dquit_002dlive_002dsearch_0029"></a><span><kbd class="kbd">C-g</kbd> (<code class="code">kasten--quit-live-search</code>)<a class="copiable-link" href="#index-C_002dg-_0028kasten_002d_002dquit_002dlive_002dsearch_0029"> &para;</a></span></dt>
+<dt><a id="index-ESC-ESC-ESC-_0028kasten_002d_002dquit_002dlive_002dsearch_0029"></a><span><kbd class="kbd"><kbd class="key">ESC</kbd> <kbd class="key">ESC</kbd> <kbd class="key">ESC</kbd></kbd> (<code class="code">kasten--quit-live-search</code>)<a class="copiable-link" href="#index-ESC-ESC-ESC-_0028kasten_002d_002dquit_002dlive_002dsearch_0029"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-C_002dg"></a>
+<a class="index-entry-id" id="index-ESC-ESC-ESC"></a>
+<a class="index-entry-id" id="index-kasten_002d_002dquit_002dlive_002dsearch"></a>
+<p>Quit live search and reset to normal Kasten.
+</p>
+</dd>
+<dt><a id="index-DEL-1"></a><span><kbd class="kbd"><kbd class="key">DEL</kbd></kbd><a class="copiable-link" href="#index-DEL-1"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-DEL"></a>
+<p>Delete the last input character.
+</p>
+</dd>
+<dt><a id="index-RET-_0028kasten_002dopen_002dfile_0029"></a><span><kbd class="kbd"><kbd class="key">RET</kbd></kbd> (<code class="code">kasten-open-file</code>)<a class="copiable-link" href="#index-RET-_0028kasten_002dopen_002dfile_0029"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-RET-1"></a>
+<a class="index-entry-id" id="index-kasten_002dopen_002dfile-1"></a>
+<p>Open the note file on the current line by matching filename.
+</p></dd>
+</dl>
+
+
+<p>A letter &lsquo;<samp class="samp">s</samp>&rsquo; will appear next to Kasten buffer title indicating Live Search is
+activated.
+</p>
 </div>
 
 

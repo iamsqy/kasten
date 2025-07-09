@@ -3,7 +3,7 @@
 <!-- Created by GNU Texinfo 7.2, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!-- This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
+<!-- This manual is for Kasten (version 0.90.0, last updated 2025-07-09), which is
 an Emacs package for managing Zettelkasten-style notes.
 
 Copyright © 2025 Qiyang Sun
@@ -57,7 +57,7 @@ Next: <a href="#Synopsis" accesskey="n" rel="next">Synopsis</a> &nbsp; [<a href=
 </div>
 <h1 class="top" id="Kasten-Manual"><span>Kasten Manual<a class="copiable-link" href="#Kasten-Manual"> &para;</a></span></h1>
 
-<p>This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
+<p>This manual is for Kasten (version 0.90.0, last updated 2025-07-09), which is
 an Emacs package for managing Zettelkasten-style notes.
 </p>
 <p>Copyright &copy; 2025 Qiyang Sun
@@ -103,11 +103,21 @@ the section entitled &ldquo;GNU Free Documentation License&rdquo;.
     </ul></li>
     <li><a id="toc-Kasten-Minor-Mode" href="#Kasten-Minor-Mode">6.3 Kasten Minor Mode</a></li>
   </ul></li>
-  <li><a id="toc-Customisation" href="#Customisation">7 Customisation</a></li>
+  <li><a id="toc-Customisation" href="#Customisation">7 Customisation</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Customisable-Variables" href="#Customisable-Variables">7.1 Customisable Variables</a></li>
+    <li><a id="toc-Customisable-Functions-and-Hooks" href="#Customisable-Functions-and-Hooks">7.2 Customisable Functions and Hooks</a></li>
+    <li><a id="toc-Customisable-Faces" href="#Customisable-Faces">7.3 Customisable Faces</a></li>
+  </ul></li>
   <li><a id="toc-Benchmark" href="#Benchmark">8 Benchmark</a></li>
-  <li><a id="toc-Contributing" href="#Contributing">9 Contributing</a></li>
+  <li><a id="toc-Contributing" href="#Contributing">9 Contributing</a>
+  <ul class="toc-numbered-mark">
+    <li><a id="toc-Reporting-Slowness" href="#Reporting-Slowness">9.1 Reporting Slowness</a></li>
+    <li><a id="toc-Reporting-Security-Concerns" href="#Reporting-Security-Concerns">9.2 Reporting Security Concerns</a></li>
+  </ul></li>
   <li><a id="toc-GNU-Free-Documentation-License" href="#GNU-Free-Documentation-License">Appendix A GNU Free Documentation License</a></li>
   <li><a id="toc-GNU-General-Public-License" href="#GNU-General-Public-License">Appendix B GNU General Public License</a></li>
+  <li><a id="toc-Too-Long_003b-Didn_0027t-Read" href="#Too-Long_003b-Didn_0027t-Read">Appendix C Too Long; Didn&rsquo;t Read</a></li>
 </ul>
 </div>
 </div>
@@ -214,7 +224,7 @@ provide a detailed introduction to the Zettelkasten methodology itself.
 <p>Kasten is inspired by Zetteldeft, a Zettelkasten system on top of Deft.  Deft is
 a note browsing system inspired by Notational Velocity.
 </p>
-<p>Kasten designed based on the following ideas in mind.
+<p>Kasten is designed base on the following ideas in mind.
 </p><ul class="itemize mark-bullet">
 <li>The system should be highly customisable.
 </li><li>The system should be fast.
@@ -256,7 +266,7 @@ customisable).
 </li></ul>
 </li><li>ID format fully customisable (with the ability to include sanitised title).
 </li><li>Followable note IDs for easy navigation.
-</li><li>ID changable with auto-update references.
+</li><li>ID is changable with auto-update references.
 </li><li>Insert tags and note IDs with auto-completion support.
 </li><li>Backlink searching to find references between notes.
 </li><li>Functions to get note path and attachment directory path for integration with
@@ -364,7 +374,7 @@ Kasten minor mode has a lighter &lsquo;<samp class="samp">Kt</samp>&rsquo; (cust
 <dd><p>Toggle <code class="code">kasten-minor-mode</code> for current buffer.
 </p></dd></dl>
 
-<p>Refer to the Emacs Lisp code for detailed function and variable documentations.
+<p>Refer to the Emacs Lisp code for detailed function and variable documentation.
 </p>
 <hr>
 </div>
@@ -425,6 +435,36 @@ Next: <a href="#Filters" accesskey="n" rel="next">Filters</a>, Up: <a href="#Kas
 </div>
 <h4 class="subsection" id="Live-Search-1"><span>6.2.1 Live Search<a class="copiable-link" href="#Live-Search-1"> &para;</a></span></h4>
 
+<p>In a Live Search, one can type anywhere to search titles, categories and IDs.
+It is unnecessary to place the point into the text box&mdash;a temporary key map is
+used to handle input, supporting letters, symbols and non-ASCII characters.
+Case is insensitive.
+</p>
+<dl class="vtable">
+<dt><a id="index-C_002dg-_0028kasten_002d_002dquit_002dlive_002dsearch_0029"></a><span><kbd class="kbd">C-g</kbd> (<code class="code">kasten--quit-live-search</code>)<a class="copiable-link" href="#index-C_002dg-_0028kasten_002d_002dquit_002dlive_002dsearch_0029"> &para;</a></span></dt>
+<dt><a id="index-ESC-ESC-ESC-_0028kasten_002d_002dquit_002dlive_002dsearch_0029"></a><span><kbd class="kbd"><kbd class="key">ESC</kbd> <kbd class="key">ESC</kbd> <kbd class="key">ESC</kbd></kbd> (<code class="code">kasten--quit-live-search</code>)<a class="copiable-link" href="#index-ESC-ESC-ESC-_0028kasten_002d_002dquit_002dlive_002dsearch_0029"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-C_002dg"></a>
+<a class="index-entry-id" id="index-ESC-ESC-ESC"></a>
+<a class="index-entry-id" id="index-kasten_002d_002dquit_002dlive_002dsearch"></a>
+<p>Quit live search and reset to normal Kasten.
+</p>
+</dd>
+<dt><a id="index-DEL-1"></a><span><kbd class="kbd"><kbd class="key">DEL</kbd></kbd><a class="copiable-link" href="#index-DEL-1"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-DEL"></a>
+<p>Delete the last input character.
+</p>
+</dd>
+<dt><a id="index-RET-_0028kasten_002dopen_002dfile_0029"></a><span><kbd class="kbd"><kbd class="key">RET</kbd></kbd> (<code class="code">kasten-open-file</code>)<a class="copiable-link" href="#index-RET-_0028kasten_002dopen_002dfile_0029"> &para;</a></span></dt>
+<dd><a class="index-entry-id" id="index-RET-1"></a>
+<a class="index-entry-id" id="index-kasten_002dopen_002dfile-1"></a>
+<p>Open the note file on the current line by matching filename.
+</p></dd>
+</dl>
+
+
+<p>A letter &lsquo;<samp class="samp">s</samp>&rsquo; will appear next to Kasten buffer title indicating Live Search is
+activated.
+</p>
 <hr>
 </div>
 <div class="subsection-level-extent" id="Filters">
@@ -434,6 +474,60 @@ Previous: <a href="#Live-Search" accesskey="p" rel="prev">Live Search</a>, Up: <
 </div>
 <h4 class="subsection" id="Filters-1"><span>6.2.2 Filters<a class="copiable-link" href="#Filters-1"> &para;</a></span></h4>
 
+<p>With Filters, one can filter titles and/or categories.
+</p>
+<p>By invoking &lsquo;<samp class="samp">kasten-filters-edit</samp>&rsquo;, a new buffer &lsquo;<samp class="samp">*Kasten Filters*</samp>&rsquo; is
+created.  This buffer is in <code class="code">kasten-filters-mode</code>, for users to edit filters.
+</p>
+<p>Lines starting with a &lsquo;<samp class="samp">%</samp>&rsquo; symbol are read-only comments.  Lines starting with a
+&lsquo;<samp class="samp">#</samp>&rsquo; are read-only headers which will be parsed.
+</p>
+<dl class="table">
+<dt>Title filters</dt>
+<dd><p>Enter titles one per line.  Case is insensitive.  A note will be displayed if
+it has at least one title filter as its substring.  Use of Emacs regular
+expressions is allowed.  Leave this field empty to keep all notes.
+</p>
+</dd>
+<dt>Category filters</dt>
+<dd><p>Enter categories one per line.  Case is sensitive.  A note will be displayed
+if it has a category and the category is exactly one of the category filters.
+Leave this field empty to keep all notes.
+</p>
+</dd>
+<dt>Mode</dt>
+<dd><p>Logic operator for the filter operation.  May be either &lsquo;and&rsquo; or &lsquo;or&rsquo;.  If
+only one of the title filters and category filters is needed, use &lsquo;and&rsquo;.
+</p></dd>
+</dl>
+
+
+<p>Kasten-Filters mode has the following key bindings.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-kasten_002dfilters_002dsave_002dand_002dkill"></a>
+<a id="index-C_002dc-C_002dc"></a><span><kbd class="kbd">C-c C-c</kbd> (<code class="code">kasten-filters-save-and-kill</code>)<a class="copiable-link" href="#index-C_002dc-C_002dc"> &para;</a></span></dt>
+<dd><p>Try to parse the buffer contents and apply them to Kasten filters, then kill
+this buffer and delete the selected window.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kill_002dbuffer_002dand_002dwindow"></a>
+<a id="index-C_002dc-C_002dk"></a><span><kbd class="kbd">C-c C-k</kbd> (<code class="code">kill-buffer-and-window</code>)<a class="copiable-link" href="#index-C_002dc-C_002dk"> &para;</a></span></dt>
+<dd><p>Kill the Kasten-Filters buffer and delete the selected window; discard any
+changes to the filters.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dfilters_002d_002dtoggle_002dthe_002dmode"></a>
+<a id="index-C_002dc-C_002dt"></a><span><kbd class="kbd">C-c C-t</kbd> (<code class="code">kasten-filters--toggle-the-mode</code>)<a class="copiable-link" href="#index-C_002dc-C_002dt"> &para;</a></span></dt>
+<dd><p>Toggle the mode on the current line between &lsquo;or&rsquo; and &lsquo;and&rsquo;.  Only valid if the
+point is placed on the mode text (placed on the text &lsquo;or&rsquo; or &lsquo;and&rsquo;).
+</p></dd>
+</dl>
+
+
+<p>A letter &lsquo;<samp class="samp">f</samp>&rsquo; will appear next to Kasten buffer title indicating Kasten Filters
+are activated.
+</p>
 <hr>
 </div>
 </div>
@@ -495,64 +589,309 @@ Next: <a href="#Benchmark" accesskey="n" rel="next">Benchmark</a>, Previous: <a 
 </div>
 <h2 class="chapter" id="Customisation-1"><span>7 Customisation<a class="copiable-link" href="#Customisation-1"> &para;</a></span></h2>
 
-<p><strong class="strong">TODO: outdated</strong>
-</p>
-<p>Kasten is customisable using &lsquo;<samp class="samp">customize</samp>&rsquo;, via <kbd class="kbd">M-x customize-group <kbd class="key">RET</kbd> kasten <kbd class="key">RET</kbd></kbd> or GUI.
-</p>
-<p>Alternatively, one can customise Kasten in the Emacs configuration file (such as
-&lsquo;<samp class="samp">init.el</samp>&rsquo;, or under &lsquo;<samp class="samp">use-package</samp>&rsquo;). Below are <em class="emph">default</em> configurations.
+
+<ul class="mini-toc">
+<li><a href="#Customisable-Variables" accesskey="1">Customisable Variables</a></li>
+<li><a href="#Customisable-Functions-and-Hooks" accesskey="2">Customisable Functions and Hooks</a></li>
+<li><a href="#Customisable-Faces" accesskey="3">Customisable Faces</a></li>
+</ul>
+<hr>
+<div class="section-level-extent" id="Customisable-Variables">
+<div class="nav-panel">
+<p>
+Next: <a href="#Customisable-Functions-and-Hooks" accesskey="n" rel="next">Customisable Functions and Hooks</a>, Up: <a href="#Customisation" accesskey="u" rel="up">Customisation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<h3 class="section" id="Customisable-Variables-1"><span>7.1 Customisable Variables<a class="copiable-link" href="#Customisable-Variables-1"> &para;</a></span></h3>
+
+<p>Kasten is customisable using &lsquo;<samp class="samp">customize</samp>&rsquo;, via <kbd class="kbd">M-x customize-group <kbd class="key">RET</kbd> kasten <kbd class="key">RET</kbd></kbd>. Alternatively, one may use <code class="code">setq</code>.  For
+example, to change the variable &lsquo;<samp class="samp">kasten-directory</samp>&rsquo; to &lsquo;<samp class="samp">~/notes</samp>&rsquo; using <code class="code">setq</code>,
+one may add the following code to their Emacs configuration file (such as
+&lsquo;<samp class="samp">init.el</samp>&rsquo;, preferably under &lsquo;<samp class="samp">use-package</samp>&rsquo;).
 </p>
 <div class="example lisp">
-<pre class="lisp-preformatted">;; Directory containing your notes
-;; Kasten recursively finds all notes under kasten-directory
-(setq kasten-directory (expand-file-name &quot;~/jrn/&quot;))
-
-;; File extensions to include in search
-;; E.g., Org mode files, text files, and (La)TeX files
-(setq kasten-file-extensions '(&quot;org&quot; &quot;txt&quot; &quot;tex&quot;))
-
-;; Function used for searching within the Kasten directory
-;; If consult-ripgrep is not ideal, one may change here
-(setq kasten-search-function #'consult-ripgrep)
-
-;; Regexp to match the title of a note
-;; Matches `\#+title:' , `\#+TITLE:' , `\#+Title:', ...
-(setq kasten-title-regexp &quot;^#\\+[tT][iI][tT][lL][eE]: *\\(.*\\)$&quot;)
-
-;; Max position of the title of a note
-;; Reduce if slow
-(setq kasten-title-max-pos 4096)
-
-;; Regexp to match a tag of a note
-;; Matches `\#foobar'
-(setq kasten-tag-regexp &quot;#\\([[:alnum:]_-]+\\)&quot;)
-
-;; Max position of the title of a note
-;; Reduce if slow
-(setq kasten-tag-max-pos 65536)
-
-;; Regexp for the tag char (for consult-ripgrep to understand)
-;; `\\x23' is `\#' in PCRE
-(setq kasten-tag-first-char-regexp &quot;\\x23&quot;)
-
-;; Leading symbol for ID
-;; May be longer than 1 char
-(setq kasten-id-symbol &quot;§&quot;)
-
-;; Regexp to match the ID
-;; Matches `\§20250229-2333'
-(setq kasten-id-regexp &quot;§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)&quot;)
-
-;; Buffer title
-;; If you don't like `Kasten' as the name
-(setq kasten-buffer-title &quot;Kasten\n&quot;)
-
-;; Auto refresh
-;; If non-nil, automatically refresh Kasten buffer when files change
-(setq kasten-auto-refresh t)
+<pre class="lisp-preformatted">(setq kasten-directory (expand-file-name &quot;~/notes/&quot;))
 </pre></div>
 
+<p>Default values in the manual may be evaluated, simplified or slightly modified.
+Please refer to the source code and search for &lsquo;<samp class="samp">defcustom</samp>&rsquo;.
+</p>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002ddirectory"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-directory</strong><a class="copiable-link" href="#index-kasten_002ddirectory"> &para;</a></span></dt>
+<dd><p>Note directory.
+</p>
+<p>Default value: &lsquo;<samp class="samp">~/jrn/</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dfile_002dextensions"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-file-extensions</strong><a class="copiable-link" href="#index-kasten_002dfile_002dextensions"> &para;</a></span></dt>
+<dd><p>List of searchable file extensions for Kasten.
+</p>
+<p>Default value: &lsquo;<samp class="samp">(&quot;org&quot; &quot;txt&quot; &quot;tex&quot;)</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002ddefault_002dextension"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-default-extension</strong><a class="copiable-link" href="#index-kasten_002ddefault_002dextension"> &para;</a></span></dt>
+<dd><p>Default extension for new notes.
+</p>
+<p>Default value: &lsquo;<samp class="samp">org</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dnote_002dtitle_002dtemplate"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-note-title-template</strong><a class="copiable-link" href="#index-kasten_002dnote_002dtitle_002dtemplate"> &para;</a></span></dt>
+<dd><p>Template for new notes.
+</p>
+<p>Default value: &lsquo;<samp class="samp">#+title:</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dindex_002dhidden_002dfiles"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-index-hidden-files</strong><a class="copiable-link" href="#index-kasten_002dindex_002dhidden_002dfiles"> &para;</a></span></dt>
+<dd><p>If non-nil, include dot files when indexing.
+May cause problem if backup files present in the directory.
+</p>
+<p>Default value: &lsquo;<samp class="samp">nil</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dsearch_002dfunction"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-search-function</strong><a class="copiable-link" href="#index-kasten_002dsearch_002dfunction"> &para;</a></span></dt>
+<dd><p>Function used for searching within the Kasten directory.
+</p>
+<p>Default value: &lsquo;<samp class="samp">consult-ripgrep</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dtitle_002dregexp"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-title-regexp</strong><a class="copiable-link" href="#index-kasten_002dtitle_002dregexp"> &para;</a></span></dt>
+<dd><p>Regexp to match the title of a note.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot;^#\\+[tT][iI][tT][lL][eE]: *\\(.*\\)$&quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dtitle_002dmax_002dpos"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-title-max-pos</strong><a class="copiable-link" href="#index-kasten_002dtitle_002dmax_002dpos"> &para;</a></span></dt>
+<dd><p>Max position of the title of a note.
+Depth for Kasten to match ‘kasten-title-regexp’.
+</p>
+<p>Default value: &lsquo;<samp class="samp">4096</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dcategory_002dregexp"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-category-regexp</strong><a class="copiable-link" href="#index-kasten_002dcategory_002dregexp"> &para;</a></span></dt>
+<dd><p>Regexp to match the category of a note.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot;^#\\+[cC][aA][tT][eE][gG][oO][rR][yY]: *\\(.*\\)$&quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dempty_002dcategory_002dplaceholder"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-empty-category-placeholder</strong><a class="copiable-link" href="#index-kasten_002dempty_002dcategory_002dplaceholder"> &para;</a></span></dt>
+<dd><p>If non-empty, display in category field for uncategorised notes.
+Leave empty to omit empty category for uncategorised notes.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot;&quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dcategory_002dmax_002dpos"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-category-max-pos</strong><a class="copiable-link" href="#index-kasten_002dcategory_002dmax_002dpos"> &para;</a></span></dt>
+<dd><p>Max position of the category of a note.
+Depth for Kasten to match ‘kasten-category-regexp’.
+</p>
+<p>Default value: &lsquo;<samp class="samp">4096</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dtitle_002dcategory_002dsplit"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-title-category-split</strong><a class="copiable-link" href="#index-kasten_002dtitle_002dcategory_002dsplit"> &para;</a></span></dt>
+<dd><p>Split title and category in Kasten view.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot; --- &quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dtag_002dregexp"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-tag-regexp</strong><a class="copiable-link" href="#index-kasten_002dtag_002dregexp"> &para;</a></span></dt>
+<dd><p>Regexp to match a tag of a note.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot;#\\([[:alnum:]_-]+\\)&quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dtag_002dmax_002dpos"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-tag-max-pos</strong><a class="copiable-link" href="#index-kasten_002dtag_002dmax_002dpos"> &para;</a></span></dt>
+<dd><p>Max position of the title of a note.
+Depth for Kasten to match ‘kasten-tag-regexp’.
+</p>
+<p>Default value: &lsquo;<samp class="samp">65536</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dtag_002dsymbol"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-tag-symbol</strong><a class="copiable-link" href="#index-kasten_002dtag_002dsymbol"> &para;</a></span></dt>
+<dd><p>Leading symbol for tag.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot;#&quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dtag_002dfirst_002dchar_002dregexp"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-tag-first-char-regexp</strong><a class="copiable-link" href="#index-kasten_002dtag_002dfirst_002dchar_002dregexp"> &para;</a></span></dt>
+<dd><p>Regexp for the tag char to make ‘kasten-search-function’ understand.
+</p>
+<p>If using ‘consult-ripgrep’, use ‘\x23’ instead of ‘#’.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot;\\x23&quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002did_002dsymbol"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-id-symbol</strong><a class="copiable-link" href="#index-kasten_002did_002dsymbol"> &para;</a></span></dt>
+<dd><p>Leading symbol for ID.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot;§&quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002did_002dformat"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-id-format</strong><a class="copiable-link" href="#index-kasten_002did_002dformat"> &para;</a></span></dt>
+<dd><p>Time format for generating ID.  Use ‘%E’ for shortened title.
+See man page ‘strftime(3)’ for wildcards.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot;%y%m%d-%H%M-%E&quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dfolder_002dtimeformat"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-folder-timeformat</strong><a class="copiable-link" href="#index-kasten_002dfolder_002dtimeformat"> &para;</a></span></dt>
+<dd><p>Time format for folder.
+See man page ‘strftime(3)’ for wildcards.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot;%Y%m&quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002did_002dclash_002dtime_002dinc"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-id-clash-time-inc</strong><a class="copiable-link" href="#index-kasten_002did_002dclash_002dtime_002dinc"> &para;</a></span></dt>
+<dd><p>Time interval to increment if the time-based ID clashes, in seconds.
+Set to 60 for 1 minute.
+</p>
+<p>Default value: &lsquo;<samp class="samp">60</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002did_002dregexp"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-id-regexp</strong><a class="copiable-link" href="#index-kasten_002did_002dregexp"> &para;</a></span></dt>
+<dd><p>Regexp for an ID in a note.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot;§\\([0-9]\\{6\\}-[0-9]\\{4\\}\\)&quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dbacklink_002dcomment"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-backlink-comment</strong><a class="copiable-link" href="#index-kasten_002dbacklink_002dcomment"> &para;</a></span></dt>
+<dd><p>Insert before backlink ID when creating new note at point.
+</p>
+<p>Default value: &lsquo;<samp class="samp">#+backlink:</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dbuffer_002dtitle"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-buffer-title</strong><a class="copiable-link" href="#index-kasten_002dbuffer_002dtitle"> &para;</a></span></dt>
+<dd><p>Kasten mode buffer title.
+</p>
+<p>Default value: &lsquo;<samp class="samp">&quot;Kasten&quot;</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dminor_002dmode_002dlighter"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-minor-mode-lighter</strong><a class="copiable-link" href="#index-kasten_002dminor_002dmode_002dlighter"> &para;</a></span></dt>
+<dd><p>Function used for searching within the Kasten directory.
+</p>
+<p>Default value: &lsquo;<samp class="samp">Kt</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dauto_002drefresh"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-auto-refresh</strong><a class="copiable-link" href="#index-kasten_002dauto_002drefresh"> &para;</a></span></dt>
+<dd><p>If non-nil, automatically refresh Kasten buffer when files change.
+</p>
+<p>Default value: &lsquo;<samp class="samp">t</samp>&rsquo;.
+</p></dd></dl>
+
 <hr>
+</div>
+<div class="section-level-extent" id="Customisable-Functions-and-Hooks">
+<div class="nav-panel">
+<p>
+Next: <a href="#Customisable-Faces" accesskey="n" rel="next">Customisable Faces</a>, Previous: <a href="#Customisable-Variables" accesskey="p" rel="prev">Customisable Variables</a>, Up: <a href="#Customisation" accesskey="u" rel="up">Customisation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<h3 class="section" id="Customisable-Functions-and-Hooks-1"><span>7.2 Customisable Functions and Hooks<a class="copiable-link" href="#Customisable-Functions-and-Hooks-1"> &para;</a></span></h3>
+
+<p>If the ID contains title (for example, using &lsquo;<samp class="samp">§250229-23 332. 2. -foo</samp>&rsquo; as ID of the
+note created on 2025-02-29 at 23:33 titled &lsquo;<samp class="samp">foo</samp>&rsquo;), one can customise how to
+convert the note title to a safer string which can be used as part of the
+filename.
+</p>
+<dl class="first-defvr first-defvar-alias-first-defvr def-block">
+<dt class="defvr defvar-alias-defvr def-line" id="index-kasten_002dsafetitle_002dfunction"><span class="category-def">Variable: </span><span><strong class="def-name">kasten-safetitle-function</strong><a class="copiable-link" href="#index-kasten_002dsafetitle_002dfunction"> &para;</a></span></dt>
+<dd><p>Function to convert a title to a safe short string.
+</p>
+<p>Default value: &lsquo;<samp class="samp">kasten--default-safetitle</samp>&rsquo;.
+</p></dd></dl>
+
+<dl class="first-deffn first-defun-alias-first-deffn def-block">
+<dt class="deffn defun-alias-deffn def-line" id="index-kasten_002d_002ddefault_002dsafetitle"><span class="category-def">Function: </span><span><strong class="def-name">kasten--default-safetitle</strong><a class="copiable-link" href="#index-kasten_002d_002ddefault_002dsafetitle"> &para;</a></span></dt>
+<dd><p>Default safetitle function to convert TITLE to max 8 char string.
+</p></dd></dl>
+
+<hr>
+</div>
+<div class="section-level-extent" id="Customisable-Faces">
+<div class="nav-panel">
+<p>
+Previous: <a href="#Customisable-Functions-and-Hooks" accesskey="p" rel="prev">Customisable Functions and Hooks</a>, Up: <a href="#Customisation" accesskey="u" rel="up">Customisation</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<h3 class="section" id="Customisable-Faces-1"><span>7.3 Customisable Faces<a class="copiable-link" href="#Customisable-Faces-1"> &para;</a></span></h3>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-kasten_002dbuffer_002dtitle_002dface"><span class="category-def">User Option: </span><span><strong class="def-name">kasten-buffer-title-face</strong><a class="copiable-link" href="#index-kasten_002dbuffer_002dtitle_002dface"> &para;</a></span></dt>
+<dd><p>Face for the Kasten buffer title.
+</p>
+<p>Default attributes: &lsquo;<samp class="samp">((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</samp>&rsquo;
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-kasten_002dfile_002dtitle_002dface"><span class="category-def">User Option: </span><span><strong class="def-name">kasten-file-title-face</strong><a class="copiable-link" href="#index-kasten_002dfile_002dtitle_002dface"> &para;</a></span></dt>
+<dd><p>Face for file titles in Kasten.
+</p>
+<p>Default attributes: &lsquo;<samp class="samp">((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</samp>&rsquo;
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-kasten_002dtitle_002dcategory_002dsplit_002dface"><span class="category-def">User Option: </span><span><strong class="def-name">kasten-title-category-split-face</strong><a class="copiable-link" href="#index-kasten_002dtitle_002dcategory_002dsplit_002dface"> &para;</a></span></dt>
+<dd><p>Face for title category split in Kasten.
+</p>
+<p>Default attributes: &lsquo;<samp class="samp">((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</samp>&rsquo;
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-kasten_002dfile_002dcategory_002dface"><span class="category-def">User Option: </span><span><strong class="def-name">kasten-file-category-face</strong><a class="copiable-link" href="#index-kasten_002dfile_002dcategory_002dface"> &para;</a></span></dt>
+<dd><p>Face for categories in Kasten.
+</p>
+<p>Default attributes: &lsquo;<samp class="samp">((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</samp>&rsquo;
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-kasten_002dfile_002dname_002dface"><span class="category-def">User Option: </span><span><strong class="def-name">kasten-file-name-face</strong><a class="copiable-link" href="#index-kasten_002dfile_002dname_002dface"> &para;</a></span></dt>
+<dd><p>Face for filenames in Kasten.
+</p>
+<p>Default attributes: &lsquo;<samp class="samp">((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</samp>&rsquo;
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-kasten_002dlive_002dsearch_002dedit_002dface"><span class="category-def">User Option: </span><span><strong class="def-name">kasten-live-search-edit-face</strong><a class="copiable-link" href="#index-kasten_002dlive_002dsearch_002dedit_002dface"> &para;</a></span></dt>
+<dd><p>Face for categories in Kasten.
+</p>
+<p>Default attributes: &lsquo;<samp class="samp">((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</samp>&rsquo;
+</p></dd></dl>
+
+<dl class="first-defvr first-defopt-alias-first-defvr def-block">
+<dt class="defvr defopt-alias-defvr def-line" id="index-kasten_002dbutton_002dface"><span class="category-def">User Option: </span><span><strong class="def-name">kasten-button-face</strong><a class="copiable-link" href="#index-kasten_002dbutton_002dface"> &para;</a></span></dt>
+<dd><p>Face for categories in Kasten.
+</p>
+<p>Default attributes: &lsquo;<samp class="samp">((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))</samp>&rsquo;
+</p></dd></dl>
+
+<p>The prompt text &lsquo;<samp class="samp">Live search:</samp>&rsquo; in Live Search uses default face &lsquo;<samp class="samp">shadow</samp>&rsquo;.
+</p>
+<p>In Kasten Filters, lines start with &lsquo;<samp class="samp">%</samp>&rsquo; use &lsquo;<samp class="samp">font-lock-comment-face</samp>&rsquo;; lines
+start with &lsquo;<samp class="samp">#</samp>&rsquo; use &lsquo;<samp class="samp">font-lock-keyword-face</samp>&rsquo;.
+</p>
+<hr>
+</div>
 </div>
 <div class="chapter-level-extent" id="Benchmark">
 <div class="nav-panel">
@@ -572,14 +911,15 @@ for i in {1..1000}; do
 done
 </pre></div>
 
-<p>The following benchmark is obtained by <kbd class="kbd">M-x benchmark</kbd>. Variables
-&lsquo;<samp class="samp">gc-cons-threshold</samp>&rsquo; and &lsquo;<samp class="samp">gc-cons-percentage</samp>&rsquo; are set to <code class="code">16000000</code> and <code class="code">0.1</code>,
-accordingly.
+<p>The following benchmark is obtained by <kbd class="kbd">M-x benchmark</kbd> using Emacs
+30.1, on an Apple Darwin machine with Apple SSD.  Variables &lsquo;<samp class="samp">gc-cons-threshold</samp>&rsquo;
+and &lsquo;<samp class="samp">gc-cons-percentage</samp>&rsquo; are set to <code class="code">16000000</code> and <code class="code">0.1</code>, accordingly.
 </p>
 <table class="multitable">
 <thead><tr><th>Package</th><th>Form</th><th>Elapsed Time</th><th>Garbage Collections</th></tr></thead>
 <tbody><tr><td>Deft</td><td>&lsquo;<samp class="samp">(deft)</samp>&rsquo;</td><td>148.025919s</td><td>86</td></tr>
 <tr><td>Kasten</td><td>&lsquo;<samp class="samp">(kasten)</samp>&rsquo;</td><td>0.682055s</td><td>1</td></tr>
+<tr><td>Kasten</td><td>&lsquo;<samp class="samp">(kasten-change-id &quot;oldid&quot;)</samp>&rsquo;</td><td>11.295669s</td><td>0</td></tr>
 </tbody>
 </table>
 
@@ -592,9 +932,23 @@ Next: <a href="#GNU-Free-Documentation-License" accesskey="n" rel="next">GNU Fre
 </div>
 <h2 class="chapter" id="Contributing-1"><span>9 Contributing<a class="copiable-link" href="#Contributing-1"> &para;</a></span></h2>
 
-<p>Contributions and bug reports are welcome! Please open issues or pull requests
-on the GitHub repository.
+<p>Contributions and bug reports are welcome!  For code contributions, please open
+pull requests on GitHub.  For general issues (except security concerns), please
+open issues on GitHub.
 </p>
+
+<ul class="mini-toc">
+<li><a href="#Reporting-Slowness" accesskey="1">Reporting Slowness</a></li>
+<li><a href="#Reporting-Security-Concerns" accesskey="2">Reporting Security Concerns</a></li>
+</ul>
+<hr>
+<div class="section-level-extent" id="Reporting-Slowness">
+<div class="nav-panel">
+<p>
+Next: <a href="#Reporting-Security-Concerns" accesskey="n" rel="next">Reporting Security Concerns</a>, Up: <a href="#Contributing" accesskey="u" rel="up">Contributing</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<h3 class="section" id="Reporting-Slowness-1"><span>9.1 Reporting Slowness<a class="copiable-link" href="#Reporting-Slowness-1"> &para;</a></span></h3>
+
 <p>Users are encouraged to report any significant slowness of Kasten! If possible,
 please include the following information, but please <strong class="strong">do not include any
 sensitive information</strong>:
@@ -611,6 +965,36 @@ function and <kbd class="kbd"><kbd class="key">RET</kbd></kbd>)
 </li></ul>
 
 <hr>
+</div>
+<div class="section-level-extent" id="Reporting-Security-Concerns">
+<div class="nav-panel">
+<p>
+Previous: <a href="#Reporting-Slowness" accesskey="p" rel="prev">Reporting Slowness</a>, Up: <a href="#Contributing" accesskey="u" rel="up">Contributing</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<h3 class="section" id="Reporting-Security-Concerns-1"><span>9.2 Reporting Security Concerns<a class="copiable-link" href="#Reporting-Security-Concerns-1"> &para;</a></span></h3>
+
+<p>If you found any vulnerabilities or would like to report any security concerns,
+please <strong class="strong">do not</strong> use any public channels.  Please contact the package author via
+email.  Please <strong class="strong">sign</strong> and <strong class="strong">encrypt</strong> your email with PGP<a class="footnote" id="DOCF1" href="#FOOT1"><sup>1</sup></a>.  <strong class="strong">Encrypted plain text email</strong> MIMEs are preferred (do not use
+<code class="code">multipart/alternative</code> to include HTML copies of the email).
+</p>
+<dl class="table">
+<dt>Key Server</dt>
+<dd><p><a class="uref" href="https://keyserver.ubuntu.com/">hkps://keyserver.ubuntu.com</a>
+</p></dd>
+<dt>Email Address</dt>
+<dd><p><code class="code">iamsqy αt outlo◯k d0t c○m</code> <a class="footnote" id="DOCF2" href="#FOOT2"><sup>2</sup></a>
+</p></dd>
+<dt>Key ID</dt>
+<dd><p><code class="code">F8AD5243C3CFB24E</code>
+</p></dd>
+<dt>Primary key fingerprint</dt>
+<dd><p><code class="code">548E 2320 AFD8 0063 1C76  274C F8AD 5243 C3CF B24E</code>
+</p></dd>
+</dl>
+
+<hr>
+</div>
 </div>
 <div class="appendix-level-extent" id="GNU-Free-Documentation-License">
 <div class="nav-panel">
@@ -1079,7 +1463,7 @@ to permit their use in free software.
 <div class="appendix-level-extent" id="GNU-General-Public-License">
 <div class="nav-panel">
 <p>
-Previous: <a href="#GNU-Free-Documentation-License" accesskey="p" rel="prev">GNU Free Documentation License</a>, Up: <a href="#Top" accesskey="u" rel="up">Kasten Manual</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+Next: <a href="#Too-Long_003b-Didn_0027t-Read" accesskey="n" rel="next">Too Long; Didn&rsquo;t Read</a>, Previous: <a href="#GNU-Free-Documentation-License" accesskey="p" rel="prev">GNU Free Documentation License</a>, Up: <a href="#Top" accesskey="u" rel="up">Kasten Manual</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
 </div>
 <h2 class="appendix" id="GNU-General-Public-License-1"><span>Appendix B GNU General Public License<a class="copiable-link" href="#GNU-General-Public-License-1"> &para;</a></span></h2>
 
@@ -1760,7 +2144,46 @@ Public License instead of this License.  But first, please read
 &lt;https://www.gnu.org/licenses/why-not-lgpl.html&gt;.
 </pre></div>
 
+<hr>
 </div>
+<div class="appendix-level-extent" id="Too-Long_003b-Didn_0027t-Read">
+<div class="nav-panel">
+<p>
+Previous: <a href="#GNU-General-Public-License" accesskey="p" rel="prev">GNU General Public License</a>, Up: <a href="#Top" accesskey="u" rel="up">Kasten Manual</a> &nbsp; [<a href="#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+</div>
+<h2 class="appendix" id="Too-Long_003b-Didn_0027t-Read-1"><span>Appendix C Too Long; Didn&rsquo;t Read<a class="copiable-link" href="#Too-Long_003b-Didn_0027t-Read-1"> &para;</a></span></h2>
+
+<ol class="enumerate">
+<li> Install <code class="code">Kasten</code> (not yet published).
+<div class="example lisp">
+<pre class="lisp-preformatted">(use-package kasten)
+</pre></div>
+</li><li> Customise.
+<div class="example lisp">
+<pre class="lisp-preformatted">;; Below configurations are not default values.
+(setq kasten-directory (expand-file-name &quot;~/notes/&quot;)
+      kasten-file-extensions '(&quot;org&quot; &quot;txt&quot; &quot;tex&quot;)
+      kasten-title-max-pos 2048
+      kasten-tag-max-pos 8192
+      kasten-id-symbol &quot;§&quot;
+      kasten-id-regexp &quot;§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)&quot;
+      kasten-auto-refresh t)
+</pre></div>
+</li><li> Launch <code class="code">Kasten</code> with <kbd class="kbd">M-x kasten <kbd class="key">RET</kbd></kbd>.
+</li></ol>
+
+</div>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT1" href="#DOCF1">(1)</a></h5>
+<p><a class="uref" href="https://en.wikipedia.org/wiki/Pretty_Good_Privacy">Pretty Good Privacy</a>,
+see also <a class="uref" href="https://gnupg.org">GnuPG</a></p>
+<h5 class="footnote-body-heading"><a id="FOOT2" href="#DOCF2">(2)</a></h5>
+<p>Please replace &lsquo;<samp class="samp">at</samp>&rsquo;, &lsquo;<samp class="samp">dot</samp>&rsquo;, etc. to actual
+symbols and characters.</p>
 </div>
 
 

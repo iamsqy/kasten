@@ -7,7 +7,7 @@
 @c %**end of header
 
 @copying
-This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
+This manual is for Kasten (version 0.90.0, last updated 2025-07-09), which is
 an Emacs package for managing Zettelkasten-style notes.
 
 Copyright @copyright{} 2025 Qiyang Sun
@@ -31,7 +31,7 @@ the section entitled ``GNU Free Documentation License''.
 @finalout
 @titlepage
 @title Kasten Manual
-@subtitle for version 0.2, last updated 2025-07-08
+@subtitle for version 0.90.0, last updated 2025-07-09
 @author Qiyang Sun
 @page
 @vskip 0pt plus 1filll
@@ -60,6 +60,7 @@ the section entitled ``GNU Free Documentation License''.
 * Contributing::
 * GNU Free Documentation License::
 * GNU General Public License::
+* Too Long; Didn't Read::
 
 @detailmenu
 --- The Detailed Node Listing ---
@@ -84,6 +85,17 @@ Kasten Major Mode
 
 * Live Search::
 * Filters::
+
+Customisation
+
+* Customisable Variables::
+* Customisable Functions and Hooks::
+* Customisable Faces::
+
+Contributing
+
+* Reporting Slowness::
+* Reporting Security Concerns::
 
 @end detailmenu
 @end menu
@@ -165,7 +177,7 @@ provide a detailed introduction to the Zettelkasten methodology itself.
 Kasten is inspired by Zetteldeft, a Zettelkasten system on top of Deft.  Deft is
 a note browsing system inspired by Notational Velocity.
 
-Kasten designed based on the following ideas in mind.
+Kasten is designed base on the following ideas in mind.
 @itemize
 @item
 The system should be highly customisable.
@@ -219,7 +231,7 @@ ID format fully customisable (with the ability to include sanitised title).
 @item
 Followable note IDs for easy navigation.
 @item
-ID changable with auto-update references.
+ID is changable with auto-update references.
 @item
 Insert tags and note IDs with auto-completion support.
 @item
@@ -304,7 +316,7 @@ Kasten minor mode has a lighter @samp{Kt} (customisable).
 Toggle @code{kasten-minor-mode} for current buffer.
 @end deffn
 
-Refer to the Emacs Lisp code for detailed function and variable documentations.
+Refer to the Emacs Lisp code for detailed function and variable documentation.
 
 @node Kasten Major Mode
 @section Kasten Major Mode
@@ -354,8 +366,86 @@ Create and open a new Kasten note.
 @node Live Search
 @subsection Live Search
 
+In a Live Search, one can type anywhere to search titles, categories and IDs.
+It is unnecessary to place the point into the text box---a temporary key map is
+used to handle input, supporting letters, symbols and non-ASCII characters.
+Case is insensitive.
+
+@vtable @asis
+@item @kbd{C-g} (@code{kasten--quit-live-search})
+@itemx @kbd{@key{ESC} @key{ESC} @key{ESC}} (@code{kasten--quit-live-search})
+@kindex C-g
+@kindex ESC ESC ESC
+@findex kasten--quit-live-search
+Quit live search and reset to normal Kasten.
+
+@item @kbd{@key{DEL}}
+@kindex DEL
+Delete the last input character.
+
+@item @kbd{@key{RET}} (@code{kasten-open-file})
+@kindex RET
+@findex kasten-open-file
+Open the note file on the current line by matching filename.
+@end vtable
+
+
+A letter @samp{s} will appear next to Kasten buffer title indicating Live Search is
+activated.
+
 @node Filters
 @subsection Filters
+
+With Filters, one can filter titles and/or categories.
+
+By invoking @samp{kasten-filters-edit}, a new buffer @samp{*Kasten Filters*} is
+created.  This buffer is in @code{kasten-filters-mode}, for users to edit filters.
+
+Lines starting with a @samp{%} symbol are read-only comments.  Lines starting with a
+@samp{#} are read-only headers which will be parsed.
+
+@table @asis
+@item Title filters
+Enter titles one per line.  Case is insensitive.  A note will be displayed if
+it has at least one title filter as its substring.  Use of Emacs regular
+expressions is allowed.  Leave this field empty to keep all notes.
+
+@item Category filters
+Enter categories one per line.  Case is sensitive.  A note will be displayed
+if it has a category and the category is exactly one of the category filters.
+Leave this field empty to keep all notes.
+
+@item Mode
+Logic operator for the filter operation.  May be either `and' or `or'.  If
+only one of the title filters and category filters is needed, use `and'.
+@end table
+
+
+Kasten-Filters mode has the following key bindings.
+
+@table @asis
+@item @kbd{C-c C-c} (@code{kasten-filters-save-and-kill})
+@kindex C-c C-c
+@findex kasten-filters-save-and-kill
+Try to parse the buffer contents and apply them to Kasten filters, then kill
+this buffer and delete the selected window.
+
+@item @kbd{C-c C-k} (@code{kill-buffer-and-window})
+@kindex C-c C-k
+@findex kill-buffer-and-window
+Kill the Kasten-Filters buffer and delete the selected window; discard any
+changes to the filters.
+
+@item @kbd{C-c C-t} (@code{kasten-filters--toggle-the-mode})
+@kindex C-c C-t
+@findex kasten-filters--toggle-the-mode
+Toggle the mode on the current line between `or' and `and'.  Only valid if the
+point is placed on the mode text (placed on the text `or' or `and').
+@end table
+
+
+A letter @samp{f} will appear next to Kasten buffer title indicating Kasten Filters
+are activated.
 
 @node Kasten Minor Mode
 @section Kasten Minor Mode
@@ -404,62 +494,255 @@ Prompt and search for a tag.
 @node Customisation
 @chapter Customisation
 
-@strong{TODO: outdated}
+@menu
+* Customisable Variables::
+* Customisable Functions and Hooks::
+* Customisable Faces::
+@end menu
 
-Kasten is customisable using @samp{customize}, via @kbd{M-x customize-group @key{RET} kasten @key{RET}} or GUI@.
+@node Customisable Variables
+@section Customisable Variables
 
-Alternatively, one can customise Kasten in the Emacs configuration file (such as
-@samp{init.el}, or under @samp{use-package}). Below are @emph{default} configurations.
+Kasten is customisable using @samp{customize}, via @kbd{M-x customize-group @key{RET} kasten @key{RET}}. Alternatively, one may use @code{setq}.  For
+example, to change the variable @samp{kasten-directory} to @samp{~/notes} using @code{setq},
+one may add the following code to their Emacs configuration file (such as
+@samp{init.el}, preferably under @samp{use-package}).
 
 @lisp
-;; Directory containing your notes
-;; Kasten recursively finds all notes under kasten-directory
-(setq kasten-directory (expand-file-name "~/jrn/"))
-
-;; File extensions to include in search
-;; E.g., Org mode files, text files, and (La)TeX files
-(setq kasten-file-extensions '("org" "txt" "tex"))
-
-;; Function used for searching within the Kasten directory
-;; If consult-ripgrep is not ideal, one may change here
-(setq kasten-search-function #'consult-ripgrep)
-
-;; Regexp to match the title of a note
-;; Matches `\#+title:' , `\#+TITLE:' , `\#+Title:', ...
-(setq kasten-title-regexp "^#\\+[tT][iI][tT][lL][eE]: *\\(.*\\)$")
-
-;; Max position of the title of a note
-;; Reduce if slow
-(setq kasten-title-max-pos 4096)
-
-;; Regexp to match a tag of a note
-;; Matches `\#foobar'
-(setq kasten-tag-regexp "#\\([[:alnum:]_-]+\\)")
-
-;; Max position of the title of a note
-;; Reduce if slow
-(setq kasten-tag-max-pos 65536)
-
-;; Regexp for the tag char (for consult-ripgrep to understand)
-;; `\\x23' is `\#' in PCRE
-(setq kasten-tag-first-char-regexp "\\x23")
-
-;; Leading symbol for ID
-;; May be longer than 1 char
-(setq kasten-id-symbol "§")
-
-;; Regexp to match the ID
-;; Matches `\§20250229-2333'
-(setq kasten-id-regexp "§\\([0-9]\\@{8\\@}-[0-9]\\@{4\\@}\\)")
-
-;; Buffer title
-;; If you don't like `Kasten' as the name
-(setq kasten-buffer-title "Kasten\n")
-
-;; Auto refresh
-;; If non-nil, automatically refresh Kasten buffer when files change
-(setq kasten-auto-refresh t)
+(setq kasten-directory (expand-file-name "~/notes/"))
 @end lisp
+
+Default values in the manual may be evaluated, simplified or slightly modified.
+Please refer to the source code and search for @samp{defcustom}.
+
+
+@defvar kasten-directory
+Note directory.
+
+Default value: @samp{~/jrn/}.
+@end defvar
+
+@defvar kasten-file-extensions
+List of searchable file extensions for Kasten.
+
+Default value: @samp{("org" "txt" "tex")}.
+@end defvar
+
+@defvar kasten-default-extension
+Default extension for new notes.
+
+Default value: @samp{org}.
+@end defvar
+
+@defvar kasten-note-title-template
+Template for new notes.
+
+Default value: @samp{#+title:}.
+@end defvar
+
+@defvar kasten-index-hidden-files
+If non-nil, include dot files when indexing.
+May cause problem if backup files present in the directory.
+
+Default value: @samp{nil}.
+@end defvar
+
+@defvar kasten-search-function
+Function used for searching within the Kasten directory.
+
+Default value: @samp{consult-ripgrep}.
+@end defvar
+
+@defvar kasten-title-regexp
+Regexp to match the title of a note.
+
+Default value: @samp{"^#\\+[tT][iI][tT][lL][eE]: *\\(.*\\)$"}.
+@end defvar
+
+@defvar kasten-title-max-pos
+Max position of the title of a note.
+Depth for Kasten to match ‘kasten-title-regexp’.
+
+Default value: @samp{4096}.
+@end defvar
+
+@defvar kasten-category-regexp
+Regexp to match the category of a note.
+
+Default value: @samp{"^#\\+[cC][aA][tT][eE][gG][oO][rR][yY]: *\\(.*\\)$"}.
+@end defvar
+
+@defvar kasten-empty-category-placeholder
+If non-empty, display in category field for uncategorised notes.
+Leave empty to omit empty category for uncategorised notes.
+
+Default value: @samp{""}.
+@end defvar
+
+@defvar kasten-category-max-pos
+Max position of the category of a note.
+Depth for Kasten to match ‘kasten-category-regexp’.
+
+Default value: @samp{4096}.
+@end defvar
+
+@defvar kasten-title-category-split
+Split title and category in Kasten view.
+
+Default value: @samp{" --- "}.
+@end defvar
+
+@defvar kasten-tag-regexp
+Regexp to match a tag of a note.
+
+Default value: @samp{"#\\([[:alnum:]_-]+\\)"}.
+@end defvar
+
+@defvar kasten-tag-max-pos
+Max position of the title of a note.
+Depth for Kasten to match ‘kasten-tag-regexp’.
+
+Default value: @samp{65536}.
+@end defvar
+
+@defvar kasten-tag-symbol
+Leading symbol for tag.
+
+Default value: @samp{"#"}.
+@end defvar
+
+@defvar kasten-tag-first-char-regexp
+Regexp for the tag char to make ‘kasten-search-function’ understand.
+
+If using ‘consult-ripgrep’, use ‘\x23’ instead of ‘#’.
+
+Default value: @samp{"\\x23"}.
+@end defvar
+
+@defvar kasten-id-symbol
+Leading symbol for ID@.
+
+Default value: @samp{"§"}.
+@end defvar
+
+@defvar kasten-id-format
+Time format for generating ID@.  Use ‘%E’ for shortened title.
+See man page ‘strftime(3)’ for wildcards.
+
+Default value: @samp{"%y%m%d-%H%M-%E"}.
+@end defvar
+
+@defvar kasten-folder-timeformat
+Time format for folder.
+See man page ‘strftime(3)’ for wildcards.
+
+Default value: @samp{"%Y%m"}.
+@end defvar
+
+@defvar kasten-id-clash-time-inc
+Time interval to increment if the time-based ID clashes, in seconds.
+Set to 60 for 1 minute.
+
+Default value: @samp{60}.
+@end defvar
+
+@defvar kasten-id-regexp
+Regexp for an ID in a note.
+
+Default value: @samp{"§\\([0-9]\\@{6\\@}-[0-9]\\@{4\\@}\\)"}.
+@end defvar
+
+@defvar kasten-backlink-comment
+Insert before backlink ID when creating new note at point.
+
+Default value: @samp{#+backlink:}.
+@end defvar
+
+@defvar kasten-buffer-title
+Kasten mode buffer title.
+
+Default value: @samp{"Kasten"}.
+@end defvar
+
+@defvar kasten-minor-mode-lighter
+Function used for searching within the Kasten directory.
+
+Default value: @samp{Kt}.
+@end defvar
+
+@defvar kasten-auto-refresh
+If non-nil, automatically refresh Kasten buffer when files change.
+
+Default value: @samp{t}.
+@end defvar
+
+@node Customisable Functions and Hooks
+@section Customisable Functions and Hooks
+
+If the ID contains title (for example, using @samp{§250229-23 332. 2. -foo} as ID of the
+note created on 2025-02-29 at 23:33 titled @samp{foo}), one can customise how to
+convert the note title to a safer string which can be used as part of the
+filename.
+
+@defvar kasten-safetitle-function
+Function to convert a title to a safe short string.
+
+Default value: @samp{kasten--default-safetitle}.
+@end defvar
+
+@defun kasten--default-safetitle
+Default safetitle function to convert TITLE to max 8 char string.
+@end defun
+
+@node Customisable Faces
+@section Customisable Faces
+
+@defopt kasten-buffer-title-face
+Face for the Kasten buffer title.
+
+Default attributes: @samp{((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))}
+@end defopt
+
+@defopt kasten-file-title-face
+Face for file titles in Kasten.
+
+Default attributes: @samp{((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))}
+@end defopt
+
+@defopt kasten-title-category-split-face
+Face for title category split in Kasten.
+
+Default attributes: @samp{((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))}
+@end defopt
+
+@defopt kasten-file-category-face
+Face for categories in Kasten.
+
+Default attributes: @samp{((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))}
+@end defopt
+
+@defopt kasten-file-name-face
+Face for filenames in Kasten.
+
+Default attributes: @samp{((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))}
+@end defopt
+
+@defopt kasten-live-search-edit-face
+Face for categories in Kasten.
+
+Default attributes: @samp{((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))}
+@end defopt
+
+@defopt kasten-button-face
+Face for categories in Kasten.
+
+Default attributes: @samp{((:family . unspecified) (:foundry . unspecified) (:width . unspecified) (:height . unspecified) (:weight . unspecified) (:slant . unspecified) (:underline . unspecified) (:overline . unspecified) (:extend . unspecified) (:strike-through . unspecified) (:box . unspecified) (:inverse-video . unspecified) (:foreground . unspecified) (:background . unspecified) (:stipple . unspecified) (:inherit . unspecified))}
+@end defopt
+
+The prompt text @samp{Live search:} in Live Search uses default face @samp{shadow}.
+
+In Kasten Filters, lines start with @samp{%} use @samp{font-lock-comment-face}; lines
+start with @samp{#} use @samp{font-lock-keyword-face}.
 
 @node Benchmark
 @chapter Benchmark
@@ -475,11 +758,11 @@ for i in @{1..1000@}; do
 done
 @end example
 
-The following benchmark is obtained by @kbd{M-x benchmark}. Variables
-@samp{gc-cons-threshold} and @samp{gc-cons-percentage} are set to @code{16000000} and @code{0.1},
-accordingly.
+The following benchmark is obtained by @kbd{M-x benchmark} using Emacs
+30.1, on an Apple Darwin machine with Apple SSD@.  Variables @samp{gc-cons-threshold}
+and @samp{gc-cons-percentage} are set to @code{16000000} and @code{0.1}, accordingly.
 
-@multitable {aaaaaaa} {aaaaaaaaaa} {aaaaaaaaaaaa} {aaaaaaaaaaaaaaaaaaa}
+@multitable {aaaaaaa} {aaaaaaaaaaaaaaaaaaaaaaaaaaaa} {aaaaaaaaaaaa} {aaaaaaaaaaaaaaaaaaa}
 @headitem Package
 @tab Form
 @tab Elapsed Time
@@ -492,13 +775,26 @@ accordingly.
 @tab @samp{(kasten)}
 @tab 0.682055s
 @tab 1
+@item Kasten
+@tab @samp{(kasten-change-id "oldid")}
+@tab 11.295669s
+@tab 0
 @end multitable
 
 @node Contributing
 @chapter Contributing
 
-Contributions and bug reports are welcome! Please open issues or pull requests
-on the GitHub repository.
+Contributions and bug reports are welcome!  For code contributions, please open
+pull requests on GitHub.  For general issues (except security concerns), please
+open issues on GitHub.
+
+@menu
+* Reporting Slowness::
+* Reporting Security Concerns::
+@end menu
+
+@node Reporting Slowness
+@section Reporting Slowness
 
 Users are encouraged to report any significant slowness of Kasten! If possible,
 please include the following information, but please @strong{do not include any
@@ -521,6 +817,27 @@ Profiler report (@kbd{M-x profiler-start @key{RET} @key{RET}}, perform action,
 Benchmark of the slow function (@kbd{M-x benchmark @key{RET}} followed by the
 function and @kbd{@key{RET}})
 @end itemize
+
+@node Reporting Security Concerns
+@section Reporting Security Concerns
+
+If you found any vulnerabilities or would like to report any security concerns,
+please @strong{do not} use any public channels.  Please contact the package author via
+email.  Please @strong{sign} and @strong{encrypt} your email with PGP@footnote{@uref{https://en.wikipedia.org/wiki/Pretty_Good_Privacy, Pretty Good Privacy},
+see also @uref{https://gnupg.org, GnuPG}}.  @strong{Encrypted plain text email} MIMEs are preferred (do not use
+@code{multipart/alternative} to include HTML copies of the email).
+
+@table @asis
+@item Key Server
+@uref{https://keyserver.ubuntu.com/, hkps://keyserver.ubuntu.com}
+@item Email Address
+@code{iamsqy αt outlo◯k d0t c○m} @footnote{Please replace @samp{at}, @samp{dot}, etc. to actual
+symbols and characters.}
+@item Key ID
+@code{F8AD5243C3CFB24E}
+@item Primary key fingerprint
+@code{548E 2320 AFD8 0063 1C76  274C F8AD 5243 C3CF B24E}
+@end table
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
@@ -1658,5 +1975,30 @@ the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
 @end example
+
+@node Too Long; Didn't Read
+@appendix Too Long; Didn't Read
+
+@enumerate
+@item
+Install @code{Kasten} (not yet published).
+@lisp
+(use-package kasten)
+@end lisp
+@item
+Customise.
+@lisp
+;; Below configurations are not default values.
+(setq kasten-directory (expand-file-name "~/notes/")
+      kasten-file-extensions '("org" "txt" "tex")
+      kasten-title-max-pos 2048
+      kasten-tag-max-pos 8192
+      kasten-id-symbol "§"
+      kasten-id-regexp "§\\([0-9]\\@{8\\@}-[0-9]\\@{4\\@}\\)"
+      kasten-auto-refresh t)
+@end lisp
+@item
+Launch @code{Kasten} with @kbd{M-x kasten @key{RET}}.
+@end enumerate
 
 @bye

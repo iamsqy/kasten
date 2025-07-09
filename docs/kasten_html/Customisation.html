@@ -3,7 +3,7 @@
 <!-- Created by GNU Texinfo 7.2, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!-- This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
+<!-- This manual is for Kasten (version 0.90.0, last updated 2025-07-09), which is
 an Emacs package for managing Zettelkasten-style notes.
 
 Copyright © 2025 Qiyang Sun
@@ -32,9 +32,6 @@ the section entitled "GNU Free Documentation License".
 <style type="text/css">
 <!--
 a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
-div.example {margin-left: 3.2em}
-kbd.kbd {font-style: oblique}
-kbd.key {font-style: normal}
 span:hover a.copiable-link {visibility: visible}
 -->
 </style>
@@ -52,63 +49,12 @@ Next: <a href="Benchmark.html" accesskey="n" rel="next">Benchmark</a>, Previous:
 <hr>
 <h2 class="chapter" id="Customisation-1"><span>7 Customisation<a class="copiable-link" href="#Customisation-1"> &para;</a></span></h2>
 
-<p><strong class="strong">TODO: outdated</strong>
-</p>
-<p>Kasten is customisable using &lsquo;<samp class="samp">customize</samp>&rsquo;, via <kbd class="kbd">M-x customize-group <kbd class="key">RET</kbd> kasten <kbd class="key">RET</kbd></kbd> or GUI.
-</p>
-<p>Alternatively, one can customise Kasten in the Emacs configuration file (such as
-&lsquo;<samp class="samp">init.el</samp>&rsquo;, or under &lsquo;<samp class="samp">use-package</samp>&rsquo;). Below are <em class="emph">default</em> configurations.
-</p>
-<div class="example lisp">
-<pre class="lisp-preformatted">;; Directory containing your notes
-;; Kasten recursively finds all notes under kasten-directory
-(setq kasten-directory (expand-file-name &quot;~/jrn/&quot;))
 
-;; File extensions to include in search
-;; E.g., Org mode files, text files, and (La)TeX files
-(setq kasten-file-extensions '(&quot;org&quot; &quot;txt&quot; &quot;tex&quot;))
-
-;; Function used for searching within the Kasten directory
-;; If consult-ripgrep is not ideal, one may change here
-(setq kasten-search-function #'consult-ripgrep)
-
-;; Regexp to match the title of a note
-;; Matches `\#+title:' , `\#+TITLE:' , `\#+Title:', ...
-(setq kasten-title-regexp &quot;^#\\+[tT][iI][tT][lL][eE]: *\\(.*\\)$&quot;)
-
-;; Max position of the title of a note
-;; Reduce if slow
-(setq kasten-title-max-pos 4096)
-
-;; Regexp to match a tag of a note
-;; Matches `\#foobar'
-(setq kasten-tag-regexp &quot;#\\([[:alnum:]_-]+\\)&quot;)
-
-;; Max position of the title of a note
-;; Reduce if slow
-(setq kasten-tag-max-pos 65536)
-
-;; Regexp for the tag char (for consult-ripgrep to understand)
-;; `\\x23' is `\#' in PCRE
-(setq kasten-tag-first-char-regexp &quot;\\x23&quot;)
-
-;; Leading symbol for ID
-;; May be longer than 1 char
-(setq kasten-id-symbol &quot;§&quot;)
-
-;; Regexp to match the ID
-;; Matches `\§20250229-2333'
-(setq kasten-id-regexp &quot;§\\([0-9]\\{8\\}-[0-9]\\{4\\}\\)&quot;)
-
-;; Buffer title
-;; If you don't like `Kasten' as the name
-(setq kasten-buffer-title &quot;Kasten\n&quot;)
-
-;; Auto refresh
-;; If non-nil, automatically refresh Kasten buffer when files change
-(setq kasten-auto-refresh t)
-</pre></div>
-
+<ul class="mini-toc">
+<li><a href="Customisable-Variables.html" accesskey="1">Customisable Variables</a></li>
+<li><a href="Customisable-Functions-and-Hooks.html" accesskey="2">Customisable Functions and Hooks</a></li>
+<li><a href="Customisable-Faces.html" accesskey="3">Customisable Faces</a></li>
+</ul>
 </div>
 
 

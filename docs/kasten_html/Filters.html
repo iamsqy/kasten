@@ -3,7 +3,7 @@
 <!-- Created by GNU Texinfo 7.2, https://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!-- This manual is for Kasten (version 0.2, last updated 2025-07-08), which is
+<!-- This manual is for Kasten (version 0.90.0, last updated 2025-07-09), which is
 an Emacs package for managing Zettelkasten-style notes.
 
 Copyright © 2025 Qiyang Sun
@@ -31,6 +31,7 @@ the section entitled "GNU Free Documentation License".
 <style type="text/css">
 <!--
 a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+kbd.kbd {font-style: oblique}
 span:hover a.copiable-link {visibility: visible}
 -->
 </style>
@@ -48,6 +49,65 @@ Previous: <a href="Live-Search.html" accesskey="p" rel="prev">Live Search</a>, U
 <hr>
 <h4 class="subsection" id="Filters-1"><span>6.2.2 Filters<a class="copiable-link" href="#Filters-1"> &para;</a></span></h4>
 
+<p>With Filters, one can filter titles and/or categories.
+</p>
+<p>By invoking &lsquo;<samp class="samp">kasten-filters-edit</samp>&rsquo;, a new buffer &lsquo;<samp class="samp">*Kasten Filters*</samp>&rsquo; is
+created.  This buffer is in <code class="code">kasten-filters-mode</code>, for users to edit filters.
+</p>
+<p>Lines starting with a &lsquo;<samp class="samp">%</samp>&rsquo; symbol are read-only comments.  Lines starting with a
+&lsquo;<samp class="samp">#</samp>&rsquo; are read-only headers which will be parsed.
+</p>
+<dl class="table">
+<dt>Title filters</dt>
+<dd><p>Enter titles one per line.  Case is insensitive.  A note will be displayed if
+it has at least one title filter as its substring.  Use of Emacs regular
+expressions is allowed.  Leave this field empty to keep all notes.
+</p>
+</dd>
+<dt>Category filters</dt>
+<dd><p>Enter categories one per line.  Case is sensitive.  A note will be displayed
+if it has a category and the category is exactly one of the category filters.
+Leave this field empty to keep all notes.
+</p>
+</dd>
+<dt>Mode</dt>
+<dd><p>Logic operator for the filter operation.  May be either &lsquo;and&rsquo; or &lsquo;or&rsquo;.  If
+only one of the title filters and category filters is needed, use &lsquo;and&rsquo;.
+</p></dd>
+</dl>
+
+
+<p>Kasten-Filters mode has the following key bindings.
+</p>
+<dl class="table">
+<dt><a class="index-entry-id" id="index-kasten_002dfilters_002dsave_002dand_002dkill"></a>
+<a id="index-C_002dc-C_002dc"></a><span><kbd class="kbd">C-c C-c</kbd> (<code class="code">kasten-filters-save-and-kill</code>)<a class="copiable-link" href="#index-C_002dc-C_002dc"> &para;</a></span></dt>
+<dd><p>Try to parse the buffer contents and apply them to Kasten filters, then kill
+this buffer and delete the selected window.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kill_002dbuffer_002dand_002dwindow"></a>
+<a id="index-C_002dc-C_002dk"></a><span><kbd class="kbd">C-c C-k</kbd> (<code class="code">kill-buffer-and-window</code>)<a class="copiable-link" href="#index-C_002dc-C_002dk"> &para;</a></span></dt>
+<dd><p>Kill the Kasten-Filters buffer and delete the selected window; discard any
+changes to the filters.
+</p>
+</dd>
+<dt><a class="index-entry-id" id="index-kasten_002dfilters_002d_002dtoggle_002dthe_002dmode"></a>
+<a id="index-C_002dc-C_002dt"></a><span><kbd class="kbd">C-c C-t</kbd> (<code class="code">kasten-filters--toggle-the-mode</code>)<a class="copiable-link" href="#index-C_002dc-C_002dt"> &para;</a></span></dt>
+<dd><p>Toggle the mode on the current line between &lsquo;or&rsquo; and &lsquo;and&rsquo;.  Only valid if the
+point is placed on the mode text (placed on the text &lsquo;or&rsquo; or &lsquo;and&rsquo;).
+</p></dd>
+</dl>
+
+
+<p>A letter &lsquo;<samp class="samp">f</samp>&rsquo; will appear next to Kasten buffer title indicating Kasten Filters
+are activated.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Live-Search.html">Live Search</a>, Up: <a href="Kasten-Major-Mode.html">Kasten Major Mode</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
 </div>
 
 
