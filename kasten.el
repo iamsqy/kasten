@@ -269,7 +269,7 @@ Set to 60 for 1 minute."
   :group 'kasten
   (if kasten-minor-mode
       (progn
-	(add-hook 'org-mode-hook #'kasten--setup-id-buttons)
+        (add-hook 'org-mode-hook #'kasten--setup-id-buttons)
         (unless (derived-mode-p 'kasten-mode 'text-mode)
           (display-warning
            'kasten-minor-mode
@@ -712,25 +712,28 @@ according to IS-AUTO."
 (defun kasten--generate-id-and-path (&optional title)
   "Generate ID and path, optionally using TITLE, increment time if clash."
   (let ((n 0)
-        id path)
-    (cl-loop
-     with now = (current-time)
-     for offset-time = (time-add
-                        now (seconds-to-time (* kasten-id-clash-time-inc n)))
-     for id-timeformat = (replace-regexp-in-string "%E"
-                                                   (kasten--safetitle title)
-                                                   kasten-id-format)
-     for base = (format-time-string id-timeformat offset-time)
-     for dir = (format-time-string kasten-folder-timeformat offset-time)
-     for rel-path = (format "%s/%s" dir base)
-     do (setq
-         id base
-         path (expand-file-name rel-path kasten-directory))
-     until (not (cl-some
-                 (lambda (ext)
-                   (file-exists-p (format "%s.%s" path ext)))
-                 kasten-file-extensions))
-     do (setq n (1+ n)))
+        id path
+        (now (current-time))
+        (clash t))
+    (while clash
+      (let* ((offset-time (time-add
+                           now
+                           (seconds-to-time (* kasten-id-clash-time-inc n))))
+             (id-timeformat (replace-regexp-in-string "%E"
+                                                     (kasten--safetitle title)
+                                                     kasten-id-format))
+             (base (format-time-string id-timeformat offset-time))
+             (dir (format-time-string kasten-folder-timeformat offset-time))
+             (rel-path (format "%s/%s" dir base))
+             (full-path (expand-file-name rel-path kasten-directory)))
+        (setq id base
+              path full-path)
+        (setq clash nil)
+        (dolist (ext kasten-file-extensions)
+          (when (file-exists-p (format "%s.%s" path ext))
+            (setq clash t)))
+        (when clash
+          (setq n (1+ n)))))
     (list :id id :path path)))
 
 (defun kasten-create-new-note ()
