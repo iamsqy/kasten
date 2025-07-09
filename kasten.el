@@ -694,10 +694,19 @@ according to IS-AUTO."
   :group 'kasten
   :set #'kasten--set-auto-refresh)
 
-(defun kasten--safetitle (title)
-  "Convert TITLE to a safe short string can be used for ID or filename."
+(defun kasten--default-safetitle (title)
+  "Default safetitle function to convert TITLE to max 8 char string."
   (let* ((clean (replace-regexp-in-string "[^a-zA-Z0-9-_+]" "" title)))
     (substring clean 0 (min 8 (length clean)))))
+
+(defcustom kasten-safetitle-function #'kasten--default-safetitle
+  "Function to convert a title to a safe short string."
+  :type 'function
+  :group 'kasten)
+
+(defun kasten--safetitle (title)
+  "Convert TITLE to a safe short string, via `kasten-safetitle-function`."
+  (funcall kasten-safetitle-function title))
 
 (defun kasten--generate-id-and-path (&optional title)
   "Generate ID and path, optionally using TITLE, increment time if clash."
