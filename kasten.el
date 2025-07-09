@@ -6,7 +6,7 @@
 ;; Maintainer: Qiyang Sun <iamsqy@outlook.com>
 ;; Created: 21 Jun 2025
 ;; URL: https://github.com/iamsqy/kasten
-;; Package-Version: 0.2
+;; Package-Version: 0.90.0
 ;; Package-Requires: ((emacs "27.1") (consult "0.33"))
 ;; Keywords: tools, files, matching
 
