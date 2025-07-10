@@ -29,12 +29,18 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 * Documentation
 
-*Documentation can be found [[https://iamsqy.github.io/kasten/][here]]*, in various of formats, containing following
+*Kasten Manual can be found [[https://iamsqy.github.io/kasten/][here]]*, in various of formats, containing following
 important information and other useful information:
+- *(@@html:<ins>@@Please visit [[https://iamsqy.github.io/kasten/]] for full
+  manual!@@html:</ins>@@)*
 - [[https://iamsqy.github.io/kasten/kasten_html/Copying.html][Copying]] (License)
 - Concepts and Features
 - [[https://iamsqy.github.io/kasten/kasten_html/Installation.html][Installation]], [[https://iamsqy.github.io/kasten/kasten_html/Usage.html][Usage]] and [[https://iamsqy.github.io/kasten/kasten_html/Customisation.html][Customisation]]
-- Contributing
+- [[https://iamsqy.github.io/kasten/kasten_html/Contributing.html][Contributing]]
+- [[https://iamsqy.github.io/kasten/kasten_html/Too-Long_003b-Didn_0027t-Read.html][TL;DR]]
 
-The Kasten Documentation is licensed under GNU Free Documentation License
+The /Kasten Manual/ is licensed under GNU Free Documentation License
 Version 1.3.
+
+
+#+html: <p><a href="https://orgmode.org"><img src="https://img.shields.io/badge/Org-Document-%2377aa99?style=flat-square&logo=org&logoColor=white"></a> <a href="https://www.gnu.org/software/emacs/"><img src="https://img.shields.io/badge/Made_with-Emacs-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white"></a></p>
