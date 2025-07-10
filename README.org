@@ -1,6 +1,8 @@
 #+title: Kasten --- Zettelkasten note browser
 #+author: Qiyang Sun
 
+[[https://github.com/iamsqy/kasten/actions/workflows/melpazoid.yml][https://github.com/iamsqy/kasten/actions/workflows/melpazoid.yml/badge.svg]]
+
 * Overview
 
 =Kasten= is an [[https://www.gnu.org/software/emacs/][Emacs]] package designed to provide a focused and efficient
